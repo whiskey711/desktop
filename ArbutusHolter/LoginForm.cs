@@ -45,50 +45,21 @@ namespace ArbutusHolter
         // after user clicked login button, they will be directed to maininterface
         private void loginButton_Click(object sender, EventArgs e)
         {
-            User user = new User
+            Client client = new Client();
+            string errorMsg = client.Login(userEmail.Text, password.Text);
+            if (errorMsg.Equals("ok"))
             {
-                username = userEmail.Text,
-                password = password.Text
-            };
-            string json = JsonConvert.SerializeObject(user);
-            HttpContent Jsoncontent = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpClient httpClient = new HttpClient();
-            //if you want to add token in the header, use this statement.
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
-            var result = httpClient.PostAsync(url, Jsoncontent).Result;
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                if (result.Headers.TryGetValues("Authorization", out tokenObj))
-                {
-                    fullToken = tokenObj.First();
-                    //Get the index after 'Berear'
-                    int beginIndex = fullToken.IndexOf('r', fullToken.IndexOf('r') + 1);
-                    //store the token in the 'token' string
-                    token = fullToken.Substring(beginIndex + 1);
-                }
-                //Test
-                //userEmail.Text = token;
                 this.Hide();
                 homeForm hForm = new homeForm();
                 hForm.Closed += (s, args) => this.Close();
                 hForm.Show();
             }
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            else
             {
-                string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
-                string errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
                 Hide();
                 ErrorForm errorForm = new ErrorForm(errorMsg);
                 errorForm.Show(this);
-
             }
-        }
-
-
-        public class User
-        {
-            public string username;
-            public string password;
         }
 
     }
