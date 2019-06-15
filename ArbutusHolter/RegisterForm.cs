@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
+using ArbutusHolter.Model;
 
 namespace ArbutusHolter
 {
@@ -19,7 +20,8 @@ namespace ArbutusHolter
         // after user click registerButton, the finishPanel is visible
         private void registerButton_Click(object sender, EventArgs e)
         {
-            if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && email.Text != "")
+            Client client = new Client();
+            if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && email.Text.Contains("@"))
             {
                 if (password.Text == confirmPass.Text)
                 {
@@ -32,22 +34,15 @@ namespace ArbutusHolter
                                                1,
                                                password.Text,
                                                false);
-                    string json = JsonConvert.SerializeObject(newNurse);
-                    HttpContent Jsoncontent = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpClient httpClient = new HttpClient();
-                    var result = httpClient.PostAsync(registerUrl, Jsoncontent).Result;
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                    string errorMsg = client.Register(newNurse);
+                    if (errorMsg.Equals("ok"))
                     {
                         finishPanel.Visible = true;
                     }
-                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    else
                     {
-                        string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
-                        string errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
-                        Hide();
                         ErrorForm errorForm = new ErrorForm(errorMsg);
                         errorForm.Show(this);
-
                     }
                 }
                 else
@@ -74,40 +69,6 @@ namespace ArbutusHolter
             loginF.Show();
         }
 
-
-        public class Nurse
-        {
-            public int nurseId { get; set; }
-            public string nurseLastName { get; set; }
-            public string nurseMidName { get; set; }
-            public string nurseFirstName { get; set; }
-            public string nursePhoneNumber { get; set; }
-            public string nurseEmail { get; set; }
-            public int clinicId { get; set; }
-            public string password { get; set; }
-            public bool deleted { get; set; }
-
-            public Nurse(int NurseId,
-                         string NurseLastName,
-                         string NurseMidName,
-                         string NurseFirstName,
-                         string NursePhoneNumber,
-                         string NurseEmail,
-                         int ClinicId,
-                         string Password,
-                         bool Deleted)
-            {
-                nurseId = NurseId;
-                nurseLastName = NurseLastName;
-                nurseMidName = NurseMidName;
-                nurseFirstName = NurseFirstName;
-                nurseMidName = NurseMidName;
-                nursePhoneNumber = NursePhoneNumber;
-                nurseEmail = NurseEmail;
-                clinicId = ClinicId;
-                password = Password;
-                deleted = Deleted;
-            }
-        }
+        
     }
 }

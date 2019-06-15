@@ -95,6 +95,7 @@
     <Compile Include="MainInterface.Designer.cs">
       <DependentUpon>MainInterface.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Nurse.cs" />
     <Compile Include="PlaceholderTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
