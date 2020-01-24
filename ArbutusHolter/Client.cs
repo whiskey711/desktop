@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using ArbutusHolter.Model;
 
 namespace ArbutusHolter
 {
@@ -35,7 +34,6 @@ namespace ArbutusHolter
                 username = inputUserName,
                 password = inputPassword
             };
-            
             string json = JsonConvert.SerializeObject(user);
             content = new StringContent(json, Encoding.UTF8, "application/json");
             seturl("http://ecg.uvic.ca:443/v1/clinic/login");
@@ -54,24 +52,6 @@ namespace ArbutusHolter
                 //else return cannot find token
             }
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
-                errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
-            }
-            return errorMsg;
-        }
-
-        public string Register(Nurse newNurse)
-        {
-            string json = JsonConvert.SerializeObject(newNurse);
-            content = new StringContent(json, Encoding.UTF8, "application/json");
-            seturl("http://ecg.uvic.ca:443/v1/test/nurses");
-            result = httpClient.PostAsync(getUrl(), content).Result;
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                errorMsg = "ok";
-            }
-            else
             {
                 string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
                 errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
