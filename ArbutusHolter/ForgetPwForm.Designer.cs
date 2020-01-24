@@ -1,4 +1,4 @@
-﻿namespace ArbutusHolter
+﻿namespace Uvic_Ecg_ArbutusHolter
 {
     partial class ForgetPwForm
     {
@@ -6,7 +6,6 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -19,9 +18,7 @@
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -35,14 +32,16 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.finishPanel = new System.Windows.Forms.Panel();
             this.back = new System.Windows.Forms.Button();
+            this.CodeText = new System.Windows.Forms.TextBox();
+            this.confirm = new System.Windows.Forms.Button();
             this.finsihLabel = new System.Windows.Forms.Label();
             this.finishPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // descriptionLabel
             // 
-            this.descriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.descriptionLabel.AutoSize = true;
+            this.descriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.descriptionLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.descriptionLabel.Location = new System.Drawing.Point(737, 532);
@@ -86,8 +85,11 @@
             // 
             // finishPanel
             // 
+            this.finishPanel.BackColor = System.Drawing.Color.Transparent;
             this.finishPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("finishPanel.BackgroundImage")));
             this.finishPanel.Controls.Add(this.back);
+            this.finishPanel.Controls.Add(this.CodeText);
+            this.finishPanel.Controls.Add(this.confirm);
             this.finishPanel.Controls.Add(this.finsihLabel);
             this.finishPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.finishPanel.Location = new System.Drawing.Point(0, 0);
@@ -99,26 +101,45 @@
             // back
             // 
             this.back.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.back.Location = new System.Drawing.Point(874, 787);
+            this.back.Location = new System.Drawing.Point(874, 875);
             this.back.Name = "back";
             this.back.Size = new System.Drawing.Size(172, 51);
-            this.back.TabIndex = 3;
-            this.back.Text = "Back to login";
+            this.back.TabIndex = 5;
+            this.back.Text = "Back to Login";
             this.back.UseVisualStyleBackColor = true;
-            this.back.Click += new System.EventHandler(this.back_Click);
+            this.back.Click += new System.EventHandler(this.Back_Click_1);
+            // 
+            // CodeText
+            // 
+            this.CodeText.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CodeText.Location = new System.Drawing.Point(843, 614);
+            this.CodeText.Name = "CodeText";
+            this.CodeText.Size = new System.Drawing.Size(250, 44);
+            this.CodeText.TabIndex = 4;
+            this.CodeText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // confirm
+            // 
+            this.confirm.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.confirm.Location = new System.Drawing.Point(874, 787);
+            this.confirm.Name = "confirm";
+            this.confirm.Size = new System.Drawing.Size(172, 51);
+            this.confirm.TabIndex = 3;
+            this.confirm.Text = "Confirm";
+            this.confirm.UseVisualStyleBackColor = true;
+            this.confirm.Click += new System.EventHandler(this.Confirm_Click);
             // 
             // finsihLabel
             // 
-            this.finishPanel.BackColor = System.Drawing.Color.Transparent;
             this.finsihLabel.AutoSize = true;
             this.finsihLabel.Font = new System.Drawing.Font("Calibri Light", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.finsihLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.finsihLabel.Location = new System.Drawing.Point(287, 478);
+            this.finsihLabel.Location = new System.Drawing.Point(244, 347);
             this.finsihLabel.Name = "finsihLabel";
-            this.finsihLabel.Size = new System.Drawing.Size(1347, 156);
+            this.finsihLabel.Size = new System.Drawing.Size(1502, 156);
             this.finsihLabel.TabIndex = 0;
-            this.finsihLabel.Text = "                       We have sent you an email\r\nPlease check your mailbox and f" +
-    "ollow its instruction";
+            this.finsihLabel.Text = "                       We have sent you an email\r\nPlease check your mailbox and e" +
+    "nter the verification code";
             // 
             // ForgetPwForm
             // 
@@ -137,9 +158,7 @@
             this.finishPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-
         #endregion
         private System.Windows.Forms.Label descriptionLabel;
         private System.Windows.Forms.TextBox mailTextbox;
@@ -147,6 +166,8 @@
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Panel finishPanel;
         private System.Windows.Forms.Label finsihLabel;
+        private System.Windows.Forms.Button confirm;
+        private System.Windows.Forms.TextBox CodeText;
         private System.Windows.Forms.Button back;
     }
 }

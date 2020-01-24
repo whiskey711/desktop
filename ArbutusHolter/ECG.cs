@@ -1,31 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-namespace ArbutusHolter
+namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class ECG : Form
     {
         public ECG()
         {
             InitializeComponent();
-            ecgView.plotAll();
+            ecgView.PlotAll();
         }
-
-        private void leftBtn_Click(object sender, EventArgs e)
+        private void LeftBtn_Click(object sender, EventArgs e)
         {
-            ecgView.moveRight();
+            ecgView.MoveRight();
         }
-
-        private void rightBtn_Click(object sender, EventArgs e)
+        private void RightBtn_Click(object sender, EventArgs e)
         {
-            ecgView.moveLeft();
+            ecgView.MoveLeft();
         }
     }
 }

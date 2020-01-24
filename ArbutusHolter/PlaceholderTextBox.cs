@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
-
 namespace System.Windows.Forms
 {
     /// <summary>
@@ -9,11 +8,8 @@ namespace System.Windows.Forms
     public class PlaceholderTextBox : TextBox
     {
         #region Properties
-
         string _placeholderText = DEFAULT_PLACEHOLDER;
         bool _isPlaceholderActive = true;
-
-
         /// <summary>
         /// Gets a value indicating whether the Placeholder is active.
         /// </summary>
@@ -24,22 +20,17 @@ namespace System.Windows.Forms
             private set
             {
                 if (_isPlaceholderActive == value) return;
-
                 // Disable operating system handling for mouse events
                 // This prevents the user to select the placeholder with mouse or double clicking
                 SetStyle(ControlStyles.UserMouse, value);
-
                 // If text equals the placeholder and Reset is called, the actual text doesn't change but the IsPlaceholderActive does.
                 // Thus the style (Text or Placeholder) is not updated.
                 // Invalidate forces that
                 Invalidate();
-
                 _isPlaceholderActive = value;
                 OnPlaceholderActiveChanged(value);
             }
         }
-
-
         /// <summary>
         /// Gets or sets the placeholder in the PlaceholderTextBox.
         /// </summary>
@@ -50,14 +41,11 @@ namespace System.Windows.Forms
             set
             {
                 _placeholderText = value;
-
                 // Only use the new value if the placeholder is active.
                 if (IsPlaceholderActive)
                     Text = value;
             }
         }
-
-
         /// <summary>
         /// Gets or sets the current text in the TextBox.
         /// </summary>
@@ -69,14 +57,10 @@ namespace System.Windows.Forms
                 // Check 'base.Text == Placeholder' because in some cases IsPlaceholderActive changes too late although it isn't the placeholder anymore.
                 if (IsPlaceholderActive && base.Text == PlaceholderText)
                     return "";
-
                 return base.Text;
             }
             set { base.Text = value; }
         }
-
-
-
         Color _placeholderTextColor;
         /// <summary>
         /// Gets or sets the foreground color of the control.
@@ -89,19 +73,16 @@ namespace System.Windows.Forms
             {
                 if (_placeholderTextColor == value) return;
                 _placeholderTextColor = value;
-
                 // Force redraw to show new color in designer instantly
                 if (DesignMode)
                     Invalidate();
             }
         }
-
         /// <summary>
         /// Gets or sets the foreground color of the control.
         /// </summary>
         [Description("The foreground color of this component, which is used to display text."), Category("Appearance"), DefaultValue(typeof(Color), "WindowText")]
         public Color TextColor { get; set; }
-
         /// <summary>
         /// Do not access directly. Use TextColor.
         /// </summary>
@@ -112,39 +93,27 @@ namespace System.Windows.Forms
             {
                 if (IsPlaceholderActive)
                     return PlaceholderTextColor;
-
                 return TextColor;
             }
             set { TextColor = value; }
         }
-
-
         /// <summary>
         /// Occurs when the value of the IsPlaceholderActive property has changed.
         /// </summary>
         [Description("Occurs when the value of the IsPlaceholderInside property has changed.")]
         public event EventHandler<PlaceholderActiveChangedEventArgs> PlaceholderActiveChanged;
-
         #endregion
-
-
         #region Global Variables
-
         /// <summary>
         /// Specifies the default placeholder text.
         /// </summary>
         const string DEFAULT_PLACEHOLDER = "<Input>";
-
         /// <summary>
         /// Flag to avoid the TextChanged Event. Don't access directly, use Method 'ActionWithoutTextChanged(Action act)' instead.
         /// </summary>
         bool avoidTextChanged;
-
         #endregion
-
-
         #region Constructor
-
         /// <summary>
         /// Initializes a new instance of the PlaceholderTextBox class.
         /// </summary>
@@ -154,28 +123,20 @@ namespace System.Windows.Forms
             base.Text = PlaceholderText;
             TextColor = SystemColors.WindowText;
             PlaceholderTextColor = SystemColors.InactiveCaption;
-
             SetStyle(ControlStyles.UserMouse, true);
         }
-
         #endregion
-
-
         #region Functions
-
         /// <summary>
         /// Inserts placeholder, assigns placeholder style and sets cursor to first position.
         /// </summary>
         public void Reset()
         {
             if (IsPlaceholderActive) return;
-
             IsPlaceholderActive = true;
-
             Text = PlaceholderText;
             Select(0, 0);
         }
-
         /// <summary>
         /// Run an action with avoiding the TextChanged event.
         /// </summary>
@@ -183,12 +144,9 @@ namespace System.Windows.Forms
         private void ActionWithoutTextChanged(Action act)
         {
             avoidTextChanged = true;
-
             act.Invoke();
-
             avoidTextChanged = false;
         }
-
         private void UpdateText()
         {
             // Run code with avoiding recursive call
@@ -208,9 +166,7 @@ namespace System.Windows.Forms
                 else if (IsPlaceholderActive && Text.Length > 0)
                 {
                     MaxLength = customMaxLength;
-
                     IsPlaceholderActive = false;
-
                     // If you set Text programmatically it won't contain the PlaceholderText.
                     // Thus we do not have to remove it
                     // An issue is you cannot set a Text programmatically which has the structure [prefix][placeholder]
@@ -221,22 +177,16 @@ namespace System.Windows.Forms
                     {
                         Text = Text.Substring(0, TextLength - PlaceholderText.Length);
                     }
-
                     // If we copied something, trim it to the MaxLength
                     if (Text.Length > MaxLength)
                         Text = Text.Substring(0, MaxLength);
-
                     // Set selection to last position
                     Select(TextLength, 0);
                 }
             });
         }
-
         #endregion
-
-
         #region Events
-
         int customMaxLength;
         protected override void OnCreateControl()
         {
@@ -246,51 +196,38 @@ namespace System.Windows.Forms
             // Set to default for the placeholder
             MaxLength = 32767;
         }
-
         protected override void OnTextChanged(EventArgs e)
         {
             // Check flag
             if (avoidTextChanged) return;
-
             UpdateText();
-
             base.OnTextChanged(e);
         }
-
         protected override void OnKeyDown(KeyEventArgs e)
         {
             // Prevents that the user can go through the placeholder with arrow keys and placeholder is not deletable with delete key
             if (IsPlaceholderActive && (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Delete))
                 e.Handled = true;
-
             if (IsPlaceholderActive && (e.KeyCode == Keys.A && e.Modifiers.HasFlag(Keys.Control)))
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-
             base.OnKeyDown(e);
         }
-
         protected virtual void OnPlaceholderActiveChanged(bool newValue)
         {
             PlaceholderActiveChanged?.Invoke(this, new PlaceholderActiveChangedEventArgs(newValue));
         }
-
         #endregion
-
-
         #region Avoid full text selection after first display with TabIndex = 0
-
         // Base class has a selectionSet property, but it is private.
         // We need to shadow with our own variable. If true, this means
         // "don't mess with the selection, the user did it."
         bool selectionSet;
-
         protected override void OnGotFocus(EventArgs e)
         {
             bool needToDeselect = false;
-
             // We don't want to avoid calling the base implementation
             // completely. We mirror the logic that we are trying to avoid;
             // if the base implementation will select all of the text, we
@@ -298,27 +235,21 @@ namespace System.Windows.Forms
             if (!selectionSet)
             {
                 selectionSet = true;
-
                 if (SelectionLength == 0 && MouseButtons == MouseButtons.None)
                 {
                     needToDeselect = true;
                 }
             }
-
             // Call the base implementation
             base.OnGotFocus(e);
-
             // Did we notice that the text was selected automatically? Let's
             // de-select it and put the caret at the end.
             if (!needToDeselect) return;
-
             SelectionStart = 0;
             DeselectAll();
         }
-
         #endregion
     }
-
     /// <summary>
     /// Provides data for the PlaceholderActiveChanged event.
     /// </summary>
@@ -332,7 +263,6 @@ namespace System.Windows.Forms
         {
             IsActive = isActive;
         }
-
         /// <summary>
         /// Gets the new value of the IsPlaceholderActive property.
         /// </summary>

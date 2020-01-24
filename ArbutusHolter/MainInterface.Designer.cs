@@ -1,4 +1,4 @@
-﻿namespace ArbutusHolter
+﻿namespace Uvic_Ecg_ArbutusHolter
 {
     partial class MainInterface
     {
@@ -6,7 +6,6 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -19,9 +18,7 @@
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -30,297 +27,514 @@
         {
             this.components = new System.ComponentModel.Container();
             this.mainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.PatientDetailsGroup = new System.Windows.Forms.GroupBox();
-            this.saveBtn = new System.Windows.Forms.Button();
-            this.modifyBtn = new System.Windows.Forms.Button();
-            this.detailListBox = new System.Windows.Forms.ListBox();
-            this.PatientLsGroup = new System.Windows.Forms.GroupBox();
-            this.createBtn = new System.Windows.Forms.Button();
-            this.patientListBox = new System.Windows.Forms.ListBox();
-            this.reamrkFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.remarkGroup = new System.Windows.Forms.GroupBox();
-            this.deviceComboBox = new System.Windows.Forms.ComboBox();
-            this.remarkRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.ecgFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.ecgGroup = new System.Windows.Forms.GroupBox();
-            this.channel2 = new Test.ECGAnimationView();
-            this.channel1 = new Test.ECGAnimationView();
-            this.chanel2Label = new System.Windows.Forms.Label();
-            this.channel1Label = new System.Windows.Forms.Label();
-            this.ecgStartBtn = new System.Windows.Forms.Button();
-            this.indicatorFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.detailPanel = new System.Windows.Forms.Panel();
+            this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
+            this.address2TB = new System.Windows.Forms.TextBox();
+            this.address2Label = new System.Windows.Forms.Label();
+            this.ageLabel = new System.Windows.Forms.Label();
+            this.medLabel = new System.Windows.Forms.Label();
+            this.superPhyLabel = new System.Windows.Forms.Label();
+            this.pacemakerLabel = new System.Windows.Forms.Label();
+            this.ageTB = new System.Windows.Forms.TextBox();
+            this.medTB = new System.Windows.Forms.TextBox();
+            this.superPhyTB = new System.Windows.Forms.TextBox();
+            this.pacemakerTB = new System.Windows.Forms.TextBox();
+            this.postCodeTB = new System.Windows.Forms.TextBox();
+            this.mailTB = new System.Windows.Forms.TextBox();
+            this.postCodeLabel = new System.Windows.Forms.Label();
+            this.mailLabel = new System.Windows.Forms.Label();
+            this.homeNumLabel = new System.Windows.Forms.Label();
+            this.phoneNumLabel = new System.Windows.Forms.Label();
+            this.homeNumTB = new System.Windows.Forms.TextBox();
+            this.phoneNumTB = new System.Windows.Forms.TextBox();
+            this.midNameLabel = new System.Windows.Forms.Label();
+            this.midNameTB = new System.Windows.Forms.TextBox();
+            this.cityTB = new System.Windows.Forms.TextBox();
+            this.cityLabel = new System.Windows.Forms.Label();
+            this.genderTB = new System.Windows.Forms.TextBox();
+            this.phnTB = new System.Windows.Forms.TextBox();
+            this.provinceTB = new System.Windows.Forms.TextBox();
+            this.address1TB = new System.Windows.Forms.TextBox();
+            this.firstNameTB = new System.Windows.Forms.TextBox();
+            this.phnumLabel = new System.Windows.Forms.Label();
+            this.genderLabel = new System.Windows.Forms.Label();
+            this.provinceLabel = new System.Windows.Forms.Label();
+            this.address1Label = new System.Windows.Forms.Label();
+            this.birthDateLabel = new System.Windows.Forms.Label();
+            this.firstNameLabel = new System.Windows.Forms.Label();
+            this.lastNameTB = new System.Windows.Forms.TextBox();
+            this.lastNameLabel = new System.Windows.Forms.Label();
             this.indicatorGroup = new System.Windows.Forms.GroupBox();
+            this.terminateBtn = new System.Windows.Forms.Button();
+            this.hookupBtn = new System.Windows.Forms.Button();
             this.startTitle = new System.Windows.Forms.Label();
             this.durationLabel = new System.Windows.Forms.Label();
             this.timeLabel = new System.Windows.Forms.Label();
             this.durationTitle = new System.Windows.Forms.Label();
             this.indicatorLed = new Bulb.LedBulb();
-            this.startButton = new System.Windows.Forms.Button();
-            this.srhGroup = new System.Windows.Forms.GroupBox();
-            this.srhBtn = new System.Windows.Forms.Button();
-            this.phnTextBox = new System.Windows.Forms.TextBox();
-            this.birthTextBox = new System.Windows.Forms.TextBox();
-            this.pLastNameTextBox = new System.Windows.Forms.TextBox();
-            this.phnLabel = new System.Windows.Forms.Label();
-            this.birthLabel = new System.Windows.Forms.Label();
-            this.PLastNameLabel = new System.Windows.Forms.Label();
+            this.recordBtn = new System.Windows.Forms.Button();
+            this.ecgPanel = new System.Windows.Forms.Panel();
+            this.ecgGroup = new System.Windows.Forms.GroupBox();
+            this.statusFlag = new System.Windows.Forms.Label();
+            this.waitTimeLabel = new System.Windows.Forms.Label();
+            this.channel2 = new Uvic_Ecg_EcgAnimationView.ECGAnimationView();
+            this.channel1 = new Uvic_Ecg_EcgAnimationView.ECGAnimationView();
+            this.chanel2Label = new System.Windows.Forms.Label();
+            this.channel1Label = new System.Windows.Forms.Label();
+            this.ecgStartBtn = new System.Windows.Forms.Button();
+            this.remarkGroup = new System.Windows.Forms.GroupBox();
+            this.saveRemarkBtn = new System.Windows.Forms.Button();
+            this.remarkRichTextBox = new System.Windows.Forms.RichTextBox();
             this.nowTimer = new System.Windows.Forms.Timer(this.components);
             this.countTImer = new System.Windows.Forms.Timer(this.components);
-            this.endTimeTitle = new System.Windows.Forms.Label();
-            this.endTimeTxtBox = new System.Windows.Forms.TextBox();
+            this.nextCalltimer = new System.Windows.Forms.Timer(this.components);
+            this.waitingTimer = new System.Windows.Forms.Timer(this.components);
+            this.backWorker = new System.ComponentModel.BackgroundWorker();
             this.mainTableLayoutPanel.SuspendLayout();
-            this.PatientDetailsGroup.SuspendLayout();
-            this.PatientLsGroup.SuspendLayout();
-            this.reamrkFlowLayoutPanel.SuspendLayout();
-            this.remarkGroup.SuspendLayout();
-            this.ecgFlowLayoutPanel.SuspendLayout();
-            this.ecgGroup.SuspendLayout();
-            this.indicatorFlowLayoutPanel.SuspendLayout();
+            this.detailPanel.SuspendLayout();
             this.indicatorGroup.SuspendLayout();
-            this.srhGroup.SuspendLayout();
+            this.ecgPanel.SuspendLayout();
+            this.ecgGroup.SuspendLayout();
+            this.remarkGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainTableLayoutPanel
             // 
             this.mainTableLayoutPanel.ColumnCount = 3;
-            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
-            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
-            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34F));
-            this.mainTableLayoutPanel.Controls.Add(this.PatientDetailsGroup, 2, 0);
-            this.mainTableLayoutPanel.Controls.Add(this.PatientLsGroup, 1, 0);
-            this.mainTableLayoutPanel.Controls.Add(this.reamrkFlowLayoutPanel, 0, 2);
-            this.mainTableLayoutPanel.Controls.Add(this.ecgFlowLayoutPanel, 0, 1);
-            this.mainTableLayoutPanel.Controls.Add(this.indicatorFlowLayoutPanel, 0, 2);
-            this.mainTableLayoutPanel.Controls.Add(this.srhGroup, 0, 0);
+            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.mainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.mainTableLayoutPanel.Controls.Add(this.detailPanel, 0, 0);
+            this.mainTableLayoutPanel.Controls.Add(this.indicatorGroup, 2, 0);
+            this.mainTableLayoutPanel.Controls.Add(this.ecgPanel, 0, 1);
+            this.mainTableLayoutPanel.Controls.Add(this.remarkGroup, 1, 0);
             this.mainTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.mainTableLayoutPanel.Name = "mainTableLayoutPanel";
             this.mainTableLayoutPanel.RowCount = 3;
-            this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.mainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.mainTableLayoutPanel.Size = new System.Drawing.Size(1904, 1041);
             this.mainTableLayoutPanel.TabIndex = 0;
             // 
-            // PatientDetailsGroup
+            // detailPanel
             // 
-            this.PatientDetailsGroup.Controls.Add(this.saveBtn);
-            this.PatientDetailsGroup.Controls.Add(this.modifyBtn);
-            this.PatientDetailsGroup.Controls.Add(this.detailListBox);
-            this.PatientDetailsGroup.Location = new System.Drawing.Point(1259, 3);
-            this.PatientDetailsGroup.Name = "PatientDetailsGroup";
-            this.PatientDetailsGroup.Size = new System.Drawing.Size(642, 358);
-            this.PatientDetailsGroup.TabIndex = 7;
-            this.PatientDetailsGroup.TabStop = false;
-            this.PatientDetailsGroup.Text = "PatientDetails";
+            this.detailPanel.AutoScroll = true;
+            this.detailPanel.Controls.Add(this.birthDateTB);
+            this.detailPanel.Controls.Add(this.address2TB);
+            this.detailPanel.Controls.Add(this.address2Label);
+            this.detailPanel.Controls.Add(this.ageLabel);
+            this.detailPanel.Controls.Add(this.medLabel);
+            this.detailPanel.Controls.Add(this.superPhyLabel);
+            this.detailPanel.Controls.Add(this.pacemakerLabel);
+            this.detailPanel.Controls.Add(this.ageTB);
+            this.detailPanel.Controls.Add(this.medTB);
+            this.detailPanel.Controls.Add(this.superPhyTB);
+            this.detailPanel.Controls.Add(this.pacemakerTB);
+            this.detailPanel.Controls.Add(this.postCodeTB);
+            this.detailPanel.Controls.Add(this.mailTB);
+            this.detailPanel.Controls.Add(this.postCodeLabel);
+            this.detailPanel.Controls.Add(this.mailLabel);
+            this.detailPanel.Controls.Add(this.homeNumLabel);
+            this.detailPanel.Controls.Add(this.phoneNumLabel);
+            this.detailPanel.Controls.Add(this.homeNumTB);
+            this.detailPanel.Controls.Add(this.phoneNumTB);
+            this.detailPanel.Controls.Add(this.midNameLabel);
+            this.detailPanel.Controls.Add(this.midNameTB);
+            this.detailPanel.Controls.Add(this.cityTB);
+            this.detailPanel.Controls.Add(this.cityLabel);
+            this.detailPanel.Controls.Add(this.genderTB);
+            this.detailPanel.Controls.Add(this.phnTB);
+            this.detailPanel.Controls.Add(this.provinceTB);
+            this.detailPanel.Controls.Add(this.address1TB);
+            this.detailPanel.Controls.Add(this.firstNameTB);
+            this.detailPanel.Controls.Add(this.phnumLabel);
+            this.detailPanel.Controls.Add(this.genderLabel);
+            this.detailPanel.Controls.Add(this.provinceLabel);
+            this.detailPanel.Controls.Add(this.address1Label);
+            this.detailPanel.Controls.Add(this.birthDateLabel);
+            this.detailPanel.Controls.Add(this.firstNameLabel);
+            this.detailPanel.Controls.Add(this.lastNameTB);
+            this.detailPanel.Controls.Add(this.lastNameLabel);
+            this.detailPanel.Location = new System.Drawing.Point(3, 3);
+            this.detailPanel.Name = "detailPanel";
+            this.detailPanel.Size = new System.Drawing.Size(660, 254);
+            this.detailPanel.TabIndex = 9;
             // 
-            // saveBtn
+            // birthDateTB
             // 
-            this.saveBtn.AutoSize = true;
-            this.saveBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveBtn.Location = new System.Drawing.Point(405, 326);
-            this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(75, 29);
-            this.saveBtn.TabIndex = 3;
-            this.saveBtn.Text = "Save";
-            this.saveBtn.UseVisualStyleBackColor = true;
+            this.birthDateTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.birthDateTB.Location = new System.Drawing.Point(79, 52);
+            this.birthDateTB.Name = "birthDateTB";
+            this.birthDateTB.PlaceholderText = "MM/DD/YYYY";
+            this.birthDateTB.Size = new System.Drawing.Size(146, 23);
+            this.birthDateTB.TabIndex = 42;
             // 
-            // modifyBtn
+            // address2TB
             // 
-            this.modifyBtn.AutoSize = true;
-            this.modifyBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.modifyBtn.Location = new System.Drawing.Point(161, 326);
-            this.modifyBtn.Name = "modifyBtn";
-            this.modifyBtn.Size = new System.Drawing.Size(75, 29);
-            this.modifyBtn.TabIndex = 2;
-            this.modifyBtn.Text = "Modify";
-            this.modifyBtn.UseVisualStyleBackColor = true;
+            this.address2TB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.address2TB.Location = new System.Drawing.Point(302, 78);
+            this.address2TB.Name = "address2TB";
+            this.address2TB.Size = new System.Drawing.Size(353, 23);
+            this.address2TB.TabIndex = 41;
             // 
-            // detailListBox
+            // address2Label
             // 
-            this.detailListBox.FormattingEnabled = true;
-            this.detailListBox.Location = new System.Drawing.Point(3, 19);
-            this.detailListBox.Name = "detailListBox";
-            this.detailListBox.Size = new System.Drawing.Size(633, 303);
-            this.detailListBox.TabIndex = 1;
+            this.address2Label.AutoSize = true;
+            this.address2Label.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.address2Label.Location = new System.Drawing.Point(238, 84);
+            this.address2Label.Name = "address2Label";
+            this.address2Label.Size = new System.Drawing.Size(58, 15);
+            this.address2Label.TabIndex = 40;
+            this.address2Label.Text = "Address2";
             // 
-            // PatientLsGroup
+            // ageLabel
             // 
-            this.PatientLsGroup.Controls.Add(this.createBtn);
-            this.PatientLsGroup.Controls.Add(this.patientListBox);
-            this.PatientLsGroup.Location = new System.Drawing.Point(631, 3);
-            this.PatientLsGroup.Name = "PatientLsGroup";
-            this.PatientLsGroup.Size = new System.Drawing.Size(622, 358);
-            this.PatientLsGroup.TabIndex = 6;
-            this.PatientLsGroup.TabStop = false;
-            this.PatientLsGroup.Text = "Patients";
+            this.ageLabel.AutoSize = true;
+            this.ageLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ageLabel.Location = new System.Drawing.Point(436, 115);
+            this.ageLabel.Name = "ageLabel";
+            this.ageLabel.Size = new System.Drawing.Size(28, 15);
+            this.ageLabel.TabIndex = 38;
+            this.ageLabel.Text = "Age";
             // 
-            // createBtn
+            // medLabel
             // 
-            this.createBtn.AutoSize = true;
-            this.createBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createBtn.Location = new System.Drawing.Point(271, 326);
-            this.createBtn.Name = "createBtn";
-            this.createBtn.Size = new System.Drawing.Size(75, 29);
-            this.createBtn.TabIndex = 1;
-            this.createBtn.Text = "Create";
-            this.createBtn.UseVisualStyleBackColor = true;
+            this.medLabel.AutoSize = true;
+            this.medLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.medLabel.Location = new System.Drawing.Point(9, 224);
+            this.medLabel.Name = "medLabel";
+            this.medLabel.Size = new System.Drawing.Size(68, 15);
+            this.medLabel.TabIndex = 37;
+            this.medLabel.Text = "Medication";
             // 
-            // patientListBox
+            // superPhyLabel
             // 
-            this.patientListBox.FormattingEnabled = true;
-            this.patientListBox.Location = new System.Drawing.Point(0, 19);
-            this.patientListBox.Name = "patientListBox";
-            this.patientListBox.Size = new System.Drawing.Size(616, 303);
-            this.patientListBox.TabIndex = 0;
+            this.superPhyLabel.AutoSize = true;
+            this.superPhyLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.superPhyLabel.Location = new System.Drawing.Point(309, 195);
+            this.superPhyLabel.Name = "superPhyLabel";
+            this.superPhyLabel.Size = new System.Drawing.Size(121, 15);
+            this.superPhyLabel.TabIndex = 36;
+            this.superPhyLabel.Text = "Supervising Physician";
             // 
-            // reamrkFlowLayoutPanel
+            // pacemakerLabel
             // 
-            this.reamrkFlowLayoutPanel.Controls.Add(this.remarkGroup);
-            this.reamrkFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.reamrkFlowLayoutPanel.Location = new System.Drawing.Point(3, 887);
-            this.reamrkFlowLayoutPanel.Name = "reamrkFlowLayoutPanel";
-            this.reamrkFlowLayoutPanel.Size = new System.Drawing.Size(622, 151);
-            this.reamrkFlowLayoutPanel.TabIndex = 4;
+            this.pacemakerLabel.AutoSize = true;
+            this.pacemakerLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pacemakerLabel.Location = new System.Drawing.Point(10, 195);
+            this.pacemakerLabel.Name = "pacemakerLabel";
+            this.pacemakerLabel.Size = new System.Drawing.Size(67, 15);
+            this.pacemakerLabel.TabIndex = 35;
+            this.pacemakerLabel.Text = "Pacemaker";
             // 
-            // remarkGroup
+            // ageTB
             // 
-            this.remarkGroup.Controls.Add(this.deviceComboBox);
-            this.remarkGroup.Controls.Add(this.remarkRichTextBox);
-            this.remarkGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.remarkGroup.Location = new System.Drawing.Point(3, 3);
-            this.remarkGroup.Name = "remarkGroup";
-            this.remarkGroup.Size = new System.Drawing.Size(1270, 148);
-            this.remarkGroup.TabIndex = 0;
-            this.remarkGroup.TabStop = false;
-            this.remarkGroup.Text = "Remark";
+            this.ageTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ageTB.Location = new System.Drawing.Point(466, 111);
+            this.ageTB.Name = "ageTB";
+            this.ageTB.Size = new System.Drawing.Size(57, 23);
+            this.ageTB.TabIndex = 34;
             // 
-            // deviceComboBox
+            // medTB
             // 
-            this.deviceComboBox.FormattingEnabled = true;
-            this.deviceComboBox.Items.AddRange(new object[] {
-            "Device A",
-            "Device B",
-            "Device C"});
-            this.deviceComboBox.Location = new System.Drawing.Point(0, 121);
-            this.deviceComboBox.Name = "deviceComboBox";
-            this.deviceComboBox.Size = new System.Drawing.Size(1264, 27);
-            this.deviceComboBox.TabIndex = 1;
-            this.deviceComboBox.Text = "Choose a device";
+            this.medTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.medTB.Location = new System.Drawing.Point(83, 221);
+            this.medTB.Name = "medTB";
+            this.medTB.Size = new System.Drawing.Size(568, 23);
+            this.medTB.TabIndex = 33;
             // 
-            // remarkRichTextBox
+            // superPhyTB
             // 
-            this.remarkRichTextBox.Location = new System.Drawing.Point(3, 19);
-            this.remarkRichTextBox.Name = "remarkRichTextBox";
-            this.remarkRichTextBox.Size = new System.Drawing.Size(1261, 96);
-            this.remarkRichTextBox.TabIndex = 0;
-            this.remarkRichTextBox.Text = "";
+            this.superPhyTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.superPhyTB.Location = new System.Drawing.Point(436, 192);
+            this.superPhyTB.Name = "superPhyTB";
+            this.superPhyTB.Size = new System.Drawing.Size(215, 23);
+            this.superPhyTB.TabIndex = 32;
             // 
-            // ecgFlowLayoutPanel
+            // pacemakerTB
             // 
-            this.mainTableLayoutPanel.SetColumnSpan(this.ecgFlowLayoutPanel, 3);
-            this.ecgFlowLayoutPanel.Controls.Add(this.ecgGroup);
-            this.ecgFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ecgFlowLayoutPanel.Location = new System.Drawing.Point(3, 367);
-            this.ecgFlowLayoutPanel.Name = "ecgFlowLayoutPanel";
-            this.ecgFlowLayoutPanel.Size = new System.Drawing.Size(1898, 514);
-            this.ecgFlowLayoutPanel.TabIndex = 2;
+            this.pacemakerTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pacemakerTB.Location = new System.Drawing.Point(83, 192);
+            this.pacemakerTB.Name = "pacemakerTB";
+            this.pacemakerTB.Size = new System.Drawing.Size(221, 23);
+            this.pacemakerTB.TabIndex = 31;
             // 
-            // ecgGroup
+            // postCodeTB
             // 
-            this.ecgGroup.Controls.Add(this.channel2);
-            this.ecgGroup.Controls.Add(this.channel1);
-            this.ecgGroup.Controls.Add(this.chanel2Label);
-            this.ecgGroup.Controls.Add(this.channel1Label);
-            this.ecgGroup.Controls.Add(this.ecgStartBtn);
-            this.ecgGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ecgGroup.Location = new System.Drawing.Point(3, 3);
-            this.ecgGroup.Name = "ecgGroup";
-            this.ecgGroup.Size = new System.Drawing.Size(1895, 511);
-            this.ecgGroup.TabIndex = 0;
-            this.ecgGroup.TabStop = false;
-            this.ecgGroup.Text = "ECG";
+            this.postCodeTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.postCodeTB.Location = new System.Drawing.Point(592, 111);
+            this.postCodeTB.Name = "postCodeTB";
+            this.postCodeTB.Size = new System.Drawing.Size(59, 23);
+            this.postCodeTB.TabIndex = 30;
             // 
-            // channel2
+            // mailTB
             // 
-            this.channel2.Location = new System.Drawing.Point(87, 235);
-            this.channel2.Margin = new System.Windows.Forms.Padding(4);
-            this.channel2.Name = "channel2";
-            this.channel2.Size = new System.Drawing.Size(1801, 200);
-            this.channel2.TabIndex = 6;
+            this.mailTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mailTB.Location = new System.Drawing.Point(469, 166);
+            this.mailTB.Name = "mailTB";
+            this.mailTB.Size = new System.Drawing.Size(182, 23);
+            this.mailTB.TabIndex = 29;
             // 
-            // channel1
+            // postCodeLabel
             // 
-            this.channel1.Location = new System.Drawing.Point(87, 26);
-            this.channel1.Margin = new System.Windows.Forms.Padding(4);
-            this.channel1.Name = "channel1";
-            this.channel1.Size = new System.Drawing.Size(1801, 200);
-            this.channel1.TabIndex = 5;
+            this.postCodeLabel.AutoSize = true;
+            this.postCodeLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.postCodeLabel.Location = new System.Drawing.Point(529, 115);
+            this.postCodeLabel.Name = "postCodeLabel";
+            this.postCodeLabel.Size = new System.Drawing.Size(62, 15);
+            this.postCodeLabel.TabIndex = 28;
+            this.postCodeLabel.Text = "Post Code";
             // 
-            // chanel2Label
+            // mailLabel
             // 
-            this.chanel2Label.AutoSize = true;
-            this.chanel2Label.Location = new System.Drawing.Point(6, 317);
-            this.chanel2Label.Name = "chanel2Label";
-            this.chanel2Label.Size = new System.Drawing.Size(70, 19);
-            this.chanel2Label.TabIndex = 4;
-            this.chanel2Label.Text = "Channel2";
+            this.mailLabel.AutoSize = true;
+            this.mailLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mailLabel.Location = new System.Drawing.Point(433, 169);
+            this.mailLabel.Name = "mailLabel";
+            this.mailLabel.Size = new System.Drawing.Size(36, 15);
+            this.mailLabel.TabIndex = 27;
+            this.mailLabel.Text = "Email";
             // 
-            // channel1Label
+            // homeNumLabel
             // 
-            this.channel1Label.AutoSize = true;
-            this.channel1Label.Location = new System.Drawing.Point(6, 113);
-            this.channel1Label.Name = "channel1Label";
-            this.channel1Label.Size = new System.Drawing.Size(74, 19);
-            this.channel1Label.TabIndex = 3;
-            this.channel1Label.Text = "Channel 1";
+            this.homeNumLabel.AutoSize = true;
+            this.homeNumLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.homeNumLabel.Location = new System.Drawing.Point(12, 145);
+            this.homeNumLabel.Name = "homeNumLabel";
+            this.homeNumLabel.Size = new System.Drawing.Size(89, 15);
+            this.homeNumLabel.TabIndex = 26;
+            this.homeNumLabel.Text = "Home Number";
             // 
-            // ecgStartBtn
+            // phoneNumLabel
             // 
-            this.ecgStartBtn.AutoSize = true;
-            this.ecgStartBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ecgStartBtn.Location = new System.Drawing.Point(870, 456);
-            this.ecgStartBtn.Name = "ecgStartBtn";
-            this.ecgStartBtn.Size = new System.Drawing.Size(90, 36);
-            this.ecgStartBtn.TabIndex = 2;
-            this.ecgStartBtn.Text = "DISPLAY";
-            this.ecgStartBtn.UseVisualStyleBackColor = true;
-            this.ecgStartBtn.Click += new System.EventHandler(this.ecgStartBtn_Click);
+            this.phoneNumLabel.AutoSize = true;
+            this.phoneNumLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.phoneNumLabel.Location = new System.Drawing.Point(10, 169);
+            this.phoneNumLabel.Name = "phoneNumLabel";
+            this.phoneNumLabel.Size = new System.Drawing.Size(91, 15);
+            this.phoneNumLabel.TabIndex = 25;
+            this.phoneNumLabel.Text = "Phone Number";
             // 
-            // indicatorFlowLayoutPanel
+            // homeNumTB
             // 
-            this.mainTableLayoutPanel.SetColumnSpan(this.indicatorFlowLayoutPanel, 2);
-            this.indicatorFlowLayoutPanel.Controls.Add(this.indicatorGroup);
-            this.indicatorFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.indicatorFlowLayoutPanel.Location = new System.Drawing.Point(631, 887);
-            this.indicatorFlowLayoutPanel.Name = "indicatorFlowLayoutPanel";
-            this.indicatorFlowLayoutPanel.Size = new System.Drawing.Size(1270, 151);
-            this.indicatorFlowLayoutPanel.TabIndex = 3;
+            this.homeNumTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.homeNumTB.Location = new System.Drawing.Point(107, 137);
+            this.homeNumTB.Name = "homeNumTB";
+            this.homeNumTB.Size = new System.Drawing.Size(544, 23);
+            this.homeNumTB.TabIndex = 24;
+            // 
+            // phoneNumTB
+            // 
+            this.phoneNumTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.phoneNumTB.Location = new System.Drawing.Point(107, 166);
+            this.phoneNumTB.Name = "phoneNumTB";
+            this.phoneNumTB.Size = new System.Drawing.Size(323, 23);
+            this.phoneNumTB.TabIndex = 23;
+            // 
+            // midNameLabel
+            // 
+            this.midNameLabel.AutoSize = true;
+            this.midNameLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.midNameLabel.Location = new System.Drawing.Point(256, 26);
+            this.midNameLabel.Name = "midNameLabel";
+            this.midNameLabel.Size = new System.Drawing.Size(64, 15);
+            this.midNameLabel.TabIndex = 20;
+            this.midNameLabel.Text = "Mid Name";
+            // 
+            // midNameTB
+            // 
+            this.midNameTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.midNameTB.Location = new System.Drawing.Point(326, 20);
+            this.midNameTB.Name = "midNameTB";
+            this.midNameTB.Size = new System.Drawing.Size(143, 23);
+            this.midNameTB.TabIndex = 19;
+            // 
+            // cityTB
+            // 
+            this.cityTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cityTB.Location = new System.Drawing.Point(223, 111);
+            this.cityTB.Name = "cityTB";
+            this.cityTB.Size = new System.Drawing.Size(117, 23);
+            this.cityTB.TabIndex = 17;
+            // 
+            // cityLabel
+            // 
+            this.cityLabel.AutoSize = true;
+            this.cityLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cityLabel.Location = new System.Drawing.Point(183, 115);
+            this.cityLabel.Name = "cityLabel";
+            this.cityLabel.Size = new System.Drawing.Size(34, 15);
+            this.cityLabel.TabIndex = 16;
+            this.cityLabel.Text = "*City";
+            // 
+            // genderTB
+            // 
+            this.genderTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.genderTB.Location = new System.Drawing.Point(377, 112);
+            this.genderTB.Name = "genderTB";
+            this.genderTB.Size = new System.Drawing.Size(53, 23);
+            this.genderTB.TabIndex = 14;
+            // 
+            // phnTB
+            // 
+            this.phnTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.phnTB.Location = new System.Drawing.Point(48, 81);
+            this.phnTB.Name = "phnTB";
+            this.phnTB.Size = new System.Drawing.Size(184, 23);
+            this.phnTB.TabIndex = 13;
+            // 
+            // provinceTB
+            // 
+            this.provinceTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.provinceTB.Location = new System.Drawing.Point(65, 111);
+            this.provinceTB.Name = "provinceTB";
+            this.provinceTB.Size = new System.Drawing.Size(112, 23);
+            this.provinceTB.TabIndex = 12;
+            // 
+            // address1TB
+            // 
+            this.address1TB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.address1TB.Location = new System.Drawing.Point(302, 46);
+            this.address1TB.Name = "address1TB";
+            this.address1TB.Size = new System.Drawing.Size(353, 23);
+            this.address1TB.TabIndex = 11;
+            // 
+            // firstNameTB
+            // 
+            this.firstNameTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.firstNameTB.Location = new System.Drawing.Point(546, 20);
+            this.firstNameTB.Name = "firstNameTB";
+            this.firstNameTB.Size = new System.Drawing.Size(109, 23);
+            this.firstNameTB.TabIndex = 9;
+            // 
+            // phnumLabel
+            // 
+            this.phnumLabel.AutoSize = true;
+            this.phnumLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.phnumLabel.Location = new System.Drawing.Point(8, 84);
+            this.phnumLabel.Name = "phnumLabel";
+            this.phnumLabel.Size = new System.Drawing.Size(37, 15);
+            this.phnumLabel.TabIndex = 8;
+            this.phnumLabel.Text = "*PHN";
+            // 
+            // genderLabel
+            // 
+            this.genderLabel.AutoSize = true;
+            this.genderLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.genderLabel.Location = new System.Drawing.Point(346, 115);
+            this.genderLabel.Name = "genderLabel";
+            this.genderLabel.Size = new System.Drawing.Size(32, 15);
+            this.genderLabel.TabIndex = 7;
+            this.genderLabel.Text = "*Sex";
+            // 
+            // provinceLabel
+            // 
+            this.provinceLabel.AutoSize = true;
+            this.provinceLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.provinceLabel.Location = new System.Drawing.Point(8, 118);
+            this.provinceLabel.Name = "provinceLabel";
+            this.provinceLabel.Size = new System.Drawing.Size(60, 15);
+            this.provinceLabel.TabIndex = 5;
+            this.provinceLabel.Text = "*Province";
+            // 
+            // address1Label
+            // 
+            this.address1Label.AutoSize = true;
+            this.address1Label.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.address1Label.Location = new System.Drawing.Point(232, 54);
+            this.address1Label.Name = "address1Label";
+            this.address1Label.Size = new System.Drawing.Size(64, 15);
+            this.address1Label.TabIndex = 4;
+            this.address1Label.Text = "*Address1";
+            // 
+            // birthDateLabel
+            // 
+            this.birthDateLabel.AutoSize = true;
+            this.birthDateLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.birthDateLabel.Location = new System.Drawing.Point(8, 54);
+            this.birthDateLabel.Name = "birthDateLabel";
+            this.birthDateLabel.Size = new System.Drawing.Size(65, 15);
+            this.birthDateLabel.TabIndex = 3;
+            this.birthDateLabel.Text = "*Birthdate";
+            // 
+            // firstNameLabel
+            // 
+            this.firstNameLabel.AutoSize = true;
+            this.firstNameLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.firstNameLabel.Location = new System.Drawing.Point(475, 26);
+            this.firstNameLabel.Name = "firstNameLabel";
+            this.firstNameLabel.Size = new System.Drawing.Size(73, 15);
+            this.firstNameLabel.TabIndex = 2;
+            this.firstNameLabel.Text = "*First Name";
+            // 
+            // lastNameTB
+            // 
+            this.lastNameTB.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lastNameTB.Location = new System.Drawing.Point(79, 23);
+            this.lastNameTB.Name = "lastNameTB";
+            this.lastNameTB.Size = new System.Drawing.Size(171, 23);
+            this.lastNameTB.TabIndex = 1;
+            // 
+            // lastNameLabel
+            // 
+            this.lastNameLabel.AutoSize = true;
+            this.lastNameLabel.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lastNameLabel.Location = new System.Drawing.Point(10, 28);
+            this.lastNameLabel.Name = "lastNameLabel";
+            this.lastNameLabel.Size = new System.Drawing.Size(71, 15);
+            this.lastNameLabel.TabIndex = 0;
+            this.lastNameLabel.Text = "*Last Name";
             // 
             // indicatorGroup
             // 
-            this.indicatorGroup.Controls.Add(this.endTimeTxtBox);
-            this.indicatorGroup.Controls.Add(this.endTimeTitle);
+            this.indicatorGroup.Controls.Add(this.terminateBtn);
+            this.indicatorGroup.Controls.Add(this.hookupBtn);
             this.indicatorGroup.Controls.Add(this.startTitle);
             this.indicatorGroup.Controls.Add(this.durationLabel);
             this.indicatorGroup.Controls.Add(this.timeLabel);
             this.indicatorGroup.Controls.Add(this.durationTitle);
             this.indicatorGroup.Controls.Add(this.indicatorLed);
-            this.indicatorGroup.Controls.Add(this.startButton);
+            this.indicatorGroup.Controls.Add(this.recordBtn);
             this.indicatorGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.indicatorGroup.Location = new System.Drawing.Point(3, 3);
+            this.indicatorGroup.Location = new System.Drawing.Point(1335, 3);
             this.indicatorGroup.Name = "indicatorGroup";
-            this.indicatorGroup.Size = new System.Drawing.Size(1270, 148);
+            this.indicatorGroup.Size = new System.Drawing.Size(566, 254);
             this.indicatorGroup.TabIndex = 0;
             this.indicatorGroup.TabStop = false;
             this.indicatorGroup.Text = "Indicator";
+            // 
+            // terminateBtn
+            // 
+            this.terminateBtn.AutoSize = true;
+            this.terminateBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.terminateBtn.Location = new System.Drawing.Point(267, 26);
+            this.terminateBtn.Name = "terminateBtn";
+            this.terminateBtn.Size = new System.Drawing.Size(107, 36);
+            this.terminateBtn.TabIndex = 6;
+            this.terminateBtn.Text = "Terminate";
+            this.terminateBtn.UseVisualStyleBackColor = true;
+            this.terminateBtn.Click += new System.EventHandler(this.TerminateBtn_Click);
+            // 
+            // hookupBtn
+            // 
+            this.hookupBtn.AutoSize = true;
+            this.hookupBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hookupBtn.Location = new System.Drawing.Point(35, 33);
+            this.hookupBtn.Name = "hookupBtn";
+            this.hookupBtn.Size = new System.Drawing.Size(89, 36);
+            this.hookupBtn.TabIndex = 5;
+            this.hookupBtn.Text = "Hookup";
+            this.hookupBtn.UseVisualStyleBackColor = true;
+            this.hookupBtn.Click += new System.EventHandler(this.HookupBtn_Click);
             // 
             // startTitle
             // 
             this.startTitle.AutoSize = true;
             this.startTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startTitle.Location = new System.Drawing.Point(288, 71);
+            this.startTitle.Location = new System.Drawing.Point(248, 107);
             this.startTitle.Name = "startTitle";
             this.startTitle.Size = new System.Drawing.Size(75, 26);
             this.startTitle.TabIndex = 4;
@@ -330,7 +544,7 @@
             // 
             this.durationLabel.AutoSize = true;
             this.durationLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.durationLabel.Location = new System.Drawing.Point(711, 71);
+            this.durationLabel.Location = new System.Drawing.Point(367, 111);
             this.durationLabel.Name = "durationLabel";
             this.durationLabel.Size = new System.Drawing.Size(90, 26);
             this.durationLabel.TabIndex = 3;
@@ -340,7 +554,7 @@
             // 
             this.timeLabel.AutoSize = true;
             this.timeLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.timeLabel.Location = new System.Drawing.Point(421, 71);
+            this.timeLabel.Location = new System.Drawing.Point(367, 73);
             this.timeLabel.Name = "timeLabel";
             this.timeLabel.Size = new System.Drawing.Size(54, 26);
             this.timeLabel.TabIndex = 2;
@@ -350,7 +564,7 @@
             // 
             this.durationTitle.AutoSize = true;
             this.durationTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.durationTitle.Location = new System.Drawing.Point(549, 71);
+            this.durationTitle.Location = new System.Drawing.Point(248, 73);
             this.durationTitle.Name = "durationTitle";
             this.durationTitle.Size = new System.Drawing.Size(87, 26);
             this.durationTitle.TabIndex = 1;
@@ -359,134 +573,174 @@
             // indicatorLed
             // 
             this.indicatorLed.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.indicatorLed.Location = new System.Drawing.Point(214, 76);
+            this.indicatorLed.Location = new System.Drawing.Point(148, 118);
             this.indicatorLed.Name = "indicatorLed";
             this.indicatorLed.On = false;
             this.indicatorLed.Size = new System.Drawing.Size(18, 15);
             this.indicatorLed.TabIndex = 0;
             this.indicatorLed.Text = "ledBulb1";
             // 
-            // startButton
+            // recordBtn
             // 
-            this.startButton.AutoSize = true;
-            this.startButton.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startButton.Location = new System.Drawing.Point(32, 53);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(124, 62);
-            this.startButton.TabIndex = 0;
-            this.startButton.Text = "START\r\nRECORDING";
-            this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            this.recordBtn.AutoSize = true;
+            this.recordBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.recordBtn.Location = new System.Drawing.Point(35, 101);
+            this.recordBtn.Name = "recordBtn";
+            this.recordBtn.Size = new System.Drawing.Size(107, 36);
+            this.recordBtn.TabIndex = 0;
+            this.recordBtn.Text = "Recording";
+            this.recordBtn.UseVisualStyleBackColor = true;
+            this.recordBtn.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // srhGroup
+            // ecgPanel
             // 
-            this.srhGroup.Controls.Add(this.srhBtn);
-            this.srhGroup.Controls.Add(this.phnTextBox);
-            this.srhGroup.Controls.Add(this.birthTextBox);
-            this.srhGroup.Controls.Add(this.pLastNameTextBox);
-            this.srhGroup.Controls.Add(this.phnLabel);
-            this.srhGroup.Controls.Add(this.birthLabel);
-            this.srhGroup.Controls.Add(this.PLastNameLabel);
-            this.srhGroup.Location = new System.Drawing.Point(3, 3);
-            this.srhGroup.Name = "srhGroup";
-            this.srhGroup.Size = new System.Drawing.Size(622, 358);
-            this.srhGroup.TabIndex = 5;
-            this.srhGroup.TabStop = false;
-            this.srhGroup.Text = "Search";
+            this.mainTableLayoutPanel.SetColumnSpan(this.ecgPanel, 3);
+            this.ecgPanel.Controls.Add(this.ecgGroup);
+            this.ecgPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ecgPanel.Location = new System.Drawing.Point(3, 263);
+            this.ecgPanel.Name = "ecgPanel";
+            this.mainTableLayoutPanel.SetRowSpan(this.ecgPanel, 2);
+            this.ecgPanel.Size = new System.Drawing.Size(1898, 775);
+            this.ecgPanel.TabIndex = 8;
             // 
-            // srhBtn
+            // ecgGroup
             // 
-            this.srhBtn.AutoSize = true;
-            this.srhBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.srhBtn.Location = new System.Drawing.Point(223, 293);
-            this.srhBtn.Name = "srhBtn";
-            this.srhBtn.Size = new System.Drawing.Size(75, 29);
-            this.srhBtn.TabIndex = 6;
-            this.srhBtn.Text = "Search";
-            this.srhBtn.UseVisualStyleBackColor = true;
+            this.ecgGroup.Controls.Add(this.statusFlag);
+            this.ecgGroup.Controls.Add(this.waitTimeLabel);
+            this.ecgGroup.Controls.Add(this.channel2);
+            this.ecgGroup.Controls.Add(this.channel1);
+            this.ecgGroup.Controls.Add(this.chanel2Label);
+            this.ecgGroup.Controls.Add(this.channel1Label);
+            this.ecgGroup.Controls.Add(this.ecgStartBtn);
+            this.ecgGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ecgGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ecgGroup.Location = new System.Drawing.Point(0, 0);
+            this.ecgGroup.Name = "ecgGroup";
+            this.ecgGroup.Size = new System.Drawing.Size(1898, 775);
+            this.ecgGroup.TabIndex = 2;
+            this.ecgGroup.TabStop = false;
+            this.ecgGroup.Text = "ECG";
             // 
-            // phnTextBox
+            // statusFlag
             // 
-            this.phnTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.phnTextBox.Location = new System.Drawing.Point(223, 209);
-            this.phnTextBox.Name = "phnTextBox";
-            this.phnTextBox.Size = new System.Drawing.Size(274, 27);
-            this.phnTextBox.TabIndex = 5;
+            this.statusFlag.AutoSize = true;
+            this.statusFlag.Location = new System.Drawing.Point(163, 323);
+            this.statusFlag.Name = "statusFlag";
+            this.statusFlag.Size = new System.Drawing.Size(45, 19);
+            this.statusFlag.TabIndex = 8;
+            this.statusFlag.Text = "ready";
             // 
-            // birthTextBox
+            // l
             // 
-            this.birthTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthTextBox.Location = new System.Drawing.Point(223, 140);
-            this.birthTextBox.Name = "birthTextBox";
-            this.birthTextBox.Size = new System.Drawing.Size(274, 27);
-            this.birthTextBox.TabIndex = 4;
+            this.waitTimeLabel.AutoSize = true;
+            this.waitTimeLabel.Location = new System.Drawing.Point(163, 387);
+            this.waitTimeLabel.Name = "l";
+            this.waitTimeLabel.Size = new System.Drawing.Size(69, 19);
+            this.waitTimeLabel.TabIndex = 7;
+            this.waitTimeLabel.Text = "waitTime";
             // 
-            // pLastNameTextBox
+            // channel2
             // 
-            this.pLastNameTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pLastNameTextBox.Location = new System.Drawing.Point(223, 71);
-            this.pLastNameTextBox.Name = "pLastNameTextBox";
-            this.pLastNameTextBox.Size = new System.Drawing.Size(274, 27);
-            this.pLastNameTextBox.TabIndex = 3;
+            this.channel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel2.Location = new System.Drawing.Point(256, 375);
+            this.channel2.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
+            this.channel2.Name = "channel2";
+            this.channel2.Size = new System.Drawing.Size(1550, 350);
+            this.channel2.TabIndex = 6;
             // 
-            // phnLabel
+            // channel1
             // 
-            this.phnLabel.AutoSize = true;
-            this.phnLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.phnLabel.Location = new System.Drawing.Point(55, 212);
-            this.phnLabel.Name = "phnLabel";
-            this.phnLabel.Size = new System.Drawing.Size(37, 19);
-            this.phnLabel.TabIndex = 2;
-            this.phnLabel.Text = "PHN";
+            this.channel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel1.Location = new System.Drawing.Point(256, 9);
+            this.channel1.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
+            this.channel1.Name = "channel1";
+            this.channel1.Size = new System.Drawing.Size(1550, 348);
+            this.channel1.TabIndex = 5;
             // 
-            // birthLabel
+            // chanel2Label
             // 
-            this.birthLabel.AutoSize = true;
-            this.birthLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthLabel.Location = new System.Drawing.Point(55, 143);
-            this.birthLabel.Name = "birthLabel";
-            this.birthLabel.Size = new System.Drawing.Size(75, 19);
-            this.birthLabel.TabIndex = 1;
-            this.birthLabel.Text = "Birth Date";
+            this.chanel2Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.chanel2Label.AutoSize = true;
+            this.chanel2Label.Location = new System.Drawing.Point(87, 562);
+            this.chanel2Label.Name = "chanel2Label";
+            this.chanel2Label.Size = new System.Drawing.Size(70, 19);
+            this.chanel2Label.TabIndex = 4;
+            this.chanel2Label.Text = "Channel2";
             // 
-            // PLastNameLabel
+            // channel1Label
             // 
-            this.PLastNameLabel.AutoSize = true;
-            this.PLastNameLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PLastNameLabel.Location = new System.Drawing.Point(55, 74);
-            this.PLastNameLabel.Name = "PLastNameLabel";
-            this.PLastNameLabel.Size = new System.Drawing.Size(128, 19);
-            this.PLastNameLabel.TabIndex = 0;
-            this.PLastNameLabel.Text = "Patient Last Name";
+            this.channel1Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel1Label.AutoSize = true;
+            this.channel1Label.Location = new System.Drawing.Point(87, 145);
+            this.channel1Label.Name = "channel1Label";
+            this.channel1Label.Size = new System.Drawing.Size(74, 19);
+            this.channel1Label.TabIndex = 3;
+            this.channel1Label.Text = "Channel 1";
+            // 
+            // ecgStartBtn
+            // 
+            this.ecgStartBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ecgStartBtn.AutoSize = true;
+            this.ecgStartBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ecgStartBtn.Location = new System.Drawing.Point(38, 343);
+            this.ecgStartBtn.Name = "ecgStartBtn";
+            this.ecgStartBtn.Size = new System.Drawing.Size(90, 36);
+            this.ecgStartBtn.TabIndex = 2;
+            this.ecgStartBtn.Text = "DISPLAY";
+            this.ecgStartBtn.UseVisualStyleBackColor = true;
+            this.ecgStartBtn.Click += new System.EventHandler(this.EcgStartBtn_Click);
+            // 
+            // remarkGroup
+            // 
+            this.remarkGroup.Controls.Add(this.saveRemarkBtn);
+            this.remarkGroup.Controls.Add(this.remarkRichTextBox);
+            this.remarkGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.remarkGroup.Location = new System.Drawing.Point(669, 3);
+            this.remarkGroup.Name = "remarkGroup";
+            this.remarkGroup.Size = new System.Drawing.Size(660, 254);
+            this.remarkGroup.TabIndex = 0;
+            this.remarkGroup.TabStop = false;
+            this.remarkGroup.Text = "Remark";
+            // 
+            // saveRemarkBtn
+            // 
+            this.saveRemarkBtn.AutoSize = true;
+            this.saveRemarkBtn.Location = new System.Drawing.Point(298, 210);
+            this.saveRemarkBtn.Name = "saveRemarkBtn";
+            this.saveRemarkBtn.Size = new System.Drawing.Size(75, 29);
+            this.saveRemarkBtn.TabIndex = 1;
+            this.saveRemarkBtn.Text = "Save";
+            this.saveRemarkBtn.UseVisualStyleBackColor = true;
+            this.saveRemarkBtn.Click += new System.EventHandler(this.SaveRemarkBtn_Click);
+            // 
+            // remarkRichTextBox
+            // 
+            this.remarkRichTextBox.Location = new System.Drawing.Point(7, 15);
+            this.remarkRichTextBox.Name = "remarkRichTextBox";
+            this.remarkRichTextBox.Size = new System.Drawing.Size(647, 186);
+            this.remarkRichTextBox.TabIndex = 0;
+            this.remarkRichTextBox.Text = "";
             // 
             // nowTimer
             // 
             this.nowTimer.Enabled = true;
             this.nowTimer.Interval = 1000;
-            this.nowTimer.Tick += new System.EventHandler(this.nowTimer_Tick);
+            this.nowTimer.Tick += new System.EventHandler(this.NowTimer_Tick);
             // 
             // countTImer
             // 
             this.countTImer.Interval = 1000;
-            this.countTImer.Tick += new System.EventHandler(this.startButton_Click);
+            this.countTImer.Tick += new System.EventHandler(this.CountTimer_Tick);
             // 
-            // endTimeTitle
+            // timer1
             // 
-            this.endTimeTitle.AutoSize = true;
-            this.endTimeTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.endTimeTitle.Location = new System.Drawing.Point(895, 71);
-            this.endTimeTitle.Name = "endTimeTitle";
-            this.endTimeTitle.Size = new System.Drawing.Size(83, 26);
-            this.endTimeTitle.TabIndex = 5;
-            this.endTimeTitle.Text = "Endtime";
+            this.nextCalltimer.Interval = 1000;
+            this.nextCalltimer.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
-            // endTimeTxtBox
+            // waitingTimer
             // 
-            this.endTimeTxtBox.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.endTimeTxtBox.Location = new System.Drawing.Point(1063, 73);
-            this.endTimeTxtBox.Name = "endTimeTxtBox";
-            this.endTimeTxtBox.Size = new System.Drawing.Size(100, 33);
-            this.endTimeTxtBox.TabIndex = 6;
+            this.waitingTimer.Interval = 1000;
+            this.waitingTimer.Tick += new System.EventHandler(this.WaitingTimer_Tick);
             // 
             // MainInterface
             // 
@@ -497,64 +751,82 @@
             this.Name = "MainInterface";
             this.Text = "MainInterface";
             this.mainTableLayoutPanel.ResumeLayout(false);
-            this.PatientDetailsGroup.ResumeLayout(false);
-            this.PatientDetailsGroup.PerformLayout();
-            this.PatientLsGroup.ResumeLayout(false);
-            this.PatientLsGroup.PerformLayout();
-            this.reamrkFlowLayoutPanel.ResumeLayout(false);
-            this.remarkGroup.ResumeLayout(false);
-            this.ecgFlowLayoutPanel.ResumeLayout(false);
-            this.ecgGroup.ResumeLayout(false);
-            this.ecgGroup.PerformLayout();
-            this.indicatorFlowLayoutPanel.ResumeLayout(false);
+            this.detailPanel.ResumeLayout(false);
+            this.detailPanel.PerformLayout();
             this.indicatorGroup.ResumeLayout(false);
             this.indicatorGroup.PerformLayout();
-            this.srhGroup.ResumeLayout(false);
-            this.srhGroup.PerformLayout();
+            this.ecgPanel.ResumeLayout(false);
+            this.ecgGroup.ResumeLayout(false);
+            this.ecgGroup.PerformLayout();
+            this.remarkGroup.ResumeLayout(false);
+            this.remarkGroup.PerformLayout();
             this.ResumeLayout(false);
 
         }
-
         #endregion
-
         private System.Windows.Forms.TableLayoutPanel mainTableLayoutPanel;
-        private System.Windows.Forms.FlowLayoutPanel ecgFlowLayoutPanel;
-        private System.Windows.Forms.GroupBox ecgGroup;
-        private System.Windows.Forms.FlowLayoutPanel indicatorFlowLayoutPanel;
         private System.Windows.Forms.GroupBox indicatorGroup;
-        private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.Button recordBtn;
         private Bulb.LedBulb indicatorLed;
-        private System.Windows.Forms.Button ecgStartBtn;
-        private System.Windows.Forms.Label chanel2Label;
-        private System.Windows.Forms.Label channel1Label;
         private System.Windows.Forms.Label timeLabel;
         private System.Windows.Forms.Label durationTitle;
         private System.Windows.Forms.Label durationLabel;
         private System.Windows.Forms.Timer nowTimer;
         private System.Windows.Forms.Timer countTImer;
-        private Test.ECGAnimationView channel2;
-        private Test.ECGAnimationView channel1;
         private System.Windows.Forms.Label startTitle;
-        private System.Windows.Forms.FlowLayoutPanel reamrkFlowLayoutPanel;
         private System.Windows.Forms.GroupBox remarkGroup;
-        private System.Windows.Forms.ComboBox deviceComboBox;
         private System.Windows.Forms.RichTextBox remarkRichTextBox;
-        private System.Windows.Forms.GroupBox PatientDetailsGroup;
-        private System.Windows.Forms.ListBox detailListBox;
-        private System.Windows.Forms.GroupBox PatientLsGroup;
-        private System.Windows.Forms.ListBox patientListBox;
-        private System.Windows.Forms.GroupBox srhGroup;
-        private System.Windows.Forms.Button srhBtn;
-        private System.Windows.Forms.TextBox phnTextBox;
-        private System.Windows.Forms.TextBox birthTextBox;
-        private System.Windows.Forms.TextBox pLastNameTextBox;
-        private System.Windows.Forms.Label phnLabel;
-        private System.Windows.Forms.Label birthLabel;
-        private System.Windows.Forms.Label PLastNameLabel;
-        private System.Windows.Forms.Button createBtn;
-        private System.Windows.Forms.Button saveBtn;
-        private System.Windows.Forms.Button modifyBtn;
-        private System.Windows.Forms.TextBox endTimeTxtBox;
-        private System.Windows.Forms.Label endTimeTitle;
+        private System.Windows.Forms.Button saveRemarkBtn;
+        private System.Windows.Forms.Panel ecgPanel;
+        private System.Windows.Forms.GroupBox ecgGroup;
+        private Uvic_Ecg_EcgAnimationView.ECGAnimationView channel2;
+        private Uvic_Ecg_EcgAnimationView.ECGAnimationView channel1;
+        private System.Windows.Forms.Label chanel2Label;
+        private System.Windows.Forms.Label channel1Label;
+        private System.Windows.Forms.Button ecgStartBtn;
+        private System.Windows.Forms.Timer nextCalltimer;
+        private System.Windows.Forms.Button hookupBtn;
+        private System.Windows.Forms.Button terminateBtn;
+        private System.Windows.Forms.Timer waitingTimer;
+        private System.Windows.Forms.Label waitTimeLabel;
+        private System.Windows.Forms.Label statusFlag;
+        private System.ComponentModel.BackgroundWorker backWorker;
+        private System.Windows.Forms.Panel detailPanel;
+        private System.Windows.Forms.PlaceholderTextBox birthDateTB;
+        private System.Windows.Forms.TextBox address2TB;
+        private System.Windows.Forms.Label address2Label;
+        private System.Windows.Forms.Label ageLabel;
+        private System.Windows.Forms.Label medLabel;
+        private System.Windows.Forms.Label superPhyLabel;
+        private System.Windows.Forms.Label pacemakerLabel;
+        private System.Windows.Forms.TextBox ageTB;
+        private System.Windows.Forms.TextBox medTB;
+        private System.Windows.Forms.TextBox superPhyTB;
+        private System.Windows.Forms.TextBox pacemakerTB;
+        private System.Windows.Forms.TextBox postCodeTB;
+        private System.Windows.Forms.TextBox mailTB;
+        private System.Windows.Forms.Label postCodeLabel;
+        private System.Windows.Forms.Label mailLabel;
+        private System.Windows.Forms.Label homeNumLabel;
+        private System.Windows.Forms.Label phoneNumLabel;
+        private System.Windows.Forms.TextBox homeNumTB;
+        private System.Windows.Forms.TextBox phoneNumTB;
+        private System.Windows.Forms.Label midNameLabel;
+        private System.Windows.Forms.TextBox midNameTB;
+        private System.Windows.Forms.TextBox cityTB;
+        private System.Windows.Forms.Label cityLabel;
+        private System.Windows.Forms.TextBox genderTB;
+        private System.Windows.Forms.TextBox phnTB;
+        private System.Windows.Forms.TextBox provinceTB;
+        private System.Windows.Forms.TextBox address1TB;
+        private System.Windows.Forms.TextBox firstNameTB;
+        private System.Windows.Forms.Label phnumLabel;
+        private System.Windows.Forms.Label genderLabel;
+        private System.Windows.Forms.Label provinceLabel;
+        private System.Windows.Forms.Label address1Label;
+        private System.Windows.Forms.Label birthDateLabel;
+        private System.Windows.Forms.Label firstNameLabel;
+        private System.Windows.Forms.TextBox lastNameTB;
+        private System.Windows.Forms.Label lastNameLabel;
     }
 }

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DE89ABB1-0FD9-498E-8E96-691019EAE70E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ArbutusHolter</RootNamespace>
-    <AssemblyName>ArbutusHolter</AssemblyName>
+    <RootNamespace>Uvic_Ecg_ArbutusHolter</RootNamespace>
+    <AssemblyName>Uvic_Ecg_ArbutusHolter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,13 +32,26 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoClosingMessageBox, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoClosingMessageBox.1.0.0.2\lib\net40\AutoClosingMessageBox.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.Charting.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Json, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Json.4.5.0\lib\netstandard2.0\System.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +63,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppointmentDetailsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppointmentDetailsForm.Designer.cs">
+      <DependentUpon>AppointmentDetailsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AppointmentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppointmentForm.Designer.cs">
+      <DependentUpon>AppointmentForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="ECG.cs">
       <SubType>Form</SubType>
@@ -62,6 +88,14 @@
     <Compile Include="ECGAnimationView.designer.cs">
       <DependentUpon>ECGAnimationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="EcgRawDataProcessing\DataProcess.cs" />
+    <Compile Include="EcgRawDataProcessing\Filter_Queue.cs" />
+    <Compile Include="Email.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Email.Designer.cs">
+      <DependentUpon>Email.cs</DependentUpon>
+    </Compile>
     <Compile Include="ErrorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,15 +108,17 @@
     <Compile Include="ForgetPwForm.Designer.cs">
       <DependentUpon>ForgetPwForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="homeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="homeForm.Designer.cs">
-      <DependentUpon>homeForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="HttpRequests\DeviceResource.cs" />
+    <Compile Include="HttpRequests\EcgDataResources.cs" />
+    <Compile Include="HttpRequests\MailResource.cs" />
+    <Compile Include="HttpRequests\NurseResource.cs" />
+    <Compile Include="HttpRequests\PatientResource.cs" />
+    <Compile Include="HttpRequests\PublicResources.cs" />
+    <Compile Include="HttpRequests\Requests.cs" />
     <Compile Include="LedBulb.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LogHandle.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,35 +136,45 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Record.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Record.Designer.cs">
-      <DependentUpon>Record.cs</DependentUpon>
-    </Compile>
+    <Compile Include="RegexUtilities.cs" />
     <Compile Include="RegisterForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="srhForm.cs">
+    <Compile Include="ResetPassword.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="srhForm.Designer.cs">
-      <DependentUpon>srhForm.cs</DependentUpon>
+    <Compile Include="ResetPassword.Designer.cs">
+      <DependentUpon>ResetPassword.cs</DependentUpon>
     </Compile>
+    <Compile Include="Template.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Template.Designer.cs">
+      <DependentUpon>Template.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AppointmentDetailsForm.resx">
+      <DependentUpon>AppointmentDetailsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AppointmentForm.resx">
+      <DependentUpon>AppointmentForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ECG.resx">
       <DependentUpon>ECG.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ECGAnimationView.resx">
+      <DependentUpon>ECGAnimationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Email.resx">
+      <DependentUpon>Email.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorForm.resx">
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ForgetPwForm.resx">
       <DependentUpon>ForgetPwForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="homeForm.resx">
-      <DependentUpon>homeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -144,15 +190,16 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Record.resx">
-      <DependentUpon>Record.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="srhForm.resx">
-      <DependentUpon>srhForm.cs</DependentUpon>
+    <EmbeddedResource Include="ResetPassword.resx">
+      <DependentUpon>ResetPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template.resx">
+      <DependentUpon>Template.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -167,6 +214,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DayView\DayView.csproj">
+      <Project>{D17A4D6A-4CAA-4470-8A19-F42463C021FD}</Project>
+      <Name>DayView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{c8f16397-b52f-43a9-ac85-239d684c0028}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

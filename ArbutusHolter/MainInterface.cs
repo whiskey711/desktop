@@ -1,28 +1,157 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
-
-namespace ArbutusHolter
+using Uvic_Ecg_ArbutusHolter.EcgRawDataProcessing;
+using Uvic_Ecg_ArbutusHolter.HttpRequests;
+using Uvic_Ecg_Model;
+namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class MainInterface : Form
     {
-        bool startBtnBool;
-        private srhForm sForm;
-        int h, m, s;
-
-        public MainInterface()
+        bool displayBtnclicked;
+        int h, m, s, nextCallTimer, timeToWait;
+        Client mainFormClient;
+        PatientResource patientResource = new PatientResource();
+        EcgDataResources ecgDataResources = new EcgDataResources();
+        DeviceResource devResource = new DeviceResource();
+        DataProcess dataProcessForChannel1 = new DataProcess();
+        DataProcess dataProcessForChannel2 = new DataProcess();
+        RestModel<PatientInfo> restmodel;
+        List<PatientInfo> returnPls = new List<PatientInfo>();
+        bool statusChanges = false;
+        string errorMsg;
+        string status;
+        float[] dataInfloat1;
+        float[] dataInfloat2;
+        int[] dataofChannelOne;
+        int[] dataofChannelTwo;
+        DateTime date;
+        DateTime tempDate;
+        PatientInfo updatedPatient;
+        Appointment theApp;
+        bool isNotFirstTime = true;
+        public MainInterface(Client client, Appointment app)
         {
             InitializeComponent();
-            startBtnBool = true;
+            displayBtnclicked = false;
+            date = Convert.ToDateTime("1996/11/10");
+            mainFormClient = client;
+            status = "";
+            theApp = app;
+            PatientInfo_Load(theApp);
+            firstNameTB.Enabled = false;
         }
-
-        private void startButton_Click(object sender, EventArgs e)
+        public void PatientInfo_Load(Appointment app)
         {
-            indicatorLed.Blink(500);
-            channel1.DrawTimer_Stop();
-            channel2.DrawTimer_Stop();
-            countTImer.Start();
+            try
+            {
+                restmodel = patientResource.GetPatient(app.LastName, app.FirstName, "2447/01/01", null, mainFormClient);
+                if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+                {
+                    foreach (var ent in restmodel.Feed.Entities)
+                    {
+                        returnPls.Add(ent.Model);
+                    }
+                    foreach (PatientInfo p in returnPls)
+                    {
+                        if (p.PatientId == app.PatientId)
+                        {
+                            firstNameTB.Text = p.PatientFirstName;
+                            midNameTB.Text = p.PatientMidName;
+                            lastNameTB.Text = p.PatientLastName;
+                            birthDateTB.Text = p.Birthdate;
+                            phnTB.Text = p.Phn;
+                            genderTB.Text = p.Gender;
+                            ageTB.Text = p.Age;
+                            address1TB.Text = p.Address1;
+                            address2TB.Text = p.Address2;
+                            cityTB.Text = p.City;
+                            provinceTB.Text = p.Province;
+                            postCodeTB.Text = p.PostCode;
+                            phoneNumTB.Text = p.PhoneNumber;
+                            homeNumTB.Text = p.HomeNumber;
+                            mailTB.Text = p.Email;
+                            pacemakerTB.Text = p.Pacemaker;
+                            superPhyTB.Text = p.SuperPhysician;
+                            medTB.Text = p.Medications;
+                            remarkRichTextBox.Text = p.Remark;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(restmodel.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        /// <summary>
+        /// make next Call for get EcgData
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NextCall(object sender, EventArgs e)
+        {
+            try
+            {
+                if (true.Equals(displayBtnclicked))
+                {
+                    if (statusChanges)
+                    {
+                        statusChanges = false;
+                        nextCallTimer = 0;
+                    }
+                    nextCallTimer++;
+                    if (status.Equals("hookup"))
+                    {
+                        if (nextCallTimer == 5)
+                        {
+                            if (TryToGetData())
+                            {
+                                UpdateData();
+                            }
+                            nextCallTimer = 0;
+                        }
+                    }
+                    else if (status.Equals("record"))
+                    {
+                        if (nextCallTimer == 50)
+                        {
+                            UpdateData();
+                            nextCallTimer = 0;
+                        }
+                    }
+                    else
+                    {
+                        //show please start hook up or record first
+                        //done in somewhere else
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        /// <summary>
+        /// count the start recording time
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CountTimer_Tick(object sender, EventArgs e)
+        {
             s++;
-
             if (s >= 60)
             {
                 s = 0;
@@ -33,38 +162,357 @@ namespace ArbutusHolter
                 m = 0;
                 h++;
             }
-
             durationLabel.Text = string.Format("{0}:{1}:{2}", h.ToString().PadLeft(2, '0'), m.ToString().PadLeft(2, '0'), s.ToString().PadLeft(2, '0'));
-
-            nowTimer.Stop();
         }
-
-
-        private void ecgStartBtn_Click(object sender, EventArgs e)
+        private int Concate(byte highbits, byte lowbits)
         {
-            if (startBtnBool == true)
+            byte convertionBits = Convert.ToByte(0b_0011_1111);
+            highbits = (byte)(highbits & convertionBits);
+            return ((highbits << 8) | lowbits);
+        }
+        /// <summary>
+        /// display button clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EcgStartBtn_Click(object sender, EventArgs e)
+        {
+            try
             {
-                channel1.DrawTimer_Start();
-                channel2.Generate_Diff_RamNum();
-                channel2.DrawTimer_Start();
-                startBtnBool = false;
+                if (displayBtnclicked)
+                {
+                    StopTimers();
+                    return;
+                }
+                else if (status.Equals(""))
+                {
+                    MessageBox.Show("please start hook up or record first");
+                    return;
+                }
+                else if (!isNotFirstTime)
+                {
+                    StartDisplay();
+                    return;
+                }
+                else if (status.Equals("record"))// && !TryToGetData()
+                {
+                    timeToWait = 70;
+                }
+                else if (status.Equals("rehookup"))
+                {
+                    timeToWait = 70;
+                }
+                else if (!TryToGetData())
+                {
+                    MessageBox.Show("No data is transmitting. Please check connection");
+                    return;
+                }
+                else if (status.Equals("hookup"))//&& !TryToGetData()
+                {
+                    //timeToWait = 10;
+                    StartDisplay();
+                    return;
+                }
+                ecgStartBtn.Enabled = false;
+                isNotFirstTime = true;
+                waitingTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void StartDisplay()
+        {
+            if (displayBtnclicked == false)
+            {
+                UpdateData();
+                nextCalltimer.Start();
+                channel1.StartTick();
+                channel2.StartTick();
+                displayBtnclicked = true;
                 ecgStartBtn.Text = "PAUSE";
             }
             else
             {
-                channel1.DrawTimer_Stop();
-                channel2.DrawTimer_Stop();
-                startBtnBool = true;
-                ecgStartBtn.Text = "CONTINUE";
+                //stop and clean the data
+                channel1.StopTick();
+                channel2.StopTick();
+                CleanChannel();
+                displayBtnclicked = false;
+                ecgStartBtn.Text = "DISPLAY";
             }
         }
-
-        private void nowTimer_Tick(object sender, EventArgs e)
+        private bool TryToGetData()
+        {
+            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theApp.PatientId, theApp.EcgTestId.Value);
+            if (ecgRawDataModel.Entity == null)
+            {
+                return false;
+            }
+            else if (ecgRawDataModel.Entity.Model == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        private void DoUpdate(RestModel<EcgRawData> ecgRawDataModel)
+        {
+            while (true)
+            {
+                if (ecgRawDataModel.ErrorMessage.Equals(ErrorInfo.OK.ErrorMessage))
+                {
+                    if (ecgRawDataModel.Entity.Model == null)
+                    {
+                        //MessageBox.Show("No Data is transmitting now");
+                        break;
+                    }
+                    EcgRawData ecgRawData = ecgRawDataModel.Entity.Model;
+                    string stringOfData = ecgRawData.RawData;
+                    byte[] data = Convert.FromBase64String(stringOfData);
+                    int length = (data.Length - data.Length % 5) / 5;
+                    dataofChannelOne = new int[length];
+                    dataofChannelTwo = new int[length];
+                    for (int i = 0; i < length; i++)
+                    {
+                        dataofChannelOne[i] = Concate(data[(5 * i) + 1], data[(5 * i) + 2]);
+                        dataofChannelTwo[i] = Concate(data[(5 * i) + 3], data[(5 * i) + 4]);
+                    }
+                    dataInfloat1 = new float[dataofChannelOne.Length];
+                    dataInfloat2 = new float[dataofChannelTwo.Length];
+                    for (int i = 0; i < dataofChannelOne.Length; i++)
+                    {
+                        dataInfloat1[i] = (float)dataProcessForChannel1.dataConvert(dataofChannelOne[i]);
+                    }
+                    for (int i = 0; i < dataofChannelOne.Length; i++)
+                    {
+                        dataInfloat2[i] = (float)dataProcessForChannel2.dataConvert(dataofChannelTwo[i]);
+                    }
+                    var test = dataInfloat1;
+                    channel1.UpdateValue(dataInfloat1);
+                    channel2.UpdateValue(dataInfloat2);
+                    break;
+                }
+            }
+        }
+        private void CleanChannel()
+        {
+            channel1.CleanTheData();
+            channel2.CleanTheData();
+        }
+        private void UpdateData()
+        {
+            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theApp.PatientId, theApp.EcgTestId.Value);
+            //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
+            //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
+            if (date.Year == 1996)
+            {
+                //if it's first data, update the date to be the first data's date.
+                date = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
+                DoUpdate(ecgRawDataModel);
+            }
+            else
+            {
+                //if it's not the first data, record the date of data in tempDate for future comparision.
+                tempDate = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
+                if (status.Equals("rehookup"))
+                {
+                    date = tempDate;
+                    status = "hookup";
+                    DoUpdate(ecgRawDataModel);
+                }
+                else
+                {
+                    if (!tempDate.Equals(date) && status.Equals("hookup"))
+                    {
+                        if ((tempDate - date).TotalSeconds > 10)
+                        {
+                            //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
+                            var test = channel1.values;
+                            CleanChannel();
+                            test = channel1.values;
+                            date = tempDate;
+                            DoUpdate(ecgRawDataModel);
+                        }
+                        else
+                        {
+                            date = tempDate;
+                            DoUpdate(ecgRawDataModel);
+                        }
+                    }
+                    else
+                    {
+                        date = tempDate;
+                        DoUpdate(ecgRawDataModel);
+                    }
+                }
+            }
+        }
+        private void NowTimer_Tick(object sender, EventArgs e)
         {
             timeLabel.Text = DateTime.Now.ToLongTimeString();
         }
-
-            
-        
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            NextCall(sender, e);
+        }
+        /// <summary>
+        /// hook up btn clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HookupBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RestModel<ResultJson> result = ecgDataResources.SetHookup(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                var test = result.ErrorMessage;
+                //indicatorLed stop blink
+                if (status.Equals("record"))
+                {
+                    StopTimers();
+                    status = "rehookup";
+                }
+                else
+                {
+                    status = "hookup";
+                }
+                statusChanges = true;
+                statusFlag.Text = status;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void WaitingTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                timeToWait--;
+                waitTimeLabel.Text = timeToWait.ToString();
+                if (timeToWait == 0)
+                {
+                    waitingTimer.Stop();
+                    ecgStartBtn.Enabled = true;
+                    if (!TryToGetData())
+                    {
+                        MessageBox.Show("No data is transmitting check your connection");
+                        return;
+                    }
+                    StartDisplay();
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void StopTimers()
+        {
+            try
+            {
+                //stop and clean the data
+                channel1.StopTick();
+                channel2.StopTick();
+                channel1.CleanView();
+                channel2.CleanView();
+                CleanChannel();
+                displayBtnclicked = false;
+                ecgStartBtn.Text = "DISPLAY";
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        /// <summary>
+        /// click the record button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RestModel<ResultJson> result = ecgDataResources.SetRecord(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                var test = result.ErrorMessage;
+                indicatorLed.Blink(500);
+                countTImer.Start();
+                if (status.Equals("hookup") || status.Equals("rehookup"))
+                {
+                    StopTimers();
+                }
+                status = "record";
+                statusChanges = true;
+                statusFlag.Text = status;
+                nowTimer.Stop();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void TerminateBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RestModel<ResultJson> result = ecgDataResources.Terminated(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                var test = result.ErrorMessage;
+                StopTimers();
+                //indicatorLed stop blink
+                status = "terminated";
+                statusChanges = true;
+                statusFlag.Text = status;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void SaveRemarkBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                updatedPatient = new PatientInfo(theApp.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, birthDateTB.Text, address1TB.Text,
+                                                 address2TB.Text, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
+                                                 genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                 null, null, null, null, null, remarkRichTextBox.Text, ageTB.Text);
+                errorMsg = patientResource.UpdatePatient(updatedPatient, mainFormClient);
+                if (errorMsg == ErrorInfo.OK.ErrorMessage)
+                {
+                    MessageBox.Show("The changes on the current patient has successfully saved");
+                }
+                else
+                {
+                    MessageBox.Show(errorMsg);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ArbutusHolter
+﻿namespace Uvic_Ecg_ArbutusHolter
 {
     partial class ECG
     {
@@ -6,7 +6,6 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -19,16 +18,14 @@
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.ecgView = new Test.ECGAnimationView();
+            this.ecgView = new Uvic_Ecg_EcgAnimationView.ECGAnimationView();
             this.leftBtn = new System.Windows.Forms.Button();
             this.rightBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -50,7 +47,7 @@
             this.leftBtn.TabIndex = 1;
             this.leftBtn.Text = "Move left";
             this.leftBtn.UseVisualStyleBackColor = true;
-            this.leftBtn.Click += new System.EventHandler(this.leftBtn_Click);
+            this.leftBtn.Click += new System.EventHandler(this.LeftBtn_Click);
             // 
             // rightBtn
             // 
@@ -62,7 +59,7 @@
             this.rightBtn.TabIndex = 2;
             this.rightBtn.Text = "Move right";
             this.rightBtn.UseVisualStyleBackColor = true;
-            this.rightBtn.Click += new System.EventHandler(this.rightBtn_Click);
+            this.rightBtn.Click += new System.EventHandler(this.RightBtn_Click);
             // 
             // ECG
             // 
@@ -76,12 +73,9 @@
             this.Text = "ECG";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-
         #endregion
-
-        private Test.ECGAnimationView ecgView;
+        private Uvic_Ecg_EcgAnimationView.ECGAnimationView ecgView;
         private System.Windows.Forms.Button leftBtn;
         private System.Windows.Forms.Button rightBtn;
     }
