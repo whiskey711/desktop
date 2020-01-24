@@ -1,66 +1,98 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net.Http.Headers;
-
-namespace ArbutusHolter
+using Uvic_Ecg_Model;
+namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class LoginForm : Form
     {
-        private string url = "http://ecg.uvic.ca:443/v1/clinic/login";
-        public IEnumerable<string> tokenObj;
-        public string token;
-        public string fullToken;
+        Client client = new Client();
+        public ErrorInfo errorInfo;
         public LoginForm()
         {
             InitializeComponent();
             Console.Read();
         }
-
-
         // after user clicked registerButton, they will be directed to registerForm
-        private void registerButton_Click(object sender, EventArgs e)
+        private void RegisterButton_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            RegisterForm regForm = new RegisterForm();
-            //if regForm closed, close this hiden form as well
-            regForm.Closed += (s, args) => this.Close();
-            regForm.Show();
-        }
-
-        // after user clicked forgetPWbutton, they will be directed to forgetPWForm
-        private void forgetPWButton_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            ForgetPwForm forPForm = new ForgetPwForm();
-            forPForm.Closed += (s, args) => this.Close();
-            forPForm.Show();
-        }
-
-        // after user clicked login button, they will be directed to maininterface
-        private void loginButton_Click(object sender, EventArgs e)
-        {
-            Client client = new Client();
-            string errorMsg = client.Login(userEmail.Text, password.Text);
-            if (errorMsg.Equals("ok"))
+            try
             {
-                this.Hide();
-                homeForm hForm = new homeForm();
-                hForm.Closed += (s, args) => this.Close();
-                hForm.Show();
+                RegisterForm regForm = new RegisterForm();
+                regForm.Show();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        // after user clicked forgetPWbutton, they will be directed to forgetPWForm
+        private void ForgetPWButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ForgetPwForm forPForm = new ForgetPwForm(client);
+                forPForm.Show();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        // after user clicked login button, they will be directed to maininterface
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (userEmail.Text == "" || password.Text == "")
+                {
+                    MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
+                    return;
+                }
+                errorInfo = client.Login(userEmail.Text, password.Text);
+                if (ErrorInfo.OK.ErrorMessage.Equals(errorInfo.ErrorMessage))
+                {
+                    Hide();
+                    AppointmentForm appForm = new AppointmentForm(client);
+                    appForm.FormClosed += (s, args) => Close();
+                    appForm.Show();
+                }
+                else
+                {
+                    MessageBox.Show(errorInfo.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is HttpRequestException || ex.InnerException is WebException)
+                {
+                    MessageBox.Show(ex.InnerException.Message);
+                }
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.InnerException.Message, ex.StackTrace, w);
+                }
+                System.Diagnostics.Process.Start(FileName.Log.Name);
+            }
+        }
+        private void Password_TextChanged(object sender, EventArgs e)
+        {
+            if (password.Text != "")
+            {
+                password.PasswordChar = '*';
             }
             else
             {
-                Hide();
-                ErrorForm errorForm = new ErrorForm(errorMsg);
-                errorForm.Show(this);
+                password.PasswordChar = '\0';
             }
         }
-
     }
 }

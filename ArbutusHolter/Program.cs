@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-namespace ArbutusHolter
+namespace Uvic_Ecg_ArbutusHolter
 {
     static class Program
     {

@@ -1,24 +1,26 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-
-namespace ArbutusHolter
+using Uvic_Ecg_Model;
+namespace Uvic_Ecg_ArbutusHolter
 {
     public class Client
     {
         private HttpClient httpClient = new HttpClient();
         private HttpResponseMessage result;
         private HttpContent content;
-        private string url;
+        private string url = "http://ecg.uvic.ca:8080/v1/test/";
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;
-        private string errorMsg;
-
+        private ErrorInfo errorInfo;
+        public HttpResponseMessage Result { get => result; set => result = value; }
+        public HttpClient HttpClient { get => httpClient; set => httpClient = value; }
+        public HttpContent Content { get => content; set => content = value; }
+        public ErrorInfo ErrorInfo { get => errorInfo; set => errorInfo = value; }
+        public string Token { get => token; set => token = value; }
         public string getUrl()
         {
             return this.url;
@@ -27,7 +29,7 @@ namespace ArbutusHolter
         {
             this.url = newUrl;
         }
-        public string Login(string inputUserName, string inputPassword)
+        public ErrorInfo Login(string inputUserName, string inputPassword)
         {
             User user = new User
             {
@@ -35,36 +37,46 @@ namespace ArbutusHolter
                 password = inputPassword
             };
             string json = JsonConvert.SerializeObject(user);
-            content = new StringContent(json, Encoding.UTF8, "application/json");
-            seturl("http://ecg.uvic.ca:443/v1/clinic/login");
-            result = httpClient.PostAsync(getUrl(), content).Result;
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            Content = new StringContent(json, Encoding.UTF8, "application/json");
+            Result = HttpClient.PostAsync(getUrl() + "login", Content).Result;
+            string fullerrorMsg = Result.Content.ReadAsStringAsync().Result;
+            if (Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                if (result.Headers.TryGetValues("Authorization", out tokenObj))
+                if (Result.Headers.TryGetValues("Authorization", out tokenObj))
                 {
                     fullToken = tokenObj.First();
                     //Get the index after 'Berear'
                     int beginIndex = fullToken.IndexOf('r', fullToken.IndexOf('r') + 1);
                     //store the token in the 'token' string
-                    token = fullToken.Substring(beginIndex + 1);
-                    errorMsg = "ok";
+                    Token = fullToken.Substring(beginIndex + 1);
+                    errorInfo = ErrorInfo.OK;
                 }
                 //else return cannot find token
             }
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            else
             {
-                string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
-                errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
+                errorInfo = ErrorInfo.Failed;
             }
-            return errorMsg;
+            return errorInfo;
         }
-        
+        public bool Register(Nurse newNurse)
+        {
+            string json = JsonConvert.SerializeObject(newNurse);
+            content = new StringContent(json, Encoding.UTF8, "application/json");
+            result = httpClient.PostAsync(getUrl() + "nurses", content).Result;
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }   
+        }
     }
-
     public class User
     {
         public string username;
         public string password;
     }
-
 }

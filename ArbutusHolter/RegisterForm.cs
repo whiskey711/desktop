@@ -1,112 +1,116 @@
 ﻿using System;
-using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Text;
-
-namespace ArbutusHolter
+using Uvic_Ecg_ArbutusHolter.HttpRequests;
+using Uvic_Ecg_Model;
+namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class RegisterForm : Form
     {
-        private string registerUrl = "http://ecg.uvic.ca:443/v1/test/nurses";
+        Client client = new Client();
+        private PublicResources publicResources = new PublicResources();
+        private Client registrationClient = new Client();
+        Nurse newNurse;
         public RegisterForm()
         {
             InitializeComponent();
         }
-
-
-        // after user click registerButton, the finishPanel is visible
-        private void registerButton_Click(object sender, EventArgs e)
+        // After user click registerButton, the finishPanel is visible
+        private void RegisterButton_Click(object sender, EventArgs e)
         {
-            if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && email.Text != "")
+            try
             {
-                if (password.Text == confirmPass.Text)
+                if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && RegexUtilities.IsValidEmail(email.Text))
                 {
-                    Nurse newNurse = new Nurse(2,
-                                               lastN.Text,
-                                               null,
-                                               firstN.Text,
-                                               null,
-                                               email.Text,
-                                               1,
-                                               password.Text,
-                                               false);
-                    string json = JsonConvert.SerializeObject(newNurse);
-                    HttpContent Jsoncontent = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpClient httpClient = new HttpClient();
-                    var result = httpClient.PostAsync(registerUrl, Jsoncontent).Result;
-                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (password.Text == confirmPass.Text)
                     {
-                        finishPanel.Visible = true;
+                        newNurse = new Nurse(4,
+                                             lastN.Text,
+                                             null,
+                                             firstN.Text,
+                                             null,
+                                             email.Text,
+                                             1,
+                                             password.Text,
+                                             false);
+                        string errorMsg = publicResources.Registration(email.Text, registrationClient).ErrorMessage;
+                        if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
+                        {
+                            finishPanel.Visible = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(errorMsg);
+                            email.Text = "";
+                        }
                     }
-                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    else
                     {
-                        string fullerrorMsg = result.Content.ReadAsStringAsync().Result;
-                        string errorMsg = fullerrorMsg.Substring(fullerrorMsg.IndexOf('"') + 4);
-                        Hide();
-                        ErrorForm errorForm = new ErrorForm(errorMsg);
-                        errorForm.Show(this);
-
+                        MessageBox.Show(ErrorInfo.Confirm.ErrorMessage);
                     }
                 }
                 else
                 {
-                    string confirmPassMessage = "Please confirm your password";
-                    MessageBoxButtons okBtn = MessageBoxButtons.OK;
-                    MessageBox.Show(confirmPassMessage, null, okBtn);
+                    MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
                 }
-
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
+        }
+        private void Password_TextChanged(object sender, EventArgs e)
+        {
+            if (password.Text != "")
+            {
+                password.PasswordChar = '*';
             }
             else
             {
-                string fillAllMessage = "Please fill all text field";
-                MessageBoxButtons okBtn = MessageBoxButtons.OK;
-                MessageBox.Show(fillAllMessage, null, okBtn);
+                password.PasswordChar = '\0';
             }
         }
-
-        // after user clicked back button, they will be directed to loginForm
-        private void back_Click(object sender, EventArgs e)
+        private void ConfirmPass_TextChanged(object sender, EventArgs e)
         {
-            this.Hide();
-            LoginForm loginF = new LoginForm(); 
-            loginF.Show();
-        }
-
-
-        public class Nurse
-        {
-            public int nurseId { get; set; }
-            public string nurseLastName { get; set; }
-            public string nurseMidName { get; set; }
-            public string nurseFirstName { get; set; }
-            public string nursePhoneNumber { get; set; }
-            public string nurseEmail { get; set; }
-            public int clinicId { get; set; }
-            public string password { get; set; }
-            public bool deleted { get; set; }
-
-            public Nurse(int NurseId,
-                         string NurseLastName,
-                         string NurseMidName,
-                         string NurseFirstName,
-                         string NursePhoneNumber,
-                         string NurseEmail,
-                         int ClinicId,
-                         string Password,
-                         bool Deleted)
+            if (confirmPass.Text != "")
             {
-                nurseId = NurseId;
-                nurseLastName = NurseLastName;
-                nurseMidName = NurseMidName;
-                nurseFirstName = NurseFirstName;
-                nurseMidName = NurseMidName;
-                nursePhoneNumber = NursePhoneNumber;
-                nurseEmail = NurseEmail;
-                clinicId = ClinicId;
-                password = Password;
-                deleted = Deleted;
+                confirmPass.PasswordChar = '*';
+            }
+            else
+            {
+                confirmPass.PasswordChar = '\0';
+            }
+        }
+        private void Submit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string errorMsg = publicResources.VeriFycode(regVerifyTextBox.Text, client).ErrorMessage;
+                if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
+                {
+                    if (client.Register(newNurse))
+                    {
+                        DialogResult result = MessageBox.Show(ErrorInfo.Complete.ErrorMessage);
+                        if (result == DialogResult.OK)
+                        {
+                            Close();
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ErrorInfo.Incorrect.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
             }
         }
     }

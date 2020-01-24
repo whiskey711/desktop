@@ -1,39 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-namespace Test
+namespace Uvic_Ecg_EcgAnimationView
 {
+    /// <summary>
+    /// this class have 4 main method, pictureBox_paint, updateValues, AddPoints, and timer_Tick.
+    /// They represent draw the points, update the data buffer, update the points and insert points
+    /// to Points array from data buffer respectively.
+    /// </summary>
     public partial class ECGAnimationView : UserControl
     {
+        private const int totalsizeX = 18000;
         private const int PEN_WIDTH = 3;
-
-        private Bitmap DrawArea;
+        private const int ResetPictureBoxTimeInSec = 30;
         private Graphics g;
-
         // 2 pen with different color to draw ecg and background grid
-        private Pen mypen = new Pen(Color.Red, 3);
+        private Pen mypen = new Pen(Color.Black, 2);
         private Pen bgp = new Pen(Color.DarkRed, 1);
         // set  the properties of the labels
         private Font drawFont = new Font("Microsoft Sans Serif", 10);
         private SolidBrush drawBrush = new SolidBrush(Color.Black);
-
         private int labelV, unitOfLabel;
         // variable to trace the newst point in the points array
-        private int i;
-        // variables to count how many points have been added
-        private int moves;
-        // variables to control the scale of the grid after zoom in and zoom out 
+        private int lengthOfPoints;
+        // variables to control the scale of the grid
         private int changeValue;
-        //variable to control the scale of data after zoom in and zoom out
+        private int changeValueOfLabel;
+        //variable to control the scale of data 
         private int pixelPerPoint;
-
         // variables of Grid
         private int numOfCellsX, numOfCellsY, cellSizeX, cellSizeY;
         // unit of cells is used to change the moves
@@ -42,10 +38,8 @@ namespace Test
         private int viewsizeX, viewsizeY;
         // the position of the most left top point of the picturebox1
         private int picX, picY;
-
         // points array that contains the ecg data
-        private Point[] points = new Point[2];
-
+        private PointF[] points;
         //points of location of mouse
         private Point newMouseDelta;
         public Point oldMouseDelta;
@@ -53,227 +47,197 @@ namespace Test
         private int changedDrag;
         //numOfPoints can be plotted in a view
         private int numOfPoints;
-        //bool to disable addY in drawTimer
-        private bool disableadd;
-        private bool enableDragEvent;
-
-        public bool historyFlag;
-
+        //count to call RepeatView and CalTimeDiff
+        private int drawTimerCnt;
+        //Data buffer
+        public List<float> values;
+        //time difference factor
+        private double SpendTime;
+        //points buffer for every Tick
+        private float[] pointsToLine;
+        //number of points to be added for every Tick
+        private int numberOfpoints;
+        //stopWatch to calTimeDiff
+        private Stopwatch stopwatch;
+        //extra points to be draw but smaller than one
+        private double storedPoints;
+        //predicted excution time
+        private double diffCalTime;
+        //factor to make y Axis easier to look
+        private float yAxisFactor;
+        //predicted points to be draw per second
+        private int pointsPerSec;
+        private int numOfLabels;
+        //factor to make label dosen't need to redraw so frequently
+        private int labelFactor;
         public event MouseEventHandler ViewClick;
-
-
-        private Random rnd;
-
+        private long lastTime;
+        private long thisTime;
         public ECGAnimationView()
         {
             InitializeComponent();
-            //CenterToScreen();
             InitializeParams();
-            if(historyFlag == true)
-            {
-                plotAll();
-            }
         }
-
         private void ECGAnimationView_Load(object sender, EventArgs e)
         {
-
+            //vertical lines array
+            //Point[] vArray = new Point[0];
+            InitializeParams();
         }
-
         private void InitializeParams()
         {
-
             // init UI related params
             // Viewsize is to control the size of the grid
-            viewsizeX = pictureBox1.Width;
-            viewsizeY = pictureBox1.Height;
+            viewsizeX = pictureBox.Width;
+            viewsizeY = pictureBox.Height;
 
             // Indicate the distance between the points
-            pixelPerPoint = 50;
-            // initial value of i since we have only the origin in the beginging
-            i = 1;
+            //change to 250/250....
+            pixelPerPoint = 1;
+            // initial value of lengthOfPoints since we have only the origin in the beginging
+            lengthOfPoints = 1;
             // cellsize is equal to viewsize divede by numOfCells
             unitOfCell = 1;
-            cellSizeX = unitOfCell * pixelPerPoint;
-            cellSizeY = unitOfCell * pixelPerPoint;
-            
-
-            numOfCellsX = (viewsizeX + cellSizeX) / cellSizeX;
-            numOfCellsY = (viewsizeY + cellSizeY) / cellSizeY;
-
-            picX = pictureBox1.Location.X;
-            picY = pictureBox1.Location.Y;
-
+            //5 cell to be 1 second
+            cellSizeX = unitOfCell * 50;
+            cellSizeY = unitOfCell * 50;
+            numOfCellsX = (totalsizeX - (totalsizeX % cellSizeX)) / cellSizeX;
+            numOfCellsY = (viewsizeY - (viewsizeY % cellSizeY)) / cellSizeY;
+            picX = pictureBox.Location.X;
+            picY = pictureBox.Location.Y;
             unitOfLabel = 200;
             labelV = 0;
-
             // initial position of the 1st line,because Graphics.drawLines function will 
             // automaticlly draw the line between two point, if there is only one point
+            points = new PointF[2];
             points[0] = new Point(0, viewsizeY / 2);
             points[1] = new Point(0, viewsizeY / 2);
-
             // init others
-            rnd = new Random();
-            disableadd = false;
-            enableDragEvent = false;
+            drawTimerCnt = 0;
+            changeValue = 0;
+            changeValueOfLabel = 0;
+            values = new List<float>();
+            pointsPerSec = 240;
+            numberOfpoints = (int)(pointsPerSec * DrawTimer.Interval);
+            pointsToLine = new float[numberOfpoints];
+            diffCalTime = 5000;
+            yAxisFactor = 30;
+            labelFactor = unitOfLabel / cellSizeX;
         }
-
-        private void pictureBox1_paint(object sender, PaintEventArgs e)
+        private void PictureBox_paint(object sender, PaintEventArgs e)
         {
             // Draw the ECG.
-            DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
-
-            using (g = Graphics.FromImage(DrawArea))
+            g = e.Graphics;
+            if (pictureBox.Image != null)
             {
-                g.DrawLines(mypen, points);
-
-                // draw the labels
-                for (int l = 0; l < numOfCellsX; l++)
-                {
-                    g.DrawString((labelV).ToString(), drawFont, drawBrush, (l * cellSizeX) + changeValue, viewsizeY / 2);
-                    labelV = labelV + unitOfLabel;
-                }
-
-                labelV -= numOfCellsX * unitOfLabel;
-
-                // draw horizontal lines of gird
-                for (int y = 0; y <= numOfCellsY; ++y)
-                {
-                    g.DrawLine(bgp, 0, y * cellSizeY, viewsizeX, y * cellSizeY);
-                }
-
-                // draw vertical lines of grid
-                for (int x = 1; x <= numOfCellsX; ++x)
-                {
-                    g.DrawLine(bgp, (x * cellSizeX) + changeValue, 0, (x * cellSizeX) + changeValue, numOfCellsY * cellSizeY);
-                }
-
-                //draw the most top line
-                //g.DrawLine(bgp, viewsizeX - 1, 0, viewsizeX - 1, viewsizeY);
-                // draw the most right line
-                g.DrawLine(bgp, viewsizeX - 1, 0, viewsizeX - 1, viewsizeY);
-                //draw the most left line
-                g.DrawLine(bgp, 0, 0, 0, viewsizeY);
-                // draw the bottom line, the reason that draw those line outside the for loop, is because the location.X of
-                // the most left point of the picturebox is actually 599, therefore,it cannot display the 600 index point.
-                g.DrawLine(bgp, 0, viewsizeY - 1, viewsizeX, viewsizeY - 1);
-
-                // TODO SET VIEWSIZEX TO 601;
-                pictureBox1.Image = DrawArea;
+                pictureBox.Image.Dispose();
             }
+            // draw the labels
+            labelFactor = unitOfLabel / cellSizeX;
+            //draw more labels at the right end of the view so we can just move it to the left instead of reset it
+            numOfLabels = ((numOfCellsX - numOfCellsX % labelFactor) / labelFactor) * 5;
+            for (int l = 0; l < numOfLabels; l++)
+            {
+                int pos = (unitOfLabel * l) + changeValueOfLabel;
+                if (pos >= 0 && pos <= viewsizeX)
+                {
+                    g.DrawString((labelV).ToString(), drawFont, drawBrush, pos, viewsizeY - 20);
+                }
+                labelV = labelV + unitOfLabel;
+            }
+            labelV -= numOfLabels * unitOfLabel;    
+            // draw horizontal lines of gird
+            for (int y = 0; y <= numOfCellsY; ++y)
+            {
+                g.DrawLine(bgp, 0, y * cellSizeY, viewsizeX, y * cellSizeY);
+            }
+            // draw vertical lines of gri， +6 because here we are drawing 6 more lines on the right of the grid for further moving.
+            for (int x = 1; x <= numOfCellsX * 2; ++x)
+            {
+                int position = (x * cellSizeX) + changeValue;
+                if (position >= 0 && position <= viewsizeX)
+                {
+                    g.DrawLine(bgp, position, 0, position, viewsizeY);
+                }
+            }
+            //drawPoints
+            g.DrawLines(mypen, points);
+            //draw the most top line
+            //g.DrawLine(bgp, viewsizeX - 1, 0, viewsizeX - 1, viewsizeY);
+            // draw the most right line
+            g.DrawLine(bgp, viewsizeX - 1, 0, viewsizeX - 1, viewsizeY);
+            //draw the most left line
+            g.DrawLine(bgp, 0, 0, 0, viewsizeY);
+            // draw the bottom line, the reason that draw those line outside the for loop, is because the location.X of
+            // the most left point of the picturebox is actually 599, therefore,it cannot display the 600 index point.
+            g.DrawLine(bgp, 0, viewsizeY - 1, viewsizeX, viewsizeY - 1);
         }
-
         /// <summary>
-        /// add the point at the left end
+        /// add points from data buffer to the array to be drawn
         /// </summary>
         /// <param name="y"></param>
-        public void addYatLeft(int y)
+        public void AddY(float[] y)
         {
-            // to see if there are enough ecg data(points) to fill  the screen
-            // if the screen cannot fit the points, then we move all the points
-            // to the left by (changeValue) units, which depends on the scale of the grid.
-            if (points[0].X <= 0)
+            int targetIndex = 0;
+            for (int j = 0; j < y.Length; j++)
             {
-
-                // moves indicate the number of point have been added
-                moves++;
-
-                // changeValue is to change the position of the grid and the label
-                if (changeValue > cellSizeX)
+                if (y[j]!=-1)
                 {
-                    changeValue += pixelPerPoint;
-                    if (changeValue == cellSizeX)
-                    {
-                        changeValue = 0;
-                    }
+                    y[targetIndex++] = y[j];
                 }
-
-                if (moves % unitOfCell == 0)
-                {
-                    // increase labelV when the label moves with the grid lines
-                    // because 3 moves(points) has length of 150 units which is a cellSizeX
-                    // then the vertical lines of grid will back to its original position as the changeValue 
-                    // set to 0. So we should add all labelValue by one unitOfLabel
-                    labelV -= unitOfLabel;
-                }
-
-                // when the screen cannot fit all the points, move all the point to the left by one pixelPerPoint unit.
-                for (int count = points.Length - 1; count >0; count--)
-                {
-                    points[count].X = points[count - 1].X + pixelPerPoint;
-                    points[count].Y = points[count - 1].Y;
-                }
-                // and then set the most right point to the new dataValue.
-                points[0] = new Point(0, y);
             }
-            else
-            {
-                // if there is still space to add new point, simply just apending it to the array
-                Array.Resize(ref points, i + 1);
-                points[i] = new Point(pixelPerPoint * i, y);
-                // increase the number of points
-                i++;
-                MessageBox.Show("error");
-            }
-            if(points[points.Length-1] == null)
-            {
-                MessageBox.Show("reach the end");
-            }
-
-            Invalidate();
-        }
-
-        public void addY(int y)
-        {
+            float[] actualArray = new float[targetIndex];
+            Array.Copy(y, 0, actualArray, 0, targetIndex);
+            int numberOfpoints = actualArray.Length;
             // to see if there are enough ecg data(points) to fill  the screen
             // if the screen cannot fit the points, then we move all the points
             // to the left by (changeValue) units, which depends on the scale of the grid.
             if (points[points.Length - 1].X >= viewsizeX)
             {
-
-                // moves indicate the number of point have been added
-                moves++;
-
                 // changeValue is to change the position of the grid and the label
-                if (changeValue > -cellSizeX)
+                if (changeValue <= (-numOfCellsX * cellSizeX))
                 {
-                    changeValue -= pixelPerPoint;
-                    if (changeValue == -cellSizeX)
-                    {
-                        changeValue = 0;
-                    }
+                    changeValue += numOfCellsX * cellSizeX;
                 }
-
-                if (moves % unitOfCell == 0)
+                else
                 {
-                    // increase labelV when the label moves with the grid lines
-                    // because 3 moves(points) has length of 150 units which is a cellSizeX
-                    // then the vertical lines of grid will back to its original position as the changeValue 
-                    // set to 0. So we should add all labelValue by one unitOfLabel
-                    labelV += unitOfLabel;
+                    changeValue -= numberOfpoints * pixelPerPoint;
                 }
-
-                // when the screen cannot fit all the points, move all the point to the left by one pixelPerPoint unit.
-                for (int count = 0; count < points.Length - 1; count++)
+                numOfLabels = ((numOfCellsX - numOfCellsX % 4) / 4);
+                if (changeValueOfLabel <= (-numOfLabels * unitOfLabel))
                 {
-                    points[count].X = points[count + 1].X - pixelPerPoint;
-                    points[count].Y = points[count + 1].Y;
+                    labelV += numOfLabels * unitOfLabel;
+                    changeValueOfLabel += numOfLabels * unitOfLabel;
                 }
-                // and then set the most right point to the new dataValue.
-                points[points.Length - 1] = new Point(pixelPerPoint * (i - 1), y);
+                else
+                {
+                    changeValueOfLabel -= numberOfpoints * pixelPerPoint;
+                }
+                // when the screen cannot fit all the points, move all the point to the left by numberOfpoints in input * pixelPerPoint unit.
+                for (int count = 0; count < points.Length - numberOfpoints; count++)
+                {
+                    //points[count].X = points[count + numberOfpoints].X - pixelPerPoint;
+                    points[count].Y = points[count + numberOfpoints].Y;
+                }
+                // and then add the array of points to the new dataValue.
+                for (int i = 0; i < numberOfpoints; i++)
+                {
+                    int indexOfnewPoint = points.Length - numberOfpoints + i;
+                    points[indexOfnewPoint] = new PointF(pixelPerPoint * indexOfnewPoint, actualArray[i]);
+                }
             }
             else
             {
                 // if there is still space to add new point, simply just apending it to the array
-                Array.Resize(ref points, i + 1);
-                points[i] = new Point(pixelPerPoint * i, y);
-                // increase the number of points
-                i++;
+                Array.Resize(ref points, lengthOfPoints + numberOfpoints);
+                for (int i = 0; i < numberOfpoints; i++)
+                {
+                    points[lengthOfPoints] = new PointF(pixelPerPoint * lengthOfPoints, actualArray[i]);
+                    // increase the number of points
+                    lengthOfPoints++;
+                }
             }
-
-            Invalidate();
         }
-
         /// <summary>
         /// a public function that can be called in the form.
         /// </summary>
@@ -281,74 +245,157 @@ namespace Test
         {
             DrawTimer.Stop();
         }
-
+        public void CleanTheData()
+        {
+            values.Clear();
+        }
         public void DrawTimer_Start()
         {
             DrawTimer.Start();
         }
-
+        /// <summary>
+        /// add the newest data to the end of data buffer
+        /// </summary>
+        /// <param name="newValues"></param>
+        public void UpdateValue(float[] newValues)
+        {
+            if (newValues != null)
+            {
+                foreach (float dataIndouble in newValues)
+                {
+                    if (dataIndouble == 0)
+                    {
+                        //in front of every data, there will be some zeros
+                        values.Add(viewsizeY / 2);
+                    }
+                    else
+                    {
+                        //data is around 11.469945 when no input, for more user friendly, we set it to zero
+                        double minusToZero = 11.469945;
+                        values.Add((dataIndouble - (float)minusToZero) * yAxisFactor + (viewsizeY / 2));
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Clean the view and stop the timers
+        /// </summary>
         public void CleanView()
         {
-            //Array.Clear(points, 0, points.Length);
             InitializeParams();
-            DrawTimer.Stop();
+            StopTick();
         }
-
-        public void disableaddY()
-        {
-            disableadd = true;
-        }
-
-        public void enableDrag()
-        {
-            enableDragEvent = true;
-        }
-
         /// <summary>
-        /// public zoom in function
+        /// Calculate the difference for every 5 second
         /// </summary>
-        public void zoomIn(object sender, EventArgs e)
+        public void CalDiff()
         {
-            if (unitOfCell< 3)
-            {
-                return;
-            }
-            else
-            {
-                unitOfCell += 2;
-            }
-            //Invalidate();
+            stopwatch.Stop();
+            //Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            this.SpendTime = stopwatch.ElapsedMilliseconds / diffCalTime;
         }
-
         /// <summary>
-        /// update timer is used to redrawing the picture and update params per time interval
+        /// clean the whole view but keep the values in the data buffer that is not drawn.
+        /// </summary>
+        public void RepeatView()
+        {
+            var temp = values;
+            InitializeParams();
+            this.values = temp;
+        }
+        /// <summary>
+        /// update timer is used to redrawing the picture per time interval
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DrawTimer_Tick(object sender, EventArgs e)
         {
-            if(disableadd == false)
+            if (drawTimerCnt == 0)
             {
-                // generate a random value to be  the ecg data
-                this.addY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
+                //creates and start the instance of Stopwatch your sample code
+                stopwatch = Stopwatch.StartNew();
+                lastTime = stopwatch.ElapsedMilliseconds;
+            }
+            //record the actual running time since begining and divide by the expect running time to get the timeDifferenceFactor
+            thisTime = stopwatch.ElapsedMilliseconds;
+            this.SpendTime = thisTime - lastTime;
+            lastTime = thisTime;
+            //reset the view every 30 sec.
+            drawTimerCnt++;
+            if (drawTimerCnt >= ResetPictureBoxTimeInSec * 1000 / DrawTimer.Interval)
+            {
+                RepeatView();
             }
 
-            if(enableDragEvent == true)
+            //reset the number of points to be added every tick
+            //here we assusme the result is Integer, if not should do floor and calculating
+            numberOfpoints = (int)(pointsPerSec * DrawTimer.Interval * 0.001);
+            //do points make up if there is time difference
+            if (this.SpendTime != 0)
             {
-                this.updateDrag();
+                storedPoints += (pointsPerSec * SpendTime * 0.001) - Math.Floor(pointsPerSec * SpendTime * 0.001);
+                numberOfpoints = (int)Math.Floor(pointsPerSec * SpendTime * 0.001);
+            }
+            if (storedPoints >= 1)
+            {
+                numberOfpoints++;
+                storedPoints--;
+            }
+            pointsToLine = new float[numberOfpoints];
+            //initial to be -1 for no data detection
+            for(int j = 0; j < numberOfpoints; j++)
+            {
+                pointsToLine[j] = -1;
+            }
+            if (values == null || values.Count == 0)
+            {
+                for (int i = 0; i < numberOfpoints; i++)
+                {
+                    //if no data, draw the line in the mid of the view
+                    pointsToLine[i] = viewsizeY / 2;
+                }
+                this.AddY(pointsToLine);
+            }
+            else
+            {
+                if (values.Count >= numberOfpoints)
+                {
+                    //draw the points in the values and delelte it.
+                    for (int i = 0; i < numberOfpoints; i++)
+                    {
+                        pointsToLine[i] = viewsizeY - values[i];
+                    }
+                    this.AddY(pointsToLine);
+                    values.RemoveRange(0, numberOfpoints);
+                    if (values.Count <= pointsPerSec)
+                    {
+                        var test = values;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < values.Count; i++)
+                    {
+                        pointsToLine[i] = viewsizeY - values[i];
+                    }
+                    this.AddY(pointsToLine);
+                    values.RemoveRange(0, values.Count);
+                }
             }
 
-            //textbox1_TextChanged(sender, e);
+            //Refresh the picturebox
+            this.pictureBox.Invalidate();
         }
-
-        /// <summary>
-        /// Generate a different number for channel2
-        /// </summary>
-        public void Generate_Diff_RamNum()
+        public void StartTick()
         {
-            int a = rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3);
+            DrawTimer.Start();
         }
-
+        public void StopTick()
+        {
+            DrawTimer.Stop();
+        }
+        
+        //Methods below is for future features, not compelted yet
         /// <summary>
         /// get the new location after press mouse_left and move, and record the changeValue
         /// </summary>
@@ -357,14 +404,12 @@ namespace Test
         protected void ECGAnimationView_MouseMove(object sender, MouseEventArgs e)
         {
             newMouseDelta = e.Location;
-
             if (e.Button == MouseButtons.Left)
             {
                 //Moves to left if positive, moves to right if negative
                 changedDrag = oldMouseDelta.X - newMouseDelta.X;
             }
         }
-
         /// <summary>
         /// get the mouse location after press mouse_left button
         /// </summary>
@@ -372,81 +417,82 @@ namespace Test
         /// <param name="e"></param>
         protected void ECGAnimationView_MouseDown(object sender, MouseEventArgs e)
         {
-            if(ViewClick != null)
+            if (ViewClick != null)
             {
                 this.ViewClick(this, e);
             }
-
         }
-
         /// <summary>
         /// update the UI values when the size of pictureBox1 changed
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void pictureBox1_SizeChanged(object sender, EventArgs e)
+        private void PictureBox1_SizeChanged(object sender, EventArgs e)
         {
             // update the viewsizeXY
-            viewsizeX = pictureBox1.Width;
-            viewsizeY = pictureBox1.Height;
+            viewsizeX = pictureBox.Width;
+            viewsizeY = pictureBox.Height;
             // Update numOfCells
             numOfCellsX = (viewsizeX + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
             numOfCellsY = (viewsizeY + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
         }
-
         /// <summary>
         /// plot all the point at once
         /// </summary>
-        public void plotAll()
+        public void PlotAll()
         {
             // update the viewsizeXY
-            viewsizeX = pictureBox1.Width;
-            viewsizeY = pictureBox1.Height;
+            viewsizeX = pictureBox.Width;
+            viewsizeY = pictureBox.Height;
             // Update numOfCells
             numOfCellsX = (viewsizeX + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
             numOfCellsY = (viewsizeY + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
-
             numOfPoints = viewsizeX / pixelPerPoint;
-            for(int i = 0; i < numOfPoints; i++)
+            for (int i = 0; i < numOfPoints; i++)
             {
-                this.addY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
+                // this.AddY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
             }
-
         }
-
         /// <summary>
         /// update the pic after dragging
         /// </summary>
-        private void updateDrag()
+        private void UpdateDrag()
         {
             int pointsAdded = changedDrag / pixelPerPoint;
-            for(int i = 0; i < pointsAdded; i++)
+            for (int i = 0; i < pointsAdded; i++)
             {
-                this.addY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
+                //this.AddY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
             }
-             
         }
-
+        /// <summary>
+        /// public zoom in function
+        /// </summary>
+        public void ZoomIn(object sender, EventArgs e)
+        {
+            if (unitOfCell < 3)
+            {
+                return;
+            }
+            else
+            {
+                unitOfCell += 2;
+            }
+        }
         /// <summary>
         /// moves view to left
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void moveLeft()
+        public void MoveLeft()
         {
-
-            this.addY(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
         }
-
         /// <summary>
         /// moves view to right
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void moveRight()
+        public void MoveRight()
         {
-            this.addYatLeft(rnd.Next(viewsizeY / 3, 2 * viewsizeY / 3));
         }
     }
-
 }
