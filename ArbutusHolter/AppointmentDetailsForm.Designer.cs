@@ -41,6 +41,7 @@
             this.firstNameLabel = new System.Windows.Forms.Label();
             this.deviceCombo = new System.Windows.Forms.ComboBox();
             this.startBtn = new System.Windows.Forms.Button();
+            this.deviceNameLab = new System.Windows.Forms.Label();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -144,6 +145,7 @@
             // 
             // appointGroup
             // 
+            this.appointGroup.Controls.Add(this.deviceNameLab);
             this.appointGroup.Controls.Add(this.lastNameLabel);
             this.appointGroup.Controls.Add(this.firstNameLabel);
             this.appointGroup.Controls.Add(this.okBtn);
@@ -186,9 +188,9 @@
             // deviceCombo
             // 
             this.deviceCombo.FormattingEnabled = true;
-            this.deviceCombo.Location = new System.Drawing.Point(59, 369);
+            this.deviceCombo.Location = new System.Drawing.Point(174, 369);
             this.deviceCombo.Name = "deviceCombo";
-            this.deviceCombo.Size = new System.Drawing.Size(316, 21);
+            this.deviceCombo.Size = new System.Drawing.Size(201, 21);
             this.deviceCombo.TabIndex = 16;
             this.deviceCombo.Text = "Select a device";
             this.deviceCombo.SelectedIndexChanged += new System.EventHandler(this.DeviceCombo_SelectedIndexChanged);
@@ -204,7 +206,16 @@
             this.startBtn.UseVisualStyleBackColor = true;
             this.startBtn.Click += new System.EventHandler(this.StartBtn_Click);
             // 
-            // AppointDetails
+            // deviceNameLab
+            // 
+            this.deviceNameLab.AutoSize = true;
+            this.deviceNameLab.Location = new System.Drawing.Point(56, 372);
+            this.deviceNameLab.Name = "deviceNameLab";
+            this.deviceNameLab.Size = new System.Drawing.Size(70, 13);
+            this.deviceNameLab.TabIndex = 19;
+            this.deviceNameLab.Text = "Device name";
+            // 
+            // AppointmentDetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -215,11 +226,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AppointDetails";
+            this.Name = "AppointmentDetailsForm";
             this.Text = "AppointDetails";
             this.appointGroup.ResumeLayout(false);
             this.appointGroup.PerformLayout();
             this.ResumeLayout(false);
+
         }
         #endregion
         private System.Windows.Forms.Label startTimeLabel;
@@ -238,5 +250,6 @@
         private System.Windows.Forms.Label lastNameLabel;
         private System.Windows.Forms.Label firstNameLabel;
         private System.Windows.Forms.Button startBtn;
+        private System.Windows.Forms.Label deviceNameLab;
     }
 }
