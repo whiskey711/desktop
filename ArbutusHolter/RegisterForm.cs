@@ -93,7 +93,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     if (client.Register(newNurse))
                     {
-                        DialogResult result = MessageBox.Show(ErrorInfo.Complete.ErrorMessage);
+                        DialogResult result = MessageBox.Show(ErrorInfo.RegistrationComlete.ErrorMessage);
                         if (result == DialogResult.OK)
                         {
                             Close();

@@ -31,7 +31,6 @@
             this.srhFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.srhGroup = new System.Windows.Forms.GroupBox();
             this.dateFormatLab = new System.Windows.Forms.Label();
-            this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.createBtn = new System.Windows.Forms.Button();
             this.pFirstNameTextBox = new System.Windows.Forms.TextBox();
             this.PFirstNameLabel = new System.Windows.Forms.Label();
@@ -44,7 +43,6 @@
             this.pDetailsFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.PatientDetailsGroup = new System.Windows.Forms.GroupBox();
             this.detailPanel = new System.Windows.Forms.Panel();
-            this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.address2TB = new System.Windows.Forms.TextBox();
             this.address2Label = new System.Windows.Forms.Label();
             this.ageLabel = new System.Windows.Forms.Label();
@@ -112,6 +110,8 @@
             this.dayViewMonthlyCal = new System.Windows.Forms.MonthCalendar();
             this.sidePanel = new System.Windows.Forms.Panel();
             this.editMailBtn = new System.Windows.Forms.Button();
+            this.birthText = new System.Windows.Forms.PlaceholderTextBox();
+            this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.appointTabletPanel.SuspendLayout();
             this.srhFlowPanel.SuspendLayout();
             this.srhGroup.SuspendLayout();
@@ -205,15 +205,6 @@
             this.dateFormatLab.Size = new System.Drawing.Size(79, 13);
             this.dateFormatLab.TabIndex = 11;
             this.dateFormatLab.Text = "MM/DD/YYYY";
-            // 
-            // birthText
-            // 
-            this.birthText.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthText.Location = new System.Drawing.Point(90, 132);
-            this.birthText.Name = "birthText";
-            this.birthText.PlaceholderText = "MM/DD/YYYY";
-            this.birthText.Size = new System.Drawing.Size(278, 27);
-            this.birthText.TabIndex = 10;
             // 
             // createBtn
             // 
@@ -368,15 +359,6 @@
             this.detailPanel.Name = "detailPanel";
             this.detailPanel.Size = new System.Drawing.Size(733, 286);
             this.detailPanel.TabIndex = 4;
-            // 
-            // birthDateTB
-            // 
-            this.birthDateTB.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthDateTB.Location = new System.Drawing.Point(89, 41);
-            this.birthDateTB.Name = "birthDateTB";
-            this.birthDateTB.PlaceholderText = "MM/DD/YYYY";
-            this.birthDateTB.Size = new System.Drawing.Size(146, 27);
-            this.birthDateTB.TabIndex = 42;
             // 
             // address2TB
             // 
@@ -810,9 +792,6 @@
             // regionComboBox
             // 
             this.regionComboBox.FormattingEnabled = true;
-            this.regionComboBox.Items.AddRange(new object[] {
-            "Victoria",
-            "Saanich"});
             this.regionComboBox.Location = new System.Drawing.Point(249, 69);
             this.regionComboBox.Name = "regionComboBox";
             this.regionComboBox.Size = new System.Drawing.Size(240, 21);
@@ -874,6 +853,7 @@
             this.patientAppointLs.UseCompatibleStateImageBehavior = false;
             this.patientAppointLs.View = System.Windows.Forms.View.Details;
             this.patientAppointLs.SelectedIndexChanged += new System.EventHandler(this.PatientAppointLs_SelectedIndexChanged);
+            this.patientAppointLs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PatientAppointLs_MouseDoubleClick);
             // 
             // name
             // 
@@ -1003,12 +983,12 @@
             this.dayViewMonthlyCal.TabIndex = 0;
             this.dayViewMonthlyCal.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.DayViewMonthlyCal_DateSelected);
             // 
-            // panel1
+            // sidePanel
             // 
             this.sidePanel.Controls.Add(this.editMailBtn);
             this.sidePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sidePanel.Location = new System.Drawing.Point(1639, 367);
-            this.sidePanel.Name = "panel1";
+            this.sidePanel.Name = "sidePanel";
             this.sidePanel.Size = new System.Drawing.Size(262, 671);
             this.sidePanel.TabIndex = 6;
             // 
@@ -1022,6 +1002,24 @@
             this.editMailBtn.Text = "Appoinment notification email";
             this.editMailBtn.UseVisualStyleBackColor = true;
             this.editMailBtn.Click += new System.EventHandler(this.editMailBtn_Click);
+            // 
+            // birthText
+            // 
+            this.birthText.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.birthText.Location = new System.Drawing.Point(90, 132);
+            this.birthText.Name = "birthText";
+            this.birthText.PlaceholderText = "MM/DD/YYYY";
+            this.birthText.Size = new System.Drawing.Size(278, 27);
+            this.birthText.TabIndex = 10;
+            // 
+            // birthDateTB
+            // 
+            this.birthDateTB.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.birthDateTB.Location = new System.Drawing.Point(89, 41);
+            this.birthDateTB.Name = "birthDateTB";
+            this.birthDateTB.PlaceholderText = "MM/DD/YYYY";
+            this.birthDateTB.Size = new System.Drawing.Size(146, 27);
+            this.birthDateTB.TabIndex = 42;
             // 
             // AppointmentForm
             // 

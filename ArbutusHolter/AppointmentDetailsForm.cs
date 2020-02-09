@@ -132,7 +132,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
                     return;
                 }
-                restModel = dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value);
+                restModel = dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value, devLocTB.Text);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     deviceCombo.Items.Clear();

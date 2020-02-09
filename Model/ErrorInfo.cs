@@ -30,6 +30,8 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo Before = new ErrorInfo("Device pick up time has to be earlier than appointment start time");
         public static readonly ErrorInfo Later = new ErrorInfo("Device return time has to be later than appointment end time");
         public static readonly ErrorInfo DeviceLoc = new ErrorInfo("Please enter device location");
+        public static readonly ErrorInfo TimeConflict = new ErrorInfo("Start time should be earlier than end time");
+        public static readonly ErrorInfo RegistrationComlete = new ErrorInfo("Thank you for completing the registration. You may log in now.");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }
