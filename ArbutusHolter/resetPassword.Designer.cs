@@ -35,6 +35,7 @@
             // 
             // newPswd
             // 
+            this.newPswd.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.newPswd.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newPswd.Location = new System.Drawing.Point(792, 494);
             this.newPswd.Name = "newPswd";
@@ -43,14 +44,16 @@
             // 
             // newPswdConfirm
             // 
+            this.newPswdConfirm.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.newPswdConfirm.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newPswdConfirm.Location = new System.Drawing.Point(792, 613);
             this.newPswdConfirm.Name = "newPswdConfirm";
             this.newPswdConfirm.Size = new System.Drawing.Size(309, 62);
             this.newPswdConfirm.TabIndex = 1;
             // 
-            // label1
+            // indicationLabel
             // 
+            this.indicationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.indicationLabel.AutoSize = true;
             this.indicationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.indicationLabel.Location = new System.Drawing.Point(677, 345);
@@ -61,6 +64,7 @@
             // 
             // ConfirmBtn
             // 
+            this.ConfirmBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.ConfirmBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ConfirmBtn.Location = new System.Drawing.Point(878, 763);
             this.ConfirmBtn.Name = "ConfirmBtn";
@@ -70,8 +74,9 @@
             this.ConfirmBtn.UseVisualStyleBackColor = true;
             this.ConfirmBtn.Click += new System.EventHandler(this.ConfirmBtn_Click);
             // 
-            // label2
+            // newPswdLabel
             // 
+            this.newPswdLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.newPswdLabel.AutoSize = true;
             this.newPswdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newPswdLabel.Location = new System.Drawing.Point(606, 511);
@@ -80,8 +85,9 @@
             this.newPswdLabel.TabIndex = 4;
             this.newPswdLabel.Text = "New password";
             // 
-            // label3
+            // newPswdConfirmLabel
             // 
+            this.newPswdConfirmLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.newPswdConfirmLabel.AutoSize = true;
             this.newPswdConfirmLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newPswdConfirmLabel.Location = new System.Drawing.Point(574, 628);

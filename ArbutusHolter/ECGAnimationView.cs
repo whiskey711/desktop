@@ -422,20 +422,7 @@ namespace Uvic_Ecg_EcgAnimationView
                 this.ViewClick(this, e);
             }
         }
-        /// <summary>
-        /// update the UI values when the size of pictureBox1 changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PictureBox1_SizeChanged(object sender, EventArgs e)
-        {
-            // update the viewsizeXY
-            viewsizeX = pictureBox.Width;
-            viewsizeY = pictureBox.Height;
-            // Update numOfCells
-            numOfCellsX = (viewsizeX + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
-            numOfCellsY = (viewsizeY + unitOfCell * pixelPerPoint) / (unitOfCell * pixelPerPoint);
-        }
+
         /// <summary>
         /// plot all the point at once
         /// </summary>

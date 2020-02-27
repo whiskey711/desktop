@@ -90,12 +90,16 @@
             this.nextCalltimer = new System.Windows.Forms.Timer(this.components);
             this.waitingTimer = new System.Windows.Forms.Timer(this.components);
             this.backWorker = new System.ComponentModel.BackgroundWorker();
+            this.ecgLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ecgSidePanel = new System.Windows.Forms.Panel();
             this.mainTableLayoutPanel.SuspendLayout();
             this.detailPanel.SuspendLayout();
             this.indicatorGroup.SuspendLayout();
             this.ecgPanel.SuspendLayout();
             this.ecgGroup.SuspendLayout();
             this.remarkGroup.SuspendLayout();
+            this.ecgLayoutPanel.SuspendLayout();
+            this.ecgSidePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainTableLayoutPanel
@@ -158,6 +162,7 @@
             this.detailPanel.Controls.Add(this.firstNameLabel);
             this.detailPanel.Controls.Add(this.lastNameTB);
             this.detailPanel.Controls.Add(this.lastNameLabel);
+            this.detailPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.detailPanel.Location = new System.Drawing.Point(3, 3);
             this.detailPanel.Name = "detailPanel";
             this.detailPanel.Size = new System.Drawing.Size(660, 254);
@@ -498,6 +503,7 @@
             this.indicatorGroup.Controls.Add(this.durationTitle);
             this.indicatorGroup.Controls.Add(this.indicatorLed);
             this.indicatorGroup.Controls.Add(this.recordBtn);
+            this.indicatorGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.indicatorGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.indicatorGroup.Location = new System.Drawing.Point(1335, 3);
             this.indicatorGroup.Name = "indicatorGroup";
@@ -508,9 +514,10 @@
             // 
             // terminateBtn
             // 
+            this.terminateBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.terminateBtn.AutoSize = true;
             this.terminateBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.terminateBtn.Location = new System.Drawing.Point(267, 26);
+            this.terminateBtn.Location = new System.Drawing.Point(453, 23);
             this.terminateBtn.Name = "terminateBtn";
             this.terminateBtn.Size = new System.Drawing.Size(107, 36);
             this.terminateBtn.TabIndex = 6;
@@ -522,7 +529,7 @@
             // 
             this.hookupBtn.AutoSize = true;
             this.hookupBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hookupBtn.Location = new System.Drawing.Point(35, 33);
+            this.hookupBtn.Location = new System.Drawing.Point(6, 23);
             this.hookupBtn.Name = "hookupBtn";
             this.hookupBtn.Size = new System.Drawing.Size(89, 36);
             this.hookupBtn.TabIndex = 5;
@@ -532,9 +539,10 @@
             // 
             // startTitle
             // 
+            this.startTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.startTitle.AutoSize = true;
             this.startTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startTitle.Location = new System.Drawing.Point(248, 107);
+            this.startTitle.Location = new System.Drawing.Point(342, 216);
             this.startTitle.Name = "startTitle";
             this.startTitle.Size = new System.Drawing.Size(75, 26);
             this.startTitle.TabIndex = 4;
@@ -542,9 +550,10 @@
             // 
             // durationLabel
             // 
+            this.durationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.durationLabel.AutoSize = true;
             this.durationLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.durationLabel.Location = new System.Drawing.Point(367, 111);
+            this.durationLabel.Location = new System.Drawing.Point(448, 216);
             this.durationLabel.Name = "durationLabel";
             this.durationLabel.Size = new System.Drawing.Size(90, 26);
             this.durationLabel.TabIndex = 3;
@@ -552,9 +561,10 @@
             // 
             // timeLabel
             // 
+            this.timeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.timeLabel.AutoSize = true;
             this.timeLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.timeLabel.Location = new System.Drawing.Point(367, 73);
+            this.timeLabel.Location = new System.Drawing.Point(448, 175);
             this.timeLabel.Name = "timeLabel";
             this.timeLabel.Size = new System.Drawing.Size(54, 26);
             this.timeLabel.TabIndex = 2;
@@ -562,9 +572,10 @@
             // 
             // durationTitle
             // 
+            this.durationTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.durationTitle.AutoSize = true;
             this.durationTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.durationTitle.Location = new System.Drawing.Point(248, 73);
+            this.durationTitle.Location = new System.Drawing.Point(342, 175);
             this.durationTitle.Name = "durationTitle";
             this.durationTitle.Size = new System.Drawing.Size(87, 26);
             this.durationTitle.TabIndex = 1;
@@ -572,8 +583,9 @@
             // 
             // indicatorLed
             // 
+            this.indicatorLed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.indicatorLed.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.indicatorLed.Location = new System.Drawing.Point(148, 118);
+            this.indicatorLed.Location = new System.Drawing.Point(119, 224);
             this.indicatorLed.Name = "indicatorLed";
             this.indicatorLed.On = false;
             this.indicatorLed.Size = new System.Drawing.Size(18, 15);
@@ -582,9 +594,10 @@
             // 
             // recordBtn
             // 
+            this.recordBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.recordBtn.AutoSize = true;
             this.recordBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.recordBtn.Location = new System.Drawing.Point(35, 101);
+            this.recordBtn.Location = new System.Drawing.Point(6, 211);
             this.recordBtn.Name = "recordBtn";
             this.recordBtn.Size = new System.Drawing.Size(107, 36);
             this.recordBtn.TabIndex = 0;
@@ -605,13 +618,7 @@
             // 
             // ecgGroup
             // 
-            this.ecgGroup.Controls.Add(this.statusFlag);
-            this.ecgGroup.Controls.Add(this.waitTimeLabel);
-            this.ecgGroup.Controls.Add(this.channel2);
-            this.ecgGroup.Controls.Add(this.channel1);
-            this.ecgGroup.Controls.Add(this.chanel2Label);
-            this.ecgGroup.Controls.Add(this.channel1Label);
-            this.ecgGroup.Controls.Add(this.ecgStartBtn);
+            this.ecgGroup.Controls.Add(this.ecgLayoutPanel);
             this.ecgGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ecgGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ecgGroup.Location = new System.Drawing.Point(0, 0);
@@ -624,44 +631,49 @@
             // statusFlag
             // 
             this.statusFlag.AutoSize = true;
-            this.statusFlag.Location = new System.Drawing.Point(163, 323);
+            this.statusFlag.Location = new System.Drawing.Point(17, 172);
             this.statusFlag.Name = "statusFlag";
             this.statusFlag.Size = new System.Drawing.Size(45, 19);
             this.statusFlag.TabIndex = 8;
             this.statusFlag.Text = "ready";
             // 
-            // l
+            // waitTimeLabel
             // 
+            this.waitTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.waitTimeLabel.AutoSize = true;
-            this.waitTimeLabel.Location = new System.Drawing.Point(163, 387);
-            this.waitTimeLabel.Name = "l";
+            this.waitTimeLabel.Location = new System.Drawing.Point(17, 529);
+            this.waitTimeLabel.Name = "waitTimeLabel";
             this.waitTimeLabel.Size = new System.Drawing.Size(69, 19);
             this.waitTimeLabel.TabIndex = 7;
             this.waitTimeLabel.Text = "waitTime";
             // 
             // channel2
             // 
-            this.channel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.channel2.Location = new System.Drawing.Point(256, 375);
+            this.channel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel2.Location = new System.Drawing.Point(385, 383);
             this.channel2.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.channel2.Name = "channel2";
-            this.channel2.Size = new System.Drawing.Size(1550, 350);
+            this.channel2.Size = new System.Drawing.Size(1500, 357);
             this.channel2.TabIndex = 6;
             // 
             // channel1
             // 
-            this.channel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.channel1.Location = new System.Drawing.Point(256, 9);
+            this.channel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel1.Location = new System.Drawing.Point(385, 9);
             this.channel1.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.channel1.Name = "channel1";
-            this.channel1.Size = new System.Drawing.Size(1550, 348);
+            this.channel1.Size = new System.Drawing.Size(1500, 356);
             this.channel1.TabIndex = 5;
             // 
             // chanel2Label
             // 
-            this.chanel2Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.chanel2Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chanel2Label.AutoSize = true;
-            this.chanel2Label.Location = new System.Drawing.Point(87, 562);
+            this.chanel2Label.Location = new System.Drawing.Point(299, 529);
             this.chanel2Label.Name = "chanel2Label";
             this.chanel2Label.Size = new System.Drawing.Size(70, 19);
             this.chanel2Label.TabIndex = 4;
@@ -669,9 +681,9 @@
             // 
             // channel1Label
             // 
-            this.channel1Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.channel1Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.channel1Label.AutoSize = true;
-            this.channel1Label.Location = new System.Drawing.Point(87, 145);
+            this.channel1Label.Location = new System.Drawing.Point(292, 172);
             this.channel1Label.Name = "channel1Label";
             this.channel1Label.Size = new System.Drawing.Size(74, 19);
             this.channel1Label.TabIndex = 3;
@@ -679,10 +691,10 @@
             // 
             // ecgStartBtn
             // 
-            this.ecgStartBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ecgStartBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ecgStartBtn.AutoSize = true;
             this.ecgStartBtn.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ecgStartBtn.Location = new System.Drawing.Point(38, 343);
+            this.ecgStartBtn.Location = new System.Drawing.Point(5, 356);
             this.ecgStartBtn.Name = "ecgStartBtn";
             this.ecgStartBtn.Size = new System.Drawing.Size(90, 36);
             this.ecgStartBtn.TabIndex = 2;
@@ -694,6 +706,7 @@
             // 
             this.remarkGroup.Controls.Add(this.saveRemarkBtn);
             this.remarkGroup.Controls.Add(this.remarkRichTextBox);
+            this.remarkGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.remarkGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.remarkGroup.Location = new System.Drawing.Point(669, 3);
             this.remarkGroup.Name = "remarkGroup";
@@ -704,6 +717,7 @@
             // 
             // saveRemarkBtn
             // 
+            this.saveRemarkBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.saveRemarkBtn.AutoSize = true;
             this.saveRemarkBtn.Location = new System.Drawing.Point(298, 210);
             this.saveRemarkBtn.Name = "saveRemarkBtn";
@@ -715,6 +729,9 @@
             // 
             // remarkRichTextBox
             // 
+            this.remarkRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.remarkRichTextBox.Location = new System.Drawing.Point(7, 15);
             this.remarkRichTextBox.Name = "remarkRichTextBox";
             this.remarkRichTextBox.Size = new System.Drawing.Size(647, 186);
@@ -732,7 +749,7 @@
             this.countTImer.Interval = 1000;
             this.countTImer.Tick += new System.EventHandler(this.CountTimer_Tick);
             // 
-            // timer1
+            // nextCalltimer
             // 
             this.nextCalltimer.Interval = 1000;
             this.nextCalltimer.Tick += new System.EventHandler(this.Timer1_Tick);
@@ -741,6 +758,37 @@
             // 
             this.waitingTimer.Interval = 1000;
             this.waitingTimer.Tick += new System.EventHandler(this.WaitingTimer_Tick);
+            // 
+            // ecgLayoutPanel
+            // 
+            this.ecgLayoutPanel.ColumnCount = 2;
+            this.ecgLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.ecgLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.ecgLayoutPanel.Controls.Add(this.ecgSidePanel, 0, 0);
+            this.ecgLayoutPanel.Controls.Add(this.channel2, 1, 1);
+            this.ecgLayoutPanel.Controls.Add(this.channel1, 1, 0);
+            this.ecgLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ecgLayoutPanel.Location = new System.Drawing.Point(3, 23);
+            this.ecgLayoutPanel.Name = "ecgLayoutPanel";
+            this.ecgLayoutPanel.RowCount = 2;
+            this.ecgLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ecgLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ecgLayoutPanel.Size = new System.Drawing.Size(1892, 749);
+            this.ecgLayoutPanel.TabIndex = 9;
+            // 
+            // ecgSidePanel
+            // 
+            this.ecgSidePanel.Controls.Add(this.ecgStartBtn);
+            this.ecgSidePanel.Controls.Add(this.waitTimeLabel);
+            this.ecgSidePanel.Controls.Add(this.statusFlag);
+            this.ecgSidePanel.Controls.Add(this.channel1Label);
+            this.ecgSidePanel.Controls.Add(this.chanel2Label);
+            this.ecgSidePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ecgSidePanel.Location = new System.Drawing.Point(3, 3);
+            this.ecgSidePanel.Name = "ecgSidePanel";
+            this.ecgLayoutPanel.SetRowSpan(this.ecgSidePanel, 2);
+            this.ecgSidePanel.Size = new System.Drawing.Size(372, 743);
+            this.ecgSidePanel.TabIndex = 0;
             // 
             // MainInterface
             // 
@@ -757,9 +805,11 @@
             this.indicatorGroup.PerformLayout();
             this.ecgPanel.ResumeLayout(false);
             this.ecgGroup.ResumeLayout(false);
-            this.ecgGroup.PerformLayout();
             this.remarkGroup.ResumeLayout(false);
             this.remarkGroup.PerformLayout();
+            this.ecgLayoutPanel.ResumeLayout(false);
+            this.ecgSidePanel.ResumeLayout(false);
+            this.ecgSidePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -828,5 +878,7 @@
         private System.Windows.Forms.Label firstNameLabel;
         private System.Windows.Forms.TextBox lastNameTB;
         private System.Windows.Forms.Label lastNameLabel;
+        private System.Windows.Forms.TableLayoutPanel ecgLayoutPanel;
+        private System.Windows.Forms.Panel ecgSidePanel;
     }
 }

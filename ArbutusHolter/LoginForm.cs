@@ -94,5 +94,23 @@ namespace Uvic_Ecg_ArbutusHolter
                 password.PasswordChar = '\0';
             }
         }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+            /*
+            password.Left = (this.ClientSize.Width - password.Width) / 2;
+            password.Top = (this.ClientSize.Height - password.Height) / 2;
+            userEmail.Left = password.Left;
+            userEmail.Top = password.Top - userEmail.Height - 2;
+            welcomeLabel.Left = (this.ClientSize.Width - welcomeLabel.Width) / 2;
+            welcomeLabel.Top = userEmail.Top - welcomeLabel.Height - 15;
+            forgetPWButton.Left = (this.ClientSize.Width - forgetPWButton.Width) / 2;
+            forgetPWButton.Top = password.Bottom + forgetPWButton.Height + 15;
+            loginButton.Left = forgetPWButton.Left;
+            loginButton.Top = forgetPWButton.Top - loginButton.Height - 2;
+            registerButton.Top = loginButton.Top;
+            registerButton.Left = loginButton.Right + 10;
+            */
+        }
     }
 }

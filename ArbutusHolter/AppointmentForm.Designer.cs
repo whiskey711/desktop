@@ -25,10 +25,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
-            this.weeklyCal = new Calendar.DayView();
+            Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
             this.appointTabletPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.srhFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.srhGroup = new System.Windows.Forms.GroupBox();
             this.dateFormatLab = new System.Windows.Forms.Label();
             this.createBtn = new System.Windows.Forms.Button();
@@ -40,7 +38,15 @@
             this.phnLabel = new System.Windows.Forms.Label();
             this.birthLabel = new System.Windows.Forms.Label();
             this.PLastNameLabel = new System.Windows.Forms.Label();
-            this.pDetailsFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.sidePanel = new System.Windows.Forms.Panel();
+            this.editMailBtn = new System.Windows.Forms.Button();
+            this.PatientLsGroup = new System.Windows.Forms.GroupBox();
+            this.patientListView = new System.Windows.Forms.ListView();
+            this.lastName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.midName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.firstName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.birth = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.phn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.PatientDetailsGroup = new System.Windows.Forms.GroupBox();
             this.detailPanel = new System.Windows.Forms.Panel();
             this.address2TB = new System.Windows.Forms.TextBox();
@@ -79,15 +85,6 @@
             this.lastNameTB = new System.Windows.Forms.TextBox();
             this.lastNameLabel = new System.Windows.Forms.Label();
             this.saveBtn = new System.Windows.Forms.Button();
-            this.resultFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.PatientLsGroup = new System.Windows.Forms.GroupBox();
-            this.patientListView = new System.Windows.Forms.ListView();
-            this.lastName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.midName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.firstName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.birth = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.phn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.calFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.calGroup = new System.Windows.Forms.GroupBox();
             this.regionComboBox = new System.Windows.Forms.ComboBox();
             this.appointLabel = new System.Windows.Forms.Label();
@@ -103,49 +100,22 @@
             this.startTimeFilt = new System.Windows.Forms.DateTimePicker();
             this.goleftBtn = new System.Windows.Forms.Button();
             this.yearIndicateLab = new System.Windows.Forms.Label();
+            this.weeklyCal = new Calendar.DayView();
             this.addAppointBtn = new System.Windows.Forms.Button();
             this.weekBtn = new System.Windows.Forms.Button();
             this.pNameCheckBox = new System.Windows.Forms.CheckBox();
             this.dayBtn = new System.Windows.Forms.Button();
             this.dayViewMonthlyCal = new System.Windows.Forms.MonthCalendar();
-            this.sidePanel = new System.Windows.Forms.Panel();
-            this.editMailBtn = new System.Windows.Forms.Button();
-            this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
+            this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.appointTabletPanel.SuspendLayout();
-            this.srhFlowPanel.SuspendLayout();
             this.srhGroup.SuspendLayout();
-            this.pDetailsFlowPanel.SuspendLayout();
+            this.sidePanel.SuspendLayout();
+            this.PatientLsGroup.SuspendLayout();
             this.PatientDetailsGroup.SuspendLayout();
             this.detailPanel.SuspendLayout();
-            this.resultFlowPanel.SuspendLayout();
-            this.PatientLsGroup.SuspendLayout();
-            this.calFlowPanel.SuspendLayout();
             this.calGroup.SuspendLayout();
-            this.sidePanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // weeklyCal
-            // 
-            drawTool1.DayView = this.weeklyCal;
-            this.weeklyCal.ActiveTool = drawTool1;
-            this.weeklyCal.AmPmDisplay = false;
-            this.weeklyCal.AppHeightMode = Calendar.DayView.AppHeightDrawMode.TrueHeightAll;
-            this.weeklyCal.DrawAllAppBorder = false;
-            this.weeklyCal.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.weeklyCal.Location = new System.Drawing.Point(495, 69);
-            this.weeklyCal.MinHalfHourApp = false;
-            this.weeklyCal.Name = "weeklyCal";
-            this.weeklyCal.SelectionEnd = new System.DateTime(((long)(0)));
-            this.weeklyCal.SelectionStart = new System.DateTime(((long)(0)));
-            this.weeklyCal.Size = new System.Drawing.Size(1126, 584);
-            this.weeklyCal.StartDate = new System.DateTime(((long)(0)));
-            this.weeklyCal.TabIndex = 3;
-            this.weeklyCal.Text = "WeeklyCal";
-            this.weeklyCal.WorkingHourEnd = 23;
-            this.weeklyCal.WorkingHourStart = 0;
-            this.weeklyCal.WorkingMinuteStart = 0;
-            this.weeklyCal.Click += new System.EventHandler(this.WeeklyCal_Click);
             // 
             // appointTabletPanel
             // 
@@ -154,10 +124,10 @@
             this.appointTabletPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.appointTabletPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26F));
             this.appointTabletPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14F));
-            this.appointTabletPanel.Controls.Add(this.srhFlowPanel, 0, 0);
-            this.appointTabletPanel.Controls.Add(this.pDetailsFlowPanel, 2, 0);
-            this.appointTabletPanel.Controls.Add(this.resultFlowPanel, 1, 0);
-            this.appointTabletPanel.Controls.Add(this.calFlowPanel, 0, 1);
+            this.appointTabletPanel.Controls.Add(this.calGroup, 0, 1);
+            this.appointTabletPanel.Controls.Add(this.PatientDetailsGroup, 2, 0);
+            this.appointTabletPanel.Controls.Add(this.PatientLsGroup, 1, 0);
+            this.appointTabletPanel.Controls.Add(this.srhGroup, 0, 0);
             this.appointTabletPanel.Controls.Add(this.sidePanel, 3, 1);
             this.appointTabletPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.appointTabletPanel.Location = new System.Drawing.Point(0, 0);
@@ -165,17 +135,9 @@
             this.appointTabletPanel.RowCount = 2;
             this.appointTabletPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.appointTabletPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 65F));
+            this.appointTabletPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.appointTabletPanel.Size = new System.Drawing.Size(1904, 1041);
             this.appointTabletPanel.TabIndex = 0;
-            // 
-            // srhFlowPanel
-            // 
-            this.srhFlowPanel.Controls.Add(this.srhGroup);
-            this.srhFlowPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.srhFlowPanel.Location = new System.Drawing.Point(3, 3);
-            this.srhFlowPanel.Name = "srhFlowPanel";
-            this.srhFlowPanel.Size = new System.Drawing.Size(374, 358);
-            this.srhFlowPanel.TabIndex = 0;
             // 
             // srhGroup
             // 
@@ -190,17 +152,20 @@
             this.srhGroup.Controls.Add(this.phnLabel);
             this.srhGroup.Controls.Add(this.birthLabel);
             this.srhGroup.Controls.Add(this.PLastNameLabel);
+            this.srhGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.srhGroup.Location = new System.Drawing.Point(3, 3);
             this.srhGroup.Name = "srhGroup";
-            this.srhGroup.Size = new System.Drawing.Size(371, 355);
-            this.srhGroup.TabIndex = 6;
+            this.srhGroup.Size = new System.Drawing.Size(374, 358);
+            this.srhGroup.TabIndex = 9;
             this.srhGroup.TabStop = false;
             this.srhGroup.Text = "Search Patient";
             // 
             // dateFormatLab
             // 
+            this.dateFormatLab.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dateFormatLab.AutoSize = true;
-            this.dateFormatLab.Location = new System.Drawing.Point(90, 170);
+            this.dateFormatLab.Location = new System.Drawing.Point(87, 131);
             this.dateFormatLab.Name = "dateFormatLab";
             this.dateFormatLab.Size = new System.Drawing.Size(79, 13);
             this.dateFormatLab.TabIndex = 11;
@@ -208,9 +173,11 @@
             // 
             // createBtn
             // 
+            this.createBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.createBtn.AutoSize = true;
+            this.createBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.createBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createBtn.Location = new System.Drawing.Point(204, 317);
+            this.createBtn.Location = new System.Drawing.Point(256, 323);
             this.createBtn.Name = "createBtn";
             this.createBtn.Size = new System.Drawing.Size(112, 29);
             this.createBtn.TabIndex = 1;
@@ -220,8 +187,10 @@
             // 
             // pFirstNameTextBox
             // 
+            this.pFirstNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pFirstNameTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pFirstNameTextBox.Location = new System.Drawing.Point(90, 83);
+            this.pFirstNameTextBox.Location = new System.Drawing.Point(90, 66);
             this.pFirstNameTextBox.Name = "pFirstNameTextBox";
             this.pFirstNameTextBox.Size = new System.Drawing.Size(278, 27);
             this.pFirstNameTextBox.TabIndex = 4;
@@ -230,7 +199,7 @@
             // 
             this.PFirstNameLabel.AutoSize = true;
             this.PFirstNameLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PFirstNameLabel.Location = new System.Drawing.Point(6, 91);
+            this.PFirstNameLabel.Location = new System.Drawing.Point(6, 69);
             this.PFirstNameLabel.Name = "PFirstNameLabel";
             this.PFirstNameLabel.Size = new System.Drawing.Size(79, 19);
             this.PFirstNameLabel.TabIndex = 9;
@@ -238,11 +207,13 @@
             // 
             // srhBtn
             // 
+            this.srhBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.srhBtn.AutoSize = true;
+            this.srhBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.srhBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.srhBtn.Location = new System.Drawing.Point(123, 317);
+            this.srhBtn.Location = new System.Drawing.Point(90, 323);
             this.srhBtn.Name = "srhBtn";
-            this.srhBtn.Size = new System.Drawing.Size(75, 29);
+            this.srhBtn.Size = new System.Drawing.Size(62, 29);
             this.srhBtn.TabIndex = 7;
             this.srhBtn.Text = "Search";
             this.srhBtn.UseVisualStyleBackColor = true;
@@ -250,14 +221,18 @@
             // 
             // phnTextBox
             // 
+            this.phnTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.phnTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.phnTextBox.Location = new System.Drawing.Point(90, 197);
+            this.phnTextBox.Location = new System.Drawing.Point(90, 147);
             this.phnTextBox.Name = "phnTextBox";
             this.phnTextBox.Size = new System.Drawing.Size(278, 27);
             this.phnTextBox.TabIndex = 6;
             // 
             // pLastNameTextBox
             // 
+            this.pLastNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pLastNameTextBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pLastNameTextBox.Location = new System.Drawing.Point(90, 33);
             this.pLastNameTextBox.Name = "pLastNameTextBox";
@@ -268,7 +243,7 @@
             // 
             this.phnLabel.AutoSize = true;
             this.phnLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.phnLabel.Location = new System.Drawing.Point(6, 200);
+            this.phnLabel.Location = new System.Drawing.Point(9, 150);
             this.phnLabel.Name = "phnLabel";
             this.phnLabel.Size = new System.Drawing.Size(37, 19);
             this.phnLabel.TabIndex = 2;
@@ -278,7 +253,7 @@
             // 
             this.birthLabel.AutoSize = true;
             this.birthLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthLabel.Location = new System.Drawing.Point(6, 135);
+            this.birthLabel.Location = new System.Drawing.Point(6, 104);
             this.birthLabel.Name = "birthLabel";
             this.birthLabel.Size = new System.Drawing.Size(69, 19);
             this.birthLabel.TabIndex = 1;
@@ -294,30 +269,107 @@
             this.PLastNameLabel.TabIndex = 0;
             this.PLastNameLabel.Text = "Last Name";
             // 
-            // pDetailsFlowPanel
+            // sidePanel
             // 
-            this.appointTabletPanel.SetColumnSpan(this.pDetailsFlowPanel, 2);
-            this.pDetailsFlowPanel.Controls.Add(this.PatientDetailsGroup);
-            this.pDetailsFlowPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pDetailsFlowPanel.Location = new System.Drawing.Point(1144, 3);
-            this.pDetailsFlowPanel.Name = "pDetailsFlowPanel";
-            this.pDetailsFlowPanel.Size = new System.Drawing.Size(757, 358);
-            this.pDetailsFlowPanel.TabIndex = 1;
+            this.sidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.sidePanel.Controls.Add(this.editMailBtn);
+            this.sidePanel.Location = new System.Drawing.Point(1639, 367);
+            this.sidePanel.Name = "sidePanel";
+            this.sidePanel.Size = new System.Drawing.Size(262, 671);
+            this.sidePanel.TabIndex = 6;
+            // 
+            // editMailBtn
+            // 
+            this.editMailBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.editMailBtn.AutoSize = true;
+            this.editMailBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.editMailBtn.Location = new System.Drawing.Point(60, 198);
+            this.editMailBtn.Name = "editMailBtn";
+            this.editMailBtn.Size = new System.Drawing.Size(154, 23);
+            this.editMailBtn.TabIndex = 1;
+            this.editMailBtn.Text = "Appoinment notification email";
+            this.editMailBtn.UseVisualStyleBackColor = true;
+            this.editMailBtn.Click += new System.EventHandler(this.editMailBtn_Click);
+            // 
+            // PatientLsGroup
+            // 
+            this.PatientLsGroup.Controls.Add(this.patientListView);
+            this.PatientLsGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PatientLsGroup.Location = new System.Drawing.Point(383, 3);
+            this.PatientLsGroup.Name = "PatientLsGroup";
+            this.PatientLsGroup.Size = new System.Drawing.Size(755, 358);
+            this.PatientLsGroup.TabIndex = 9;
+            this.PatientLsGroup.TabStop = false;
+            this.PatientLsGroup.Text = "Patients";
+            // 
+            // patientListView
+            // 
+            this.patientListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.patientListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lastName,
+            this.midName,
+            this.firstName,
+            this.birth,
+            this.phn});
+            this.patientListView.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.patientListView.FullRowSelect = true;
+            this.patientListView.GridLines = true;
+            this.patientListView.HideSelection = false;
+            this.patientListView.Location = new System.Drawing.Point(6, 19);
+            this.patientListView.MultiSelect = false;
+            this.patientListView.Name = "patientListView";
+            this.patientListView.Size = new System.Drawing.Size(740, 330);
+            this.patientListView.TabIndex = 2;
+            this.patientListView.UseCompatibleStateImageBehavior = false;
+            this.patientListView.View = System.Windows.Forms.View.Details;
+            this.patientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
+            // 
+            // lastName
+            // 
+            this.lastName.Text = "Last Name";
+            this.lastName.Width = 120;
+            // 
+            // midName
+            // 
+            this.midName.Text = "Middle Name";
+            this.midName.Width = 160;
+            // 
+            // firstName
+            // 
+            this.firstName.Text = "First Name";
+            this.firstName.Width = 160;
+            // 
+            // birth
+            // 
+            this.birth.Text = "Birthdate";
+            this.birth.Width = 120;
+            // 
+            // phn
+            // 
+            this.phn.Text = "PHN";
+            this.phn.Width = 170;
             // 
             // PatientDetailsGroup
             // 
+            this.appointTabletPanel.SetColumnSpan(this.PatientDetailsGroup, 2);
             this.PatientDetailsGroup.Controls.Add(this.detailPanel);
             this.PatientDetailsGroup.Controls.Add(this.saveBtn);
-            this.PatientDetailsGroup.Location = new System.Drawing.Point(3, 3);
+            this.PatientDetailsGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PatientDetailsGroup.Location = new System.Drawing.Point(1144, 3);
             this.PatientDetailsGroup.Name = "PatientDetailsGroup";
-            this.PatientDetailsGroup.Size = new System.Drawing.Size(745, 352);
-            this.PatientDetailsGroup.TabIndex = 8;
+            this.PatientDetailsGroup.Size = new System.Drawing.Size(757, 358);
+            this.PatientDetailsGroup.TabIndex = 9;
             this.PatientDetailsGroup.TabStop = false;
             this.PatientDetailsGroup.Text = "PatientDetails";
             this.PatientDetailsGroup.Leave += new System.EventHandler(this.PatientDetailsGroup_Leave);
             // 
             // detailPanel
             // 
+            this.detailPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.detailPanel.AutoScroll = true;
             this.detailPanel.Controls.Add(this.birthDateTB);
             this.detailPanel.Controls.Add(this.address2TB);
@@ -357,7 +409,7 @@
             this.detailPanel.Controls.Add(this.lastNameLabel);
             this.detailPanel.Location = new System.Drawing.Point(6, 22);
             this.detailPanel.Name = "detailPanel";
-            this.detailPanel.Size = new System.Drawing.Size(733, 286);
+            this.detailPanel.Size = new System.Drawing.Size(745, 286);
             this.detailPanel.TabIndex = 4;
             // 
             // address2TB
@@ -678,6 +730,8 @@
             // 
             // saveBtn
             // 
+            this.saveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.saveBtn.AutoSize = true;
             this.saveBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.saveBtn.Location = new System.Drawing.Point(327, 317);
@@ -688,83 +742,9 @@
             this.saveBtn.UseVisualStyleBackColor = true;
             this.saveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
-            // resultFlowPanel
-            // 
-            this.resultFlowPanel.Controls.Add(this.PatientLsGroup);
-            this.resultFlowPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.resultFlowPanel.Location = new System.Drawing.Point(383, 3);
-            this.resultFlowPanel.Name = "resultFlowPanel";
-            this.resultFlowPanel.Size = new System.Drawing.Size(755, 358);
-            this.resultFlowPanel.TabIndex = 2;
-            // 
-            // PatientLsGroup
-            // 
-            this.PatientLsGroup.Controls.Add(this.patientListView);
-            this.PatientLsGroup.Location = new System.Drawing.Point(3, 3);
-            this.PatientLsGroup.Name = "PatientLsGroup";
-            this.PatientLsGroup.Size = new System.Drawing.Size(752, 355);
-            this.PatientLsGroup.TabIndex = 7;
-            this.PatientLsGroup.TabStop = false;
-            this.PatientLsGroup.Text = "Patients";
-            // 
-            // patientListView
-            // 
-            this.patientListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.lastName,
-            this.midName,
-            this.firstName,
-            this.birth,
-            this.phn});
-            this.patientListView.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.patientListView.FullRowSelect = true;
-            this.patientListView.GridLines = true;
-            this.patientListView.HideSelection = false;
-            this.patientListView.Location = new System.Drawing.Point(6, 12);
-            this.patientListView.MultiSelect = false;
-            this.patientListView.Name = "patientListView";
-            this.patientListView.Size = new System.Drawing.Size(740, 337);
-            this.patientListView.TabIndex = 2;
-            this.patientListView.UseCompatibleStateImageBehavior = false;
-            this.patientListView.View = System.Windows.Forms.View.Details;
-            this.patientListView.SelectedIndexChanged += new System.EventHandler(this.PatientListView_SelectedIndexChanged);
-            // 
-            // lastName
-            // 
-            this.lastName.Text = "Last Name";
-            this.lastName.Width = 120;
-            // 
-            // midName
-            // 
-            this.midName.Text = "Middle Name";
-            this.midName.Width = 160;
-            // 
-            // firstName
-            // 
-            this.firstName.Text = "First Name";
-            this.firstName.Width = 160;
-            // 
-            // birth
-            // 
-            this.birth.Text = "Birthdate";
-            this.birth.Width = 120;
-            // 
-            // phn
-            // 
-            this.phn.Text = "PHN";
-            this.phn.Width = 170;
-            // 
-            // calFlowPanel
-            // 
-            this.appointTabletPanel.SetColumnSpan(this.calFlowPanel, 3);
-            this.calFlowPanel.Controls.Add(this.calGroup);
-            this.calFlowPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.calFlowPanel.Location = new System.Drawing.Point(3, 367);
-            this.calFlowPanel.Name = "calFlowPanel";
-            this.calFlowPanel.Size = new System.Drawing.Size(1630, 671);
-            this.calFlowPanel.TabIndex = 3;
-            // 
             // calGroup
             // 
+            this.appointTabletPanel.SetColumnSpan(this.calGroup, 3);
             this.calGroup.Controls.Add(this.regionComboBox);
             this.calGroup.Controls.Add(this.appointLabel);
             this.calGroup.Controls.Add(this.filterLabel);
@@ -782,10 +762,11 @@
             this.calGroup.Controls.Add(this.pNameCheckBox);
             this.calGroup.Controls.Add(this.dayBtn);
             this.calGroup.Controls.Add(this.dayViewMonthlyCal);
-            this.calGroup.Location = new System.Drawing.Point(3, 3);
+            this.calGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.calGroup.Location = new System.Drawing.Point(3, 367);
             this.calGroup.Name = "calGroup";
-            this.calGroup.Size = new System.Drawing.Size(1627, 659);
-            this.calGroup.TabIndex = 0;
+            this.calGroup.Size = new System.Drawing.Size(1630, 671);
+            this.calGroup.TabIndex = 10;
             this.calGroup.TabStop = false;
             this.calGroup.Text = "Appointments";
             // 
@@ -839,6 +820,8 @@
             // 
             // patientAppointLs
             // 
+            this.patientAppointLs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.patientAppointLs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.name,
             this.start,
@@ -846,7 +829,7 @@
             this.patientAppointLs.FullRowSelect = true;
             this.patientAppointLs.GridLines = true;
             this.patientAppointLs.HideSelection = false;
-            this.patientAppointLs.Location = new System.Drawing.Point(10, 262);
+            this.patientAppointLs.Location = new System.Drawing.Point(6, 274);
             this.patientAppointLs.Name = "patientAppointLs";
             this.patientAppointLs.Size = new System.Drawing.Size(479, 391);
             this.patientAppointLs.TabIndex = 1;
@@ -882,6 +865,7 @@
             // 
             // gorightBtn
             // 
+            this.gorightBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gorightBtn.AutoSize = true;
             this.gorightBtn.Location = new System.Drawing.Point(1592, 40);
             this.gorightBtn.Name = "gorightBtn";
@@ -914,6 +898,7 @@
             // 
             // yearIndicateLab
             // 
+            this.yearIndicateLab.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.yearIndicateLab.AutoSize = true;
             this.yearIndicateLab.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.yearIndicateLab.Location = new System.Drawing.Point(1040, 16);
@@ -921,6 +906,31 @@
             this.yearIndicateLab.Size = new System.Drawing.Size(93, 19);
             this.yearIndicateLab.TabIndex = 4;
             this.yearIndicateLab.Text = "MMMM yyyy";
+            // 
+            // weeklyCal
+            // 
+            drawTool2.DayView = this.weeklyCal;
+            this.weeklyCal.ActiveTool = drawTool2;
+            this.weeklyCal.AmPmDisplay = false;
+            this.weeklyCal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.weeklyCal.AppHeightMode = Calendar.DayView.AppHeightDrawMode.TrueHeightAll;
+            this.weeklyCal.DrawAllAppBorder = false;
+            this.weeklyCal.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.weeklyCal.Location = new System.Drawing.Point(495, 81);
+            this.weeklyCal.MinHalfHourApp = false;
+            this.weeklyCal.Name = "weeklyCal";
+            this.weeklyCal.SelectionEnd = new System.DateTime(((long)(0)));
+            this.weeklyCal.SelectionStart = new System.DateTime(((long)(0)));
+            this.weeklyCal.Size = new System.Drawing.Size(1126, 584);
+            this.weeklyCal.StartDate = new System.DateTime(((long)(0)));
+            this.weeklyCal.TabIndex = 3;
+            this.weeklyCal.Text = "WeeklyCal";
+            this.weeklyCal.WorkingHourEnd = 23;
+            this.weeklyCal.WorkingHourStart = 0;
+            this.weeklyCal.WorkingMinuteStart = 0;
+            this.weeklyCal.Click += new System.EventHandler(this.WeeklyCal_Click);
             // 
             // addAppointBtn
             // 
@@ -939,6 +949,7 @@
             // 
             // weekBtn
             // 
+            this.weekBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.weekBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.weekBtn.FlatAppearance.BorderSize = 0;
             this.weekBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -964,6 +975,7 @@
             // 
             // dayBtn
             // 
+            this.dayBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.dayBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.dayBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.dayBtn.FlatAppearance.BorderSize = 0;
@@ -981,36 +993,7 @@
             this.dayViewMonthlyCal.Location = new System.Drawing.Point(10, 69);
             this.dayViewMonthlyCal.Name = "dayViewMonthlyCal";
             this.dayViewMonthlyCal.TabIndex = 0;
-            this.dayViewMonthlyCal.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.DayViewMonthlyCal_DateSelected);
-            // 
-            // sidePanel
-            // 
-            this.sidePanel.Controls.Add(this.editMailBtn);
-            this.sidePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sidePanel.Location = new System.Drawing.Point(1639, 367);
-            this.sidePanel.Name = "sidePanel";
-            this.sidePanel.Size = new System.Drawing.Size(262, 671);
-            this.sidePanel.TabIndex = 6;
-            // 
-            // editMailBtn
-            // 
-            this.editMailBtn.AutoSize = true;
-            this.editMailBtn.Location = new System.Drawing.Point(60, 198);
-            this.editMailBtn.Name = "editMailBtn";
-            this.editMailBtn.Size = new System.Drawing.Size(154, 23);
-            this.editMailBtn.TabIndex = 1;
-            this.editMailBtn.Text = "Appoinment notification email";
-            this.editMailBtn.UseVisualStyleBackColor = true;
-            this.editMailBtn.Click += new System.EventHandler(this.editMailBtn_Click);
-            // 
-            // birthText
-            // 
-            this.birthText.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.birthText.Location = new System.Drawing.Point(90, 132);
-            this.birthText.Name = "birthText";
-            this.birthText.PlaceholderText = "MM/DD/YYYY";
-            this.birthText.Size = new System.Drawing.Size(278, 27);
-            this.birthText.TabIndex = 10;
+            this.dayViewMonthlyCal.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.DayViewMonthlyCal_DateSelected);
             // 
             // birthDateTB
             // 
@@ -1021,6 +1004,17 @@
             this.birthDateTB.Size = new System.Drawing.Size(146, 27);
             this.birthDateTB.TabIndex = 42;
             // 
+            // birthText
+            // 
+            this.birthText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.birthText.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.birthText.Location = new System.Drawing.Point(90, 101);
+            this.birthText.Name = "birthText";
+            this.birthText.PlaceholderText = "MM/DD/YYYY";
+            this.birthText.Size = new System.Drawing.Size(278, 27);
+            this.birthText.TabIndex = 10;
+            // 
             // AppointmentForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1030,34 +1024,28 @@
             this.Text = "AppointmentF";
             this.Load += new System.EventHandler(this.AppointmentF_Load);
             this.appointTabletPanel.ResumeLayout(false);
-            this.srhFlowPanel.ResumeLayout(false);
             this.srhGroup.ResumeLayout(false);
             this.srhGroup.PerformLayout();
-            this.pDetailsFlowPanel.ResumeLayout(false);
+            this.sidePanel.ResumeLayout(false);
+            this.sidePanel.PerformLayout();
+            this.PatientLsGroup.ResumeLayout(false);
             this.PatientDetailsGroup.ResumeLayout(false);
             this.PatientDetailsGroup.PerformLayout();
             this.detailPanel.ResumeLayout(false);
             this.detailPanel.PerformLayout();
-            this.resultFlowPanel.ResumeLayout(false);
-            this.PatientLsGroup.ResumeLayout(false);
-            this.calFlowPanel.ResumeLayout(false);
             this.calGroup.ResumeLayout(false);
             this.calGroup.PerformLayout();
-            this.sidePanel.ResumeLayout(false);
-            this.sidePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
         #endregion
         private System.Windows.Forms.TableLayoutPanel appointTabletPanel;
-        private System.Windows.Forms.FlowLayoutPanel srhFlowPanel;
-        private System.Windows.Forms.FlowLayoutPanel pDetailsFlowPanel;
-        private System.Windows.Forms.FlowLayoutPanel resultFlowPanel;
-        private System.Windows.Forms.FlowLayoutPanel calFlowPanel;
-        private System.Windows.Forms.GroupBox calGroup;
-        private System.Windows.Forms.Button weekBtn;
-        private System.Windows.Forms.Button dayBtn;
+        private System.Windows.Forms.Panel sidePanel;
+        private System.Windows.Forms.Button editMailBtn;
         private System.Windows.Forms.GroupBox srhGroup;
+        private System.Windows.Forms.Label dateFormatLab;
+        private System.Windows.Forms.PlaceholderTextBox birthText;
+        private System.Windows.Forms.Button createBtn;
         private System.Windows.Forms.TextBox pFirstNameTextBox;
         private System.Windows.Forms.Label PFirstNameLabel;
         private System.Windows.Forms.Button srhBtn;
@@ -1073,9 +1061,9 @@
         private System.Windows.Forms.ColumnHeader firstName;
         private System.Windows.Forms.ColumnHeader birth;
         private System.Windows.Forms.ColumnHeader phn;
-        private System.Windows.Forms.Button createBtn;
         private System.Windows.Forms.GroupBox PatientDetailsGroup;
         private System.Windows.Forms.Panel detailPanel;
+        private System.Windows.Forms.PlaceholderTextBox birthDateTB;
         private System.Windows.Forms.TextBox address2TB;
         private System.Windows.Forms.Label address2Label;
         private System.Windows.Forms.Label ageLabel;
@@ -1112,28 +1100,26 @@
         private System.Windows.Forms.TextBox lastNameTB;
         private System.Windows.Forms.Label lastNameLabel;
         private System.Windows.Forms.Button saveBtn;
-        private System.Windows.Forms.CheckBox pNameCheckBox;
-        private System.Windows.Forms.Button addAppointBtn;
-        private System.Windows.Forms.MonthCalendar dayViewMonthlyCal;
-        private System.Windows.Forms.Panel sidePanel;
-        private System.Windows.Forms.ListView patientAppointLs;
-        private System.Windows.Forms.ColumnHeader start;
-        private System.Windows.Forms.ColumnHeader end;
-        private Calendar.DayView weeklyCal;
-        private System.Windows.Forms.Label yearIndicateLab;
-        private System.Windows.Forms.Button goleftBtn;
-        private System.Windows.Forms.Button gorightBtn;
-        private System.Windows.Forms.DateTimePicker endTimeFilt;
-        private System.Windows.Forms.DateTimePicker startTimeFilt;
-        private System.Windows.Forms.Label toLabel;
-        private System.Windows.Forms.Label fromLabel;
+        private System.Windows.Forms.GroupBox calGroup;
+        private System.Windows.Forms.ComboBox regionComboBox;
         private System.Windows.Forms.Label appointLabel;
         private System.Windows.Forms.Label filterLabel;
+        private System.Windows.Forms.Label toLabel;
+        private System.Windows.Forms.Label fromLabel;
+        private System.Windows.Forms.ListView patientAppointLs;
         private System.Windows.Forms.ColumnHeader name;
-        private System.Windows.Forms.ComboBox regionComboBox;
-        private System.Windows.Forms.Button editMailBtn;
-        private System.Windows.Forms.PlaceholderTextBox birthText;
-        private System.Windows.Forms.PlaceholderTextBox birthDateTB;
-        private System.Windows.Forms.Label dateFormatLab;
+        private System.Windows.Forms.ColumnHeader start;
+        private System.Windows.Forms.ColumnHeader end;
+        private System.Windows.Forms.DateTimePicker endTimeFilt;
+        private System.Windows.Forms.Button gorightBtn;
+        private System.Windows.Forms.DateTimePicker startTimeFilt;
+        private System.Windows.Forms.Button goleftBtn;
+        private System.Windows.Forms.Label yearIndicateLab;
+        private Calendar.DayView weeklyCal;
+        private System.Windows.Forms.Button addAppointBtn;
+        private System.Windows.Forms.Button weekBtn;
+        private System.Windows.Forms.CheckBox pNameCheckBox;
+        private System.Windows.Forms.Button dayBtn;
+        private System.Windows.Forms.MonthCalendar dayViewMonthlyCal;
     }
 }
