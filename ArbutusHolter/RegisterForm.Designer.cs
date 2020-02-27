@@ -41,6 +41,7 @@
             // 
             // registerButton
             // 
+            this.registerButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.registerButton.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.registerButton.Location = new System.Drawing.Point(888, 657);
             this.registerButton.Name = "registerButton";
@@ -52,6 +53,7 @@
             // 
             // submit
             // 
+            this.submit.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.submit.AutoSize = true;
             this.submit.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.submit.Location = new System.Drawing.Point(874, 695);
@@ -64,6 +66,7 @@
             // 
             // completeNotify
             // 
+            this.completeNotify.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.completeNotify.AutoSize = true;
             this.completeNotify.BackColor = System.Drawing.Color.Transparent;
             this.completeNotify.Font = new System.Drawing.Font("Calibri Light", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -90,6 +93,7 @@
             // 
             // regVerifyTextBox
             // 
+            this.regVerifyTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.regVerifyTextBox.Font = new System.Drawing.Font("Calibri", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.regVerifyTextBox.Location = new System.Drawing.Point(829, 601);
             this.regVerifyTextBox.Name = "regVerifyTextBox";
@@ -98,6 +102,7 @@
             // 
             // lastN
             // 
+            this.lastN.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lastN.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lastN.Location = new System.Drawing.Point(790, 555);
             this.lastN.Margin = new System.Windows.Forms.Padding(2);
@@ -110,6 +115,7 @@
             // 
             // firstN
             // 
+            this.firstN.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.firstN.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.firstN.Location = new System.Drawing.Point(790, 501);
             this.firstN.Margin = new System.Windows.Forms.Padding(2);
@@ -122,6 +128,7 @@
             // 
             // confirmPass
             // 
+            this.confirmPass.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.confirmPass.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.confirmPass.Location = new System.Drawing.Point(790, 447);
             this.confirmPass.Margin = new System.Windows.Forms.Padding(2);
@@ -135,6 +142,7 @@
             // 
             // password
             // 
+            this.password.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.password.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.password.Location = new System.Drawing.Point(790, 393);
             this.password.Margin = new System.Windows.Forms.Padding(2);
@@ -148,6 +156,7 @@
             // 
             // email
             // 
+            this.email.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.email.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.email.Location = new System.Drawing.Point(790, 339);
             this.email.Margin = new System.Windows.Forms.Padding(2);

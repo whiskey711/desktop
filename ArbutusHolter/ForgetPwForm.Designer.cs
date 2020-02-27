@@ -40,6 +40,7 @@
             // 
             // descriptionLabel
             // 
+            this.descriptionLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.descriptionLabel.AutoSize = true;
             this.descriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.descriptionLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -52,6 +53,7 @@
             // 
             // mailTextbox
             // 
+            this.mailTextbox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.mailTextbox.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mailTextbox.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.mailTextbox.Location = new System.Drawing.Point(827, 650);
@@ -62,6 +64,7 @@
             // 
             // SubmitButton
             // 
+            this.SubmitButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.SubmitButton.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SubmitButton.Location = new System.Drawing.Point(903, 792);
             this.SubmitButton.Name = "SubmitButton";
@@ -73,6 +76,7 @@
             // 
             // titleLabel
             // 
+            this.titleLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.titleLabel.AutoSize = true;
             this.titleLabel.BackColor = System.Drawing.Color.Transparent;
             this.titleLabel.Font = new System.Drawing.Font("Calibri Light", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -100,6 +104,7 @@
             // 
             // back
             // 
+            this.back.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.back.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.back.Location = new System.Drawing.Point(874, 875);
             this.back.Name = "back";
@@ -111,6 +116,7 @@
             // 
             // CodeText
             // 
+            this.CodeText.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CodeText.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CodeText.Location = new System.Drawing.Point(843, 614);
             this.CodeText.Name = "CodeText";
@@ -120,6 +126,7 @@
             // 
             // confirm
             // 
+            this.confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.confirm.Font = new System.Drawing.Font("Calibri Light", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.confirm.Location = new System.Drawing.Point(874, 787);
             this.confirm.Name = "confirm";
@@ -131,6 +138,7 @@
             // 
             // finsihLabel
             // 
+            this.finishPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.finsihLabel.AutoSize = true;
             this.finsihLabel.Font = new System.Drawing.Font("Calibri Light", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.finsihLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;

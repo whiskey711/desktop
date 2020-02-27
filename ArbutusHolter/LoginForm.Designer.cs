@@ -36,6 +36,7 @@
             // 
             // loginButton
             // 
+            this.loginButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.loginButton.Font = new System.Drawing.Font("Calibri Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.loginButton.Location = new System.Drawing.Point(838, 660);
             this.loginButton.Margin = new System.Windows.Forms.Padding(2);
@@ -48,8 +49,9 @@
             // 
             // registerButton
             // 
+            this.registerButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.registerButton.Font = new System.Drawing.Font("Calibri Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.registerButton.Location = new System.Drawing.Point(968, 660);
+            this.registerButton.Location = new System.Drawing.Point(962, 660);
             this.registerButton.Margin = new System.Windows.Forms.Padding(2);
             this.registerButton.Name = "registerButton";
             this.registerButton.Size = new System.Drawing.Size(114, 42);
@@ -60,11 +62,12 @@
             // 
             // forgetPWButton
             // 
+            this.forgetPWButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.forgetPWButton.Font = new System.Drawing.Font("Calibri Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.forgetPWButton.Location = new System.Drawing.Point(838, 706);
             this.forgetPWButton.Margin = new System.Windows.Forms.Padding(2);
             this.forgetPWButton.Name = "forgetPWButton";
-            this.forgetPWButton.Size = new System.Drawing.Size(244, 42);
+            this.forgetPWButton.Size = new System.Drawing.Size(238, 42);
             this.forgetPWButton.TabIndex = 7;
             this.forgetPWButton.Text = "Forget password ?";
             this.forgetPWButton.UseVisualStyleBackColor = true;
@@ -72,6 +75,7 @@
             // 
             // welcomeLabel
             // 
+            this.welcomeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.welcomeLabel.AutoSize = true;
             this.welcomeLabel.BackColor = System.Drawing.Color.Transparent;
             this.welcomeLabel.Font = new System.Drawing.Font("Calibri Light", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -84,6 +88,7 @@
             // 
             // password
             // 
+            this.password.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.password.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.password.Location = new System.Drawing.Point(798, 569);
             this.password.Margin = new System.Windows.Forms.Padding(2);
@@ -97,6 +102,7 @@
             // 
             // userEmail
             // 
+            this.userEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.userEmail.Font = new System.Drawing.Font("Calibri Light", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userEmail.Location = new System.Drawing.Point(798, 515);
             this.userEmail.Margin = new System.Windows.Forms.Padding(2);
@@ -123,6 +129,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "LoginForm";
             this.Text = "Arbutus Holter";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

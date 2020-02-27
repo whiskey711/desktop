@@ -56,7 +56,6 @@
             this.Name = "ECGAnimationView";
             this.Size = new System.Drawing.Size(701, 200);
             this.Load += new System.EventHandler(this.ECGAnimationView_Load);
-            this.SizeChanged += new System.EventHandler(this.PictureBox1_SizeChanged);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ECGAnimationView_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ECGAnimationView_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
