@@ -75,10 +75,14 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (ex.InnerException is HttpRequestException || ex.InnerException is WebException)
                 {
                     MessageBox.Show(ex.InnerException.Message);
+                    using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                    {
+                        LogHandle.Log(ex.InnerException.Message, ex.StackTrace, w);
+                    }
                 }
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.InnerException.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
                 }
                 System.Diagnostics.Process.Start(FileName.Log.Name);
             }

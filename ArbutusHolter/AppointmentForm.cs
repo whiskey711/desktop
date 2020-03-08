@@ -133,23 +133,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void CreateBtn_Click(object sender, EventArgs e)
         {
-            lastNameTB.Text = null;
-            midNameTB.Text = null;
-            firstNameTB.Text = null;
-            birthDateTB.Text = null;
-            address1TB.Text = null;
-            provinceTB.Text = null;
-            phnTB.Text = null;
-            genderTB.Text = null;
-            cityTB.Text = null;
-            phoneNumTB.Text = null;
-            homeNumTB.Text = null;
-            mailTB.Text = null;
-            postCodeTB.Text = null;
-            pacemakerTB.Text = null;
-            superPhyTB.Text = null;
-            ageTB.Text = null;
-            medTB.Text = null;
+            ClearText(PatientDetailsGroup);
             createIndicator = true;
             PatientDetailsGroup.Enabled = true;
             PatientDetailsGroup.Focus();
@@ -164,32 +148,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 selectedP = (PatientInfo)patientListView.SelectedItems[0].Tag;
                 LoadPatientInfo(selectedP);
-                restModel = nResource.GetPatientAppoint(selectedP.PatientId, appointFormClient);
-                patientAppointLs.Items.Clear();
-                if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-                {
-                    returnAls = CreateAppointLs(restModel.Feed.Entities);
-                    foreach (var returnA in returnAls)
-                    {
-                        var row = new string[]
-                        {
-                        selectedP.PatientFirstName + " " + selectedP.PatientLastName,
-                        returnA.AppointmentStartTime.Value.ToString(dateAndTime),
-                        returnA.AppointmentEndTime.Value.ToString(dateAndTime)
-                        };
-                        var lsitem = new ListViewItem(row);
-                        lsitem.Tag = returnA;
-                        patientAppointLs.Items.Add(lsitem);
-                    }
-                }
-                else if (restModel.ErrorMessage == "Others")
-                {
-                    return;
-                }
-                else
-                {
-                    MessageBox.Show(restModel.ErrorMessage);
-                }
             }
             catch (Exception ex)
             {
@@ -217,11 +175,37 @@ namespace Uvic_Ecg_ArbutusHolter
             pacemakerTB.Text = theOne.Pacemaker;
             superPhyTB.Text = theOne.SuperPhysician;
             ageTB.Text = theOne.Age;
+            PatientDetailsGroup.Enabled = true;
+            saveBtn.Enabled = true;
             pNameCheckBox.Text = theOne.PatientFirstName + " " + theOne.PatientLastName;
             pNameCheckBox.CheckState = CheckState.Checked;
             pNameCheckBox.Enabled = true;
-            PatientDetailsGroup.Enabled = true;
-            saveBtn.Enabled = true;
+            restModel = nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
+            patientAppointLs.Items.Clear();
+            if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+            {
+                returnAls = CreateAppointLs(restModel.Feed.Entities);
+                foreach (var returnA in returnAls)
+                {
+                    var row = new string[]
+                    {
+                        theOne.PatientFirstName + " " + theOne.PatientLastName,
+                        returnA.AppointmentStartTime.Value.ToString(dateAndTime),
+                        returnA.AppointmentEndTime.Value.ToString(dateAndTime)
+                    };
+                    var lsitem = new ListViewItem(row);
+                    lsitem.Tag = returnA;
+                    patientAppointLs.Items.Add(lsitem);
+                }
+            }
+            else if (restModel.ErrorMessage == "Others")
+            {
+                return;
+            }
+            else
+            {
+                MessageBox.Show(restModel.ErrorMessage);
+            }
         }
         private void SaveBtn_Click(object sender, EventArgs e)
         {
@@ -421,23 +405,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             else if (result == DialogResult.Yes)
             {
-                lastNameTB.Text = null;
-                midNameTB.Text = null;
-                firstNameTB.Text = null;
-                birthDateTB.Text = null;
-                address1TB.Text = null;
-                provinceTB.Text = null;
-                phnTB.Text = null;
-                genderTB.Text = null;
-                cityTB.Text = null;
-                phoneNumTB.Text = null;
-                homeNumTB.Text = null;
-                mailTB.Text = null;
-                postCodeTB.Text = null;
-                pacemakerTB.Text = null;
-                superPhyTB.Text = null;
-                ageTB.Text = null;
-                medTB.Text = null;
+                ClearText(PatientDetailsGroup);
                 PatientDetailsGroup.Enabled = false;
             }
         }
@@ -570,7 +538,14 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 startTimeFilt.Value = endTimeFilt.Value;
             }
-            TimeFilt_Changed();
+            if (pNameCheckBox.Checked)
+            {
+                pNameCheckBox.CheckState = CheckState.Unchecked;
+            }
+            else
+            {
+                TimeFilt_Changed();
+            }         
         }
         private void EndTimeFilt_ValueChanged(object sender, EventArgs e)
         {
@@ -578,7 +553,14 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 endTimeFilt.Value = startTimeFilt.Value;
             }
-            TimeFilt_Changed();
+            if (pNameCheckBox.Checked)
+            {
+                pNameCheckBox.CheckState = CheckState.Unchecked;
+            }
+            else
+            {
+                TimeFilt_Changed();
+            }
         }
         private void TimeFilt_Changed()
         {
@@ -712,14 +694,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                if (pNameCheckBox.Checked)
-                {
-                    return;
-                }
-                patientAppointLs.Items.Clear();
-                pNameCheckBox.Text = "Clinic";
-                pNameCheckBox.Enabled = false;
-                LoadAllAppointments(appointFormClient);
+                CheckedChanged();
             }
             catch (Exception ex)
             {
@@ -729,7 +704,20 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-
+        private void CheckedChanged()
+        {
+            if (pNameCheckBox.Checked)
+            {
+                return;
+            }
+            patientAppointLs.Items.Clear();
+            patientListView.Items.Clear();
+            ClearText(PatientDetailsGroup);
+            ClearText(srhGroup);
+            pNameCheckBox.Text = "Clinic";
+            pNameCheckBox.Enabled = false;
+            LoadAllAppointments(appointFormClient);
+        }
         private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
@@ -795,8 +783,7 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 devLoc = regionComboBox.SelectedItem.ToString();
-                LoadAllAppointments(appointFormClient);
-                TimeFilt_Changed();
+                pNameCheckBox.CheckState = CheckState.Unchecked;
                 weeklyCal.Invalidate();
             }
             catch (Exception ex)
@@ -827,6 +814,16 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     LogHandle.Log(ex.Message, ex.StackTrace, w);
                 }
+            }
+        }
+        private void ClearText(Control cons)
+        {
+            foreach (Control c in cons.Controls)
+            {
+                if (c is TextBox)
+                    ((TextBox)c).Clear();
+                else
+                    ClearText(c);
             }
         }
         private void AddNewAppoinment()
