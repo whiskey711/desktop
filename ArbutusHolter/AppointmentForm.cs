@@ -720,11 +720,12 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
+            
             if (patientAppointLs.SelectedItems[0].Tag == null)
             {
                 return;
             }
+            selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
             using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, selectedA,
                                                                                 selectedA.FirstName + " " + selectedA.LastName))
             {
@@ -873,7 +874,6 @@ namespace Uvic_Ecg_ArbutusHolter
                         if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                         {
                             returnAls = CreateAppointLs(restModel.Feed.Entities);
-                            TimeFilt_Changed();
                         }
                         else
                         {
