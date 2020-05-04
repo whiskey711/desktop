@@ -37,11 +37,12 @@
             this.devPickTimePick = new System.Windows.Forms.DateTimePicker();
             this.devReturnTimePick = new System.Windows.Forms.DateTimePicker();
             this.appointGroup = new System.Windows.Forms.GroupBox();
+            this.deviceLocCB = new System.Windows.Forms.ComboBox();
+            this.deviceNameLab = new System.Windows.Forms.Label();
             this.lastNameLabel = new System.Windows.Forms.Label();
             this.firstNameLabel = new System.Windows.Forms.Label();
             this.deviceCombo = new System.Windows.Forms.ComboBox();
             this.startBtn = new System.Windows.Forms.Button();
-            this.deviceNameLab = new System.Windows.Forms.Label();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -145,6 +146,7 @@
             // 
             // appointGroup
             // 
+            this.appointGroup.Controls.Add(this.deviceLocCB);
             this.appointGroup.Controls.Add(this.deviceNameLab);
             this.appointGroup.Controls.Add(this.lastNameLabel);
             this.appointGroup.Controls.Add(this.firstNameLabel);
@@ -166,6 +168,23 @@
             this.appointGroup.TabIndex = 15;
             this.appointGroup.TabStop = false;
             this.appointGroup.Text = "Appointment Detail";
+            // 
+            // deviceLocCB
+            // 
+            this.deviceLocCB.FormattingEnabled = true;
+            this.deviceLocCB.Location = new System.Drawing.Point(175, 297);
+            this.deviceLocCB.Name = "deviceLocCB";
+            this.deviceLocCB.Size = new System.Drawing.Size(200, 21);
+            this.deviceLocCB.TabIndex = 20;
+            // 
+            // deviceNameLab
+            // 
+            this.deviceNameLab.AutoSize = true;
+            this.deviceNameLab.Location = new System.Drawing.Point(56, 372);
+            this.deviceNameLab.Name = "deviceNameLab";
+            this.deviceNameLab.Size = new System.Drawing.Size(70, 13);
+            this.deviceNameLab.TabIndex = 19;
+            this.deviceNameLab.Text = "Device name";
             // 
             // lastNameLabel
             // 
@@ -206,15 +225,6 @@
             this.startBtn.UseVisualStyleBackColor = true;
             this.startBtn.Click += new System.EventHandler(this.StartBtn_Click);
             // 
-            // deviceNameLab
-            // 
-            this.deviceNameLab.AutoSize = true;
-            this.deviceNameLab.Location = new System.Drawing.Point(56, 372);
-            this.deviceNameLab.Name = "deviceNameLab";
-            this.deviceNameLab.Size = new System.Drawing.Size(70, 13);
-            this.deviceNameLab.TabIndex = 19;
-            this.deviceNameLab.Text = "Device name";
-            // 
             // AppointmentDetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -251,5 +261,6 @@
         private System.Windows.Forms.Label firstNameLabel;
         private System.Windows.Forms.Button startBtn;
         private System.Windows.Forms.Label deviceNameLab;
+        private System.Windows.Forms.ComboBox deviceLocCB;
     }
 }

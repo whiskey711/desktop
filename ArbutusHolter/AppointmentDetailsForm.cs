@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
@@ -28,6 +29,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 inClient = client;
                 theApp = app;
                 nameLs = name.Split(' ');
+                ClassifyDeviceLocation(client);
                 if (app != null)
                 {
                     appointStartTimePick.Value = app.AppointmentStartTime.Value;
@@ -35,6 +37,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     devPickTimePick.Value = app.PickupDate.Value;
                     devReturnTimePick.Value = app.DeviceReturnDate.Value;
                     devLocTB.Text = app.DeviceLocation;
+                    deviceLocCB.Text = app.DeviceLocation;
                     firstNameLabel.Text = app.FirstName;
                     lastNameLabel.Text = app.LastName;
                     restModel = dResource.GetAllDevice(inClient);
@@ -76,12 +79,12 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                deviceLoc = devLocTB.Text;
+                deviceLoc = deviceLocCB.Text;
                 startTime = appointStartTimePick.Value;
                 endTime = appointEndTimePick.Value;
                 pickTime = devPickTimePick.Value;
                 returnTime = devReturnTimePick.Value;
-                if (string.IsNullOrWhiteSpace(deviceLoc))
+                if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
                 {
                     MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
                     return;
@@ -127,22 +130,19 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(devLocTB.Text))
+                if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
                 {
                     MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
                     return;
                 }
-                restModel = dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value, devLocTB.Text);
+                restModel = dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value, deviceLocCB.Text);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     deviceCombo.Items.Clear();
                     returnDls = CreateDevLs(restModel.Feed.Entities);
                     foreach (var returnD in returnDls)
                     {
-                        if (devLocTB.Text.Equals(returnD.DeviceLocation))
-                        {
-                            deviceCombo.Items.Add(returnD.DeviceName);
-                        }
+                        deviceCombo.Items.Add(returnD.DeviceName);
                     }
                 }
             }
@@ -163,10 +163,43 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             return devls;
         }
+        private List<String> CreateDeviceLocLs(List<Entity<Device>> entls)
+        {
+            List<String> devLocLs = new List<String>();
+            foreach (var ent in entls)
+            {
+                devLocLs.Add(ent.Model.DeviceLocation);
+            }
+            List<String> devLocDistinctLs = devLocLs.Distinct().ToList();
+            return devLocDistinctLs;
+        }
         private void StartBtn_Click(object sender, EventArgs e)
         {
             MainInterface mainForm = new MainInterface(inClient, theApp);
             mainForm.Show();
+        }
+
+        private void ClassifyDeviceLocation(Client client)
+        {
+            try
+            {
+                restModel = dResource.GetAllDevice(client);
+                if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+                {
+                    List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
+                    foreach (var returnDevLoc in returnDevLocLs)
+                    {
+                        deviceLocCB.Items.Add(returnDevLoc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                }
+            }
         }
     }
 }
