@@ -289,7 +289,7 @@
             this.editMailBtn.TabIndex = 1;
             this.editMailBtn.Text = "Appoinment notification email";
             this.editMailBtn.UseVisualStyleBackColor = true;
-            this.editMailBtn.Click += new System.EventHandler(this.editMailBtn_Click);
+            this.editMailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
             // 
             // PatientLsGroup
             // 

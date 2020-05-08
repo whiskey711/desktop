@@ -40,6 +40,7 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime thisYearStart = DateTime.Parse("1/1/" + DateTime.Today.Year);
         DateTime thisYeaarEnd = DateTime.Parse("12/31/" + DateTime.Today.Year);
         int appointBlockMinLength = 15;
+        int invalidPid = -1;
         string monthYear = "MMMM yyyy";
         string dateAndTime = "MM/dd/yyyy HH:mm";
         string allLocation = "All locations";
@@ -47,6 +48,8 @@ namespace Uvic_Ecg_ArbutusHolter
         public AppointmentForm(Client client)
         {
             InitializeComponent();
+            SetStyle(ControlStyles.StandardClick, true);
+            SetStyle(ControlStyles.StandardDoubleClick, false);
             PatientDetailsGroup.Enabled = false;
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
@@ -74,7 +77,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         return;
                     }                   
                 }
-                SrhPatient(pLastNameTextBox.Text, pFirstNameTextBox.Text, birthText.Text, phnTextBox.Text, 0);
+                SrhPatient(pLastNameTextBox.Text, pFirstNameTextBox.Text, birthText.Text, phnTextBox.Text, invalidPid);
             }
             catch (Exception ex)
             {
@@ -92,7 +95,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
                 List<PatientInfo> returnPls = CreatePatientLs(returnEls);
-                if (pid == 0)
+                if (pid == invalidPid)
                 {
                     foreach (var returnP in returnPls)
                     {
@@ -121,7 +124,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             lsitem.Tag = returnP;
                             selectedP = returnP;
                             patientListView.Items.Add(lsitem);
-                            LoadPatientInfo(returnP);
+                            LoadPatientInfo(returnP, pid);
                         }
                     }
                 }
@@ -147,7 +150,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 selectedP = (PatientInfo)patientListView.SelectedItems[0].Tag;
-                LoadPatientInfo(selectedP);
+                LoadPatientInfo(selectedP, invalidPid);
             }
             catch (Exception ex)
             {
@@ -157,7 +160,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void LoadPatientInfo(PatientInfo theOne)
+        private void LoadPatientInfo(PatientInfo theOne, int pid)
         {
             lastNameTB.Text = theOne.PatientLastName;
             midNameTB.Text = theOne.PatientMidName;
@@ -180,6 +183,10 @@ namespace Uvic_Ecg_ArbutusHolter
             pNameCheckBox.Text = theOne.PatientFirstName + " " + theOne.PatientLastName;
             pNameCheckBox.CheckState = CheckState.Checked;
             pNameCheckBox.Enabled = true;
+            if (pid != invalidPid)
+            {
+                return;
+            }
             restModel = nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
             patientAppointLs.Items.Clear();
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
@@ -675,7 +682,7 @@ namespace Uvic_Ecg_ArbutusHolter
             endTimeFilt.Value = startTimeFilt.Value.AddDays(6);
             TimeFilt_Changed();
         }
-        private void editMailBtn_Click(object sender, EventArgs e)
+        private void EditMailBtn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -720,8 +727,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            
-            if (patientAppointLs.SelectedItems[0].Tag == null)
+            if (patientAppointLs.SelectedItems.Count <= 0)
             {
                 return;
             }
