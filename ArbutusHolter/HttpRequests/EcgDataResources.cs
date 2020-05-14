@@ -52,5 +52,12 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             testRestMod = testReq.Post("test/patient/ecg-tests", content, client);
             return testRestMod;
         }
+        public RestModel<ResultJson> UpdateEcgTest(Client client, EcgTest upEcgTest)
+        {
+            string json = JsonConvert.SerializeObject(upEcgTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            content = new StringContent(json, Encoding.UTF8, "application/json");
+            testRestMod = testReq.Put("test/patient/ecg-tests", content, client);
+            return testRestMod;
+        }
     }
 }
