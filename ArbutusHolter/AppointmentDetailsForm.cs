@@ -32,8 +32,8 @@ namespace Uvic_Ecg_ArbutusHolter
                 ClassifyDeviceLocation(client);
                 if (app != null)
                 {
-                    appointStartTimePick.Value = app.AppointmentStartTime.Value;
-                    appointEndTimePick.Value = app.AppointmentEndTime.Value;
+                    appointStartTimePick.Value = app.AppointmentStartTime;
+                    appointEndTimePick.Value = app.AppointmentEndTime;
                     devPickTimePick.Value = app.PickupDate.Value;
                     devReturnTimePick.Value = app.DeviceReturnDate.Value;
                     devLocTB.Text = app.DeviceLocation;
@@ -54,7 +54,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             }
                         }
                     }
-                    if (DateTime.Compare(app.AppointmentEndTime.Value, DateTime.Now) <= 0)
+                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;

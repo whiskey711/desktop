@@ -20,11 +20,9 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime startTime = DateTime.Now;
         RestModel<Uvic_Ecg_Model.Appointment> restModel;
         RestModel<PatientInfo> pRestMod;
-        RestModel<ResultJson> eRestMod;
         RestModel<Device> dRestMod;
         NurseResource nResource = new NurseResource();
         PatientResource patientResource = new PatientResource();
-        EcgDataResources eResource = new EcgDataResources();
         DeviceResource dResource = new DeviceResource();
         Client appointFormClient;
         bool createIndicator = false;
@@ -32,7 +30,6 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientInfo selectedP;
         Uvic_Ecg_Model.Appointment selectedA;
         PatientInfo updatedPatient;
-        EcgTest ecgTest;
         int occupiedDev = 0;
         int devUpLimit = 5;
         long num;
@@ -197,8 +194,8 @@ namespace Uvic_Ecg_ArbutusHolter
                     var row = new string[]
                     {
                         theOne.PatientFirstName + " " + theOne.PatientLastName,
-                        returnA.AppointmentStartTime.Value.ToString(dateAndTime),
-                        returnA.AppointmentEndTime.Value.ToString(dateAndTime)
+                        returnA.AppointmentStartTime.ToString(dateAndTime),
+                        returnA.AppointmentEndTime.ToString(dateAndTime)
                     };
                     var lsitem = new ListViewItem(row);
                     lsitem.Tag = returnA;
@@ -358,13 +355,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 foreach (var returnA in returnAls)
                 {
                     appointStart = new Calendar.Appointment();
-                    appointStart.StartDate = returnA.AppointmentStartTime.Value;
+                    appointStart.StartDate = returnA.AppointmentStartTime;
                     appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
                     appointStart.Color = Color.DeepSkyBlue;
                     appointStart.Appoint = returnA;
                     appointStart.Title = returnA.FirstName + " " + returnA.FirstName;
                     appointEnd = new Calendar.Appointment();
-                    appointEnd.StartDate = returnA.AppointmentEndTime.Value;
+                    appointEnd.StartDate = returnA.AppointmentEndTime;
                     appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
                     appointEnd.Color = Color.Crimson;
                     appointEnd.Appoint = returnA;
@@ -576,8 +573,8 @@ namespace Uvic_Ecg_ArbutusHolter
                 patientAppointLs.Items.Clear();
                 foreach (var returnA in returnAls)
                 {
-                    startAfterTo = DateTime.Compare(returnA.AppointmentStartTime.Value.Date, endTimeFilt.Value.Date);
-                    endBeforeFrom = DateTime.Compare(returnA.AppointmentEndTime.Value.Date, startTimeFilt.Value.Date);
+                    startAfterTo = DateTime.Compare(returnA.AppointmentStartTime.Date, endTimeFilt.Value.Date);
+                    endBeforeFrom = DateTime.Compare(returnA.AppointmentEndTime.Date, startTimeFilt.Value.Date);
                     if (startAfterTo > 0 || endBeforeFrom < 0)
                     {
                         continue; 
@@ -585,8 +582,8 @@ namespace Uvic_Ecg_ArbutusHolter
                     var row = new string[]
                         {
                         returnA.FirstName + " " + returnA.LastName,
-                        returnA.AppointmentStartTime.Value.ToString(dateAndTime),
-                        returnA.AppointmentEndTime.Value.ToString(dateAndTime)
+                        returnA.AppointmentStartTime.ToString(dateAndTime),
+                        returnA.AppointmentEndTime.ToString(dateAndTime)
                         };
                     var lsitem = new ListViewItem(row);
                     lsitem.Tag = returnA;
@@ -781,10 +778,13 @@ namespace Uvic_Ecg_ArbutusHolter
                         appointEnd.Appoint = app;
                         MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
                     }
+                    else
+                    {
+                        MessageBox.Show(errorMsg);
+                    }
                 }
             }
         }
-
         private void RegionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -810,10 +810,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
-                weeklyCal.StartDate = selectedA.AppointmentStartTime.Value;
+                weeklyCal.StartDate = selectedA.AppointmentStartTime;
                 string[] name = patientAppointLs.SelectedItems[0].Text.Split(' ');
                 SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
-                yearIndicateLab.Text = selectedA.AppointmentStartTime.Value.ToString(monthYear);
+                yearIndicateLab.Text = selectedA.AppointmentStartTime.ToString(monthYear);
             }
             catch (Exception ex)
             {
@@ -841,17 +841,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     if (appointDForm.ShowDialog() == DialogResult.OK)
                     {
-                        ecgTest = new EcgTest(appointDForm.startTime, appointDForm.endTime, null, selectedP.PatientId, 1, 1,
-                                              appointDForm.selectDev.DeviceId, 1, null, false, false, false);
-                        eRestMod = eResource.CreateEcgtest(appointFormClient, ecgTest);
-                        if (eRestMod.ErrorMessage != ErrorInfo.OK.ErrorMessage)
-                        {
-                            MessageBox.Show(eRestMod.ErrorMessage);
-                            return;
-                        }
                         app = new Uvic_Ecg_Model.Appointment(1, selectedP.PatientId, appointDForm.selectDev.DeviceId, appointDForm.startTime, appointDForm.endTime,
                                           DateTime.Now, appointDForm.pickTime, appointDForm.returnTime, appointDForm.deviceLoc, null, false, 1,
-                                          selectedP.PatientFirstName, selectedP.PatientLastName, int.Parse(eRestMod.Entity.Model.Message));
+                                          selectedP.PatientFirstName, selectedP.PatientLastName, null);
                         errorMsg = nResource.CreateAppointment(app, appointFormClient);
                         if (errorMsg == ErrorInfo.OK.ErrorMessage)
                         {

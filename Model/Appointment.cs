@@ -9,8 +9,8 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private int nurseId;
         [JsonProperty] private int patientId;
         [JsonProperty] private int deviceId;
-        [JsonProperty] private DateTime? appointmentStartTime = null;
-        [JsonProperty] private DateTime? appointmentEndTime = null;
+        [JsonProperty] private DateTime appointmentStartTime;
+        [JsonProperty] private DateTime appointmentEndTime;
         [JsonProperty] private DateTime? reservationTime = null;
         [JsonProperty] private DateTime? pickupDate = null;
         [JsonProperty] private DateTime? deviceReturnDate = null;
@@ -35,7 +35,7 @@ namespace Uvic_Ecg_Model
                            int cId,
                            string pFirstName,
                            string pLastName,
-                           int ecgTestid)
+                           int? ecgTestid)
         {
             NurseId = nId;
             PatientId = pId;
@@ -91,8 +91,8 @@ namespace Uvic_Ecg_Model
         public int NurseId { get => nurseId; set => nurseId = value; }
         public int PatientId { get => patientId; set => patientId = value; }
         public int DeviceId { get => deviceId; set => deviceId = value; }
-        public DateTime? AppointmentStartTime { get => appointmentStartTime; set => appointmentStartTime = value; }
-        public DateTime? AppointmentEndTime { get => appointmentEndTime; set => appointmentEndTime = value; }
+        public DateTime AppointmentStartTime { get => appointmentStartTime; set => appointmentStartTime = value; }
+        public DateTime AppointmentEndTime { get => appointmentEndTime; set => appointmentEndTime = value; }
         public DateTime? ReservationTime { get => reservationTime; set => reservationTime = value; }
         public DateTime? PickupDate { get => pickupDate; set => pickupDate = value; }
         public DateTime? DeviceReturnDate { get => deviceReturnDate; set => deviceReturnDate = value; }

@@ -18,6 +18,7 @@ namespace Uvic_Ecg_ArbutusHolter
         DataProcess dataProcessForChannel1 = new DataProcess();
         DataProcess dataProcessForChannel2 = new DataProcess();
         RestModel<PatientInfo> restmodel;
+        RestModel<ResultJson> eRestMod;
         List<PatientInfo> returnPls = new List<PatientInfo>();
         bool statusChanges = false;
         string errorMsg;
@@ -40,7 +41,17 @@ namespace Uvic_Ecg_ArbutusHolter
             status = "";
             theApp = app;
             PatientInfo_Load(theApp);
+            CreateEcgTest(theApp);
             firstNameTB.Enabled = false;
+        }
+        public void CreateEcgTest(Appointment app)
+        {
+            EcgTest newTest = new EcgTest(app.AppointmentStartTime, app.AppointmentEndTime, null, app.PatientId, app.NurseId, app.DeviceId, null, app.AppointmentRecordId);
+            eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, newTest);
+            if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
+            {
+                MessageBox.Show(eRestMod.ErrorMessage);
+            }
         }
         public void PatientInfo_Load(Appointment app)
         {
