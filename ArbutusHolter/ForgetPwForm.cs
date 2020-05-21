@@ -36,7 +36,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }   
         }
@@ -69,7 +69,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
