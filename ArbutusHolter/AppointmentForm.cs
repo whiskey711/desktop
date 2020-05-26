@@ -42,6 +42,7 @@ namespace Uvic_Ecg_ArbutusHolter
         string dateAndTime = "MM/dd/yyyy HH:mm";
         string allLocation = "All locations";
         string devLoc;
+        string allLoc = "All locations";
         public AppointmentForm(Client client)
         {
             InitializeComponent();
@@ -347,7 +348,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void LoadAllAppointments(Client client)
         {
-            restModel = nResource.GetAppointments(client, thisYearStart, thisYeaarEnd);
+            restModel = nResource.GetAppointments(client, thisYearStart, thisYeaarEnd, devLoc);
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
@@ -790,7 +791,18 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 devLoc = regionComboBox.SelectedItem.ToString();
-                pNameCheckBox.CheckState = CheckState.Unchecked;
+                if (allLoc.Equals(devLoc))
+                {
+                    devLoc = null;
+                }
+                if (pNameCheckBox.Checked)
+                {
+                    pNameCheckBox.CheckState = CheckState.Unchecked;
+                }
+                else
+                {
+                    LoadAllAppointments(appointFormClient);
+                }               
                 weeklyCal.Invalidate();
             }
             catch (Exception ex)
@@ -868,7 +880,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         {
                             MessageBox.Show(errorMsg);
                         }
-                        restModel = nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd);
+                        restModel = nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd, devLoc);
                         if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                         {
                             returnAls = CreateAppointLs(restModel.Feed.Entities);
