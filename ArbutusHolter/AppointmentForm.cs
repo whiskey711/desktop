@@ -360,7 +360,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
                     appointStart.Color = Color.DeepSkyBlue;
                     appointStart.Appoint = returnA;
-                    appointStart.Title = returnA.FirstName + " " + returnA.FirstName;
+                    appointStart.Title = returnA.FirstName + " " + returnA.LastName;
                     appointEnd = new Calendar.Appointment();
                     appointEnd.StartDate = returnA.AppointmentEndTime;
                     appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
