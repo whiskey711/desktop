@@ -27,7 +27,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
@@ -74,15 +74,15 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 if (ex.InnerException is HttpRequestException || ex.InnerException is WebException)
                 {
-                    MessageBox.Show(ex.InnerException.Message);
+                    MessageBox.Show(ex.InnerException.ToString());
                     using (StreamWriter w = File.AppendText(FileName.Log.Name))
                     {
-                        LogHandle.Log(ex.InnerException.Message, ex.StackTrace, w);
+                        LogHandle.Log(ex.InnerException.ToString(), ex.StackTrace, w);
                     }
                 }
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    LogHandle.Log(ex.Message, ex.StackTrace, w);
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
                 System.Diagnostics.Process.Start(FileName.Log.Name);
             }
