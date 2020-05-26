@@ -275,7 +275,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         }
                     }
                     saveBtn.Enabled = false;
-                    PatientDetailsGroup.Enabled = false;
+                    //PatientDetailsGroup.Enabled = false;
                 }
                 else
                 {
