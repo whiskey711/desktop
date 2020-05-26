@@ -17,10 +17,19 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             restModel = requests.GetAll("test/getnurses", client);
             return restModel;
         }
-        public RestModel<Appointment> GetAppointments(Client client, DateTime start, DateTime end)
+        public RestModel<Appointment> GetAppointments(Client client, DateTime start, DateTime end, string location)
         {
-            appointRestMod = appointRequest.GetAll("test/appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+            if (string.IsNullOrEmpty(location))
+            {
+                appointRestMod = appointRequest.GetAll("test/appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
                                                            + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
+            }
+            else
+            {
+                appointRestMod = appointRequest.GetAll("test/appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                                                           + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000" +
+                                                           "&location=" + location, client);
+            }
             return appointRestMod;
         }
         public String CreateAppointment(Appointment newAppoint, Client client)
