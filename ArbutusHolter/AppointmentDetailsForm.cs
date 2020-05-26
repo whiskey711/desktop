@@ -99,6 +99,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.Later.ErrorMessage);
                     return;
                 }
+                if (DateTime.Compare(devPickTimePick.Value, DateTime.Now) > 0)
+                {
+                    MessageBox.Show(ErrorInfo.EarlyThanNow.ErrorMessage);
+                    return;
+                }
                 if (selectDev == null)
                 {
                     MessageBox.Show(ErrorInfo.SelectDeivce.ErrorMessage);
