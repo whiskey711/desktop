@@ -541,7 +541,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             if (DateTime.Compare(startTimeFilt.Value, endTimeFilt.Value) > 0)
             {
-                startTimeFilt.Value = endTimeFilt.Value;
+                endTimeFilt.Value = startTimeFilt.Value;
             }
             if (pNameCheckBox.Checked)
             {
@@ -556,7 +556,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             if (DateTime.Compare(startTimeFilt.Value, endTimeFilt.Value) > 0)
             {
-                endTimeFilt.Value = startTimeFilt.Value;
+                startTimeFilt.Value = endTimeFilt.Value;
             }
             if (pNameCheckBox.Checked)
             {
@@ -677,7 +677,7 @@ namespace Uvic_Ecg_ArbutusHolter
             weeklyCal.StartDate = dayViewMonthlyCal.SelectionRange.Start;
             yearIndicateLab.Text = dayViewMonthlyCal.SelectionRange.Start.ToString(monthYear);
             startTimeFilt.Value = weeklyCal.StartDate;
-            endTimeFilt.Value = startTimeFilt.Value.AddDays(6);
+            //endTimeFilt.Value = startTimeFilt.Value.AddDays(6);
             TimeFilt_Changed();
         }
         private void EditMailBtn_Click(object sender, EventArgs e)
