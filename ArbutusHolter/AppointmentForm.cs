@@ -1,4 +1,4 @@
-﻿using Calendar;
+using Calendar;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,8 +34,9 @@ namespace Uvic_Ecg_ArbutusHolter
         int devUpLimit = 5;
         long num;
         int startAfterTo, endBeforeFrom;
-        DateTime thisYearStart = DateTime.Parse("1/1/" + DateTime.Today.Year);
-        DateTime thisYeaarEnd = DateTime.Parse("12/31/" + DateTime.Today.Year);
+        int halfYear = 183;
+        DateTime thisYearStart = DateTime.Today.AddDays(-halfYear);
+        DateTime thisYeaarEnd = DateTime.Today.AddDays(halfYear);
         int appointBlockMinLength = 15;
         int invalidPid = -1;
         string monthYear = "MMMM yyyy";
