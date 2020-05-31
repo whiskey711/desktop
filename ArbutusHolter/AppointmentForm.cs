@@ -123,7 +123,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             lsitem.Tag = returnP;
                             selectedP = returnP;
                             patientListView.Items.Add(lsitem);
-                            LoadPatientInfo(returnP, pid);
+                            LoadPatientInfo(returnP);
                         }
                     }
                 }
@@ -149,7 +149,8 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 selectedP = (PatientInfo)patientListView.SelectedItems[0].Tag;
-                LoadPatientInfo(selectedP, invalidPid);
+                LoadPatientInfo(selectedP);
+                LoadPatientAppointment(selectedP);
             }
             catch (Exception ex)
             {
@@ -159,7 +160,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void LoadPatientInfo(PatientInfo theOne, int pid)
+        private void LoadPatientInfo(PatientInfo theOne)
         {
             lastNameTB.Text = theOne.PatientLastName;
             midNameTB.Text = theOne.PatientMidName;
@@ -182,10 +183,9 @@ namespace Uvic_Ecg_ArbutusHolter
             pNameCheckBox.Text = theOne.PatientFirstName + " " + theOne.PatientLastName;
             pNameCheckBox.CheckState = CheckState.Checked;
             pNameCheckBox.Enabled = true;
-            if (pid != invalidPid)
-            {
-                return;
-            }
+        }
+        private void LoadPatientAppointment(PatientInfo theOne)
+        {
             restModel = nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
             patientAppointLs.Items.Clear();
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
@@ -269,6 +269,9 @@ namespace Uvic_Ecg_ArbutusHolter
                         if (errorMsg == ErrorInfo.OK.ErrorMessage)
                         {
                             MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                            selectedP = updatedPatient;
+                            SrhPatient(selectedP.PatientLastName, selectedP.PatientFirstName, null, null, selectedP.PatientId);
+                            LoadPatientAppointment(selectedP);
                         }
                         else
                         {
