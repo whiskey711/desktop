@@ -681,21 +681,6 @@ namespace Uvic_Ecg_ArbutusHolter
             //endTimeFilt.Value = startTimeFilt.Value.AddDays(6);
             TimeFilt_Changed();
         }
-        private void EditMailBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Email emailForm = new Email(appointFormClient);
-                emailForm.Show();
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
-        }
         private void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             try

@@ -43,6 +43,7 @@
             this.firstNameLabel = new System.Windows.Forms.Label();
             this.deviceCombo = new System.Windows.Forms.ComboBox();
             this.startBtn = new System.Windows.Forms.Button();
+            this.editMailBtn = new System.Windows.Forms.Button();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -225,6 +226,19 @@
             this.startBtn.UseVisualStyleBackColor = true;
             this.startBtn.Click += new System.EventHandler(this.StartBtn_Click);
             // 
+            // editMailBtn
+            // 
+            this.editMailBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.editMailBtn.AutoSize = true;
+            this.editMailBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.editMailBtn.Location = new System.Drawing.Point(12, 465);
+            this.editMailBtn.Name = "editMailBtn";
+            this.editMailBtn.Size = new System.Drawing.Size(154, 23);
+            this.editMailBtn.TabIndex = 21;
+            this.editMailBtn.Text = "Appoinment notification email";
+            this.editMailBtn.UseVisualStyleBackColor = true;
+            this.editMailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
+            // 
             // AppointmentDetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -233,6 +247,7 @@
             this.ClientSize = new System.Drawing.Size(436, 500);
             this.Controls.Add(this.startBtn);
             this.Controls.Add(this.appointGroup);
+            this.Controls.Add(this.editMailBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -262,5 +277,6 @@
         private System.Windows.Forms.Button startBtn;
         private System.Windows.Forms.Label deviceNameLab;
         private System.Windows.Forms.ComboBox deviceLocCB;
+        private System.Windows.Forms.Button editMailBtn;
     }
 }
