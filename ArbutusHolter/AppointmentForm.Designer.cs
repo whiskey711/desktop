@@ -39,7 +39,6 @@
             this.birthLabel = new System.Windows.Forms.Label();
             this.PLastNameLabel = new System.Windows.Forms.Label();
             this.sidePanel = new System.Windows.Forms.Panel();
-            this.editMailBtn = new System.Windows.Forms.Button();
             this.PatientLsGroup = new System.Windows.Forms.GroupBox();
             this.patientListView = new System.Windows.Forms.ListView();
             this.lastName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -272,24 +271,10 @@
             // sidePanel
             // 
             this.sidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.sidePanel.Controls.Add(this.editMailBtn);
             this.sidePanel.Location = new System.Drawing.Point(1639, 367);
             this.sidePanel.Name = "sidePanel";
             this.sidePanel.Size = new System.Drawing.Size(262, 671);
             this.sidePanel.TabIndex = 6;
-            // 
-            // editMailBtn
-            // 
-            this.editMailBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.editMailBtn.AutoSize = true;
-            this.editMailBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.editMailBtn.Location = new System.Drawing.Point(60, 198);
-            this.editMailBtn.Name = "editMailBtn";
-            this.editMailBtn.Size = new System.Drawing.Size(154, 23);
-            this.editMailBtn.TabIndex = 1;
-            this.editMailBtn.Text = "Appoinment notification email";
-            this.editMailBtn.UseVisualStyleBackColor = true;
-            this.editMailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
             // 
             // PatientLsGroup
             // 
@@ -1041,7 +1026,6 @@
         #endregion
         private System.Windows.Forms.TableLayoutPanel appointTabletPanel;
         private System.Windows.Forms.Panel sidePanel;
-        private System.Windows.Forms.Button editMailBtn;
         private System.Windows.Forms.GroupBox srhGroup;
         private System.Windows.Forms.Label dateFormatLab;
         private System.Windows.Forms.PlaceholderTextBox birthText;
