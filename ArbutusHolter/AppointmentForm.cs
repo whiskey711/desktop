@@ -34,7 +34,7 @@ namespace Uvic_Ecg_ArbutusHolter
         int devUpLimit = 5;
         long num;
         int startAfterTo, endBeforeFrom;
-        int halfYear = 183;
+        static int halfYear = 183;
         DateTime thisYearStart = DateTime.Today.AddDays(-halfYear);
         DateTime thisYeaarEnd = DateTime.Today.AddDays(halfYear);
         int appointBlockMinLength = 15;
