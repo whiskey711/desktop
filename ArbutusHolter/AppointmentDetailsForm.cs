@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -79,7 +79,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                Email emailForm = new Email(appointFormClient);
+                Email emailForm = new Email(inClient);
                 emailForm.Show();
             }
             catch (Exception ex)
