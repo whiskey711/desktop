@@ -49,6 +49,10 @@ namespace Uvic_Ecg_ArbutusHolter
             InitializeComponent();
             SetStyle(ControlStyles.StandardClick, true);
             SetStyle(ControlStyles.StandardDoubleClick, false);
+            foreach (var gen in Enum.GetValues(typeof(Config.Gender)))
+            {
+                genderCB.Items.Add(gen);
+            }
             PatientDetailsGroup.Enabled = false;
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
@@ -173,7 +177,7 @@ namespace Uvic_Ecg_ArbutusHolter
             phnTB.Text = theOne.Phn;
             phoneNumTB.Text = theOne.PhoneNumber;
             homeNumTB.Text = theOne.HomeNumber;
-            genderTB.Text = theOne.Gender;
+            genderCB.Text = theOne.Gender;
             postCodeTB.Text = theOne.PostCode;
             pacemakerTB.Text = theOne.Pacemaker;
             superPhyTB.Text = theOne.SuperPhysician;
@@ -223,8 +227,10 @@ namespace Uvic_Ecg_ArbutusHolter
                         !string.IsNullOrWhiteSpace(address1TB.Text) &&
                         !string.IsNullOrWhiteSpace(provinceTB.Text) &&
                         !string.IsNullOrWhiteSpace(phnTB.Text) &&
-                        !string.IsNullOrWhiteSpace(genderTB.Text) &&
-                        !string.IsNullOrWhiteSpace(cityTB.Text))
+                        !string.IsNullOrWhiteSpace(genderCB.Text) &&
+                        !string.IsNullOrWhiteSpace(cityTB.Text) &&
+                        !string.IsNullOrWhiteSpace(homeNumTB.Text) &&
+                        !string.IsNullOrWhiteSpace(mailTB.Text))
                 {
                     if (phnTB.Text.Length < 10 && !long.TryParse(phnTB.Text, out num))
                     {
@@ -246,7 +252,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         PatientInfo newPatient = new PatientInfo(lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text, null,
                                                                  provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                                 genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                                 genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
                                                                  null, null, null, null, null, null, ageTB.Text);
                         errorMsg = patientResource.CreatePatient(newPatient, appointFormClient);
                         if (errorMsg == ErrorInfo.OK.ErrorMessage)
@@ -263,7 +269,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         updatedPatient = new PatientInfo(selectedP.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text,
                                                          null, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                         genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                         genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
                                                          null, null, null, null, null, null, ageTB.Text);
                         errorMsg = patientResource.UpdatePatient(updatedPatient, appointFormClient);
                         if (errorMsg == ErrorInfo.OK.ErrorMessage)
