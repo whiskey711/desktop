@@ -70,7 +70,7 @@
             this.midNameTB = new System.Windows.Forms.TextBox();
             this.cityTB = new System.Windows.Forms.TextBox();
             this.cityLabel = new System.Windows.Forms.Label();
-            this.genderTB = new System.Windows.Forms.TextBox();
+            this.genderCB = new System.Windows.Forms.ComboBox();
             this.phnTB = new System.Windows.Forms.TextBox();
             this.provinceTB = new System.Windows.Forms.TextBox();
             this.address1TB = new System.Windows.Forms.TextBox();
@@ -379,7 +379,7 @@
             this.detailPanel.Controls.Add(this.midNameTB);
             this.detailPanel.Controls.Add(this.cityTB);
             this.detailPanel.Controls.Add(this.cityLabel);
-            this.detailPanel.Controls.Add(this.genderTB);
+            this.detailPanel.Controls.Add(this.genderCB);
             this.detailPanel.Controls.Add(this.phnTB);
             this.detailPanel.Controls.Add(this.provinceTB);
             this.detailPanel.Controls.Add(this.address1TB);
@@ -594,14 +594,14 @@
             this.cityLabel.Size = new System.Drawing.Size(42, 19);
             this.cityLabel.TabIndex = 16;
             this.cityLabel.Text = "*City";
-            // 
-            // genderTB
-            // 
-            this.genderTB.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.genderTB.Location = new System.Drawing.Point(413, 110);
-            this.genderTB.Name = "genderTB";
-            this.genderTB.Size = new System.Drawing.Size(53, 27);
-            this.genderTB.TabIndex = 14;
+            //
+            // genderCB
+            //
+            this.genderCB.FormattingEnabled = true;
+            this.genderCB.Location = new System.Drawing.Point(413, 110);
+            this.genderCB.Name = "genderCB";
+            this.genderCB.Size = new System.Drawing.Size(53, 27);
+            this.genderCB.TabIndex = 14;
             // 
             // phnTB
             // 
@@ -1070,7 +1070,7 @@
         private System.Windows.Forms.TextBox midNameTB;
         private System.Windows.Forms.TextBox cityTB;
         private System.Windows.Forms.Label cityLabel;
-        private System.Windows.Forms.TextBox genderTB;
+        private System.Windows.Forms.ComboBox genderCB;
         private System.Windows.Forms.TextBox phnTB;
         private System.Windows.Forms.TextBox provinceTB;
         private System.Windows.Forms.TextBox address1TB;

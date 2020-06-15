@@ -76,6 +76,7 @@
       <DependentUpon>AppointmentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Client.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="ECG.cs">
       <SubType>Form</SubType>
     </Compile>
