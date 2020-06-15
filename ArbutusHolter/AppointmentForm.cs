@@ -191,18 +191,8 @@ namespace Uvic_Ecg_ArbutusHolter
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
-                foreach (var returnA in returnAls)
-                {
-                    var row = new string[]
-                    {
-                        theOne.PatientFirstName + " " + theOne.PatientLastName,
-                        returnA.AppointmentStartTime.ToString(dateAndTime),
-                        returnA.AppointmentEndTime.ToString(dateAndTime)
-                    };
-                    var lsitem = new ListViewItem(row);
-                    lsitem.Tag = returnA;
-                    patientAppointLs.Items.Add(lsitem);
-                }
+                startTimeFilt.Value = returnAls.First().AppointmentStartTime.Date;
+                endTimeFilt.Value = returnAls.Last().AppointmentEndTime.Date;
             }
             else if (restModel.ErrorMessage == "Others")
             {
@@ -439,6 +429,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     
                 }
             }
+            als.Sort((x, y) => x.AppointmentStartTime.CompareTo(y.AppointmentStartTime));
             return als;
         }
         private List<PatientInfo> CreatePatientLs(List<Entity<PatientInfo>> entls)
@@ -547,10 +538,6 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 endTimeFilt.Value = startTimeFilt.Value;
             }
-            if (pNameCheckBox.Checked)
-            {
-                pNameCheckBox.CheckState = CheckState.Unchecked;
-            }
             else
             {
                 TimeFilt_Changed();
@@ -561,10 +548,6 @@ namespace Uvic_Ecg_ArbutusHolter
             if (DateTime.Compare(startTimeFilt.Value, endTimeFilt.Value) > 0)
             {
                 startTimeFilt.Value = endTimeFilt.Value;
-            }
-            if (pNameCheckBox.Checked)
-            {
-                pNameCheckBox.CheckState = CheckState.Unchecked;
             }
             else
             {
@@ -594,8 +577,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     lsitem.Tag = returnA;
                     patientAppointLs.Items.Add(lsitem);
                 }
-                dayViewMonthlyCal.SelectionStart = startTimeFilt.Value;
-                dayViewMonthlyCal.SelectionEnd = startTimeFilt.Value;
                 weeklyCal.StartDate = startTimeFilt.Value;
             }
             catch (Exception ex)
@@ -676,14 +657,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 weeklyCal.Invalidate();
             }
         }
-        private void DayViewMonthlyCal_DateSelected(object sender, DateRangeEventArgs e)
-        {
-            weeklyCal.StartDate = dayViewMonthlyCal.SelectionRange.Start;
-            yearIndicateLab.Text = dayViewMonthlyCal.SelectionRange.Start.ToString(monthYear);
-            startTimeFilt.Value = weeklyCal.StartDate;
-            //endTimeFilt.Value = startTimeFilt.Value.AddDays(6);
-            TimeFilt_Changed();
-        }
         private void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             try
@@ -710,6 +683,8 @@ namespace Uvic_Ecg_ArbutusHolter
             ClearText(srhGroup);
             pNameCheckBox.Text = "Clinic";
             pNameCheckBox.Enabled = false;
+            startTimeFilt.Value = DateTime.Today;
+            endTimeFilt.Value = DateTime.Today.AddDays(7);
             LoadAllAppointments(appointFormClient);
         }
         private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
