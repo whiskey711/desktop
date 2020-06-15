@@ -104,7 +104,6 @@
             this.weekBtn = new System.Windows.Forms.Button();
             this.pNameCheckBox = new System.Windows.Forms.CheckBox();
             this.dayBtn = new System.Windows.Forms.Button();
-            this.dayViewMonthlyCal = new System.Windows.Forms.MonthCalendar();
             this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.appointTabletPanel.SuspendLayout();
@@ -746,7 +745,6 @@
             this.calGroup.Controls.Add(this.weekBtn);
             this.calGroup.Controls.Add(this.pNameCheckBox);
             this.calGroup.Controls.Add(this.dayBtn);
-            this.calGroup.Controls.Add(this.dayViewMonthlyCal);
             this.calGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.calGroup.Location = new System.Drawing.Point(3, 367);
             this.calGroup.Name = "calGroup";
@@ -758,9 +756,9 @@
             // regionComboBox
             // 
             this.regionComboBox.FormattingEnabled = true;
-            this.regionComboBox.Location = new System.Drawing.Point(249, 69);
+            this.regionComboBox.Location = new System.Drawing.Point(10, 100);
             this.regionComboBox.Name = "regionComboBox";
-            this.regionComboBox.Size = new System.Drawing.Size(240, 21);
+            this.regionComboBox.Size = new System.Drawing.Size(220, 21);
             this.regionComboBox.TabIndex = 11;
             this.regionComboBox.Text = "Select a region";
             this.regionComboBox.SelectedIndexChanged += new System.EventHandler(this.RegionComboBox_SelectedIndexChanged);
@@ -769,7 +767,7 @@
             // 
             this.appointLabel.AutoSize = true;
             this.appointLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.appointLabel.Location = new System.Drawing.Point(137, 236);
+            this.appointLabel.Location = new System.Drawing.Point(125, 140);
             this.appointLabel.Name = "appointLabel";
             this.appointLabel.Size = new System.Drawing.Size(98, 19);
             this.appointLabel.TabIndex = 10;
@@ -779,7 +777,7 @@
             // 
             this.filterLabel.AutoSize = true;
             this.filterLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.filterLabel.Location = new System.Drawing.Point(245, 118);
+            this.filterLabel.Location = new System.Drawing.Point(5, 70);
             this.filterLabel.Name = "filterLabel";
             this.filterLabel.Size = new System.Drawing.Size(182, 19);
             this.filterLabel.TabIndex = 9;
@@ -788,7 +786,7 @@
             // toLabel
             // 
             this.toLabel.AutoSize = true;
-            this.toLabel.Location = new System.Drawing.Point(246, 195);
+            this.toLabel.Location = new System.Drawing.Point(246, 125);
             this.toLabel.Name = "toLabel";
             this.toLabel.Size = new System.Drawing.Size(20, 13);
             this.toLabel.TabIndex = 8;
@@ -797,7 +795,7 @@
             // fromLabel
             // 
             this.fromLabel.AutoSize = true;
-            this.fromLabel.Location = new System.Drawing.Point(246, 146);
+            this.fromLabel.Location = new System.Drawing.Point(246, 85);
             this.fromLabel.Name = "fromLabel";
             this.fromLabel.Size = new System.Drawing.Size(30, 13);
             this.fromLabel.TabIndex = 7;
@@ -814,9 +812,9 @@
             this.patientAppointLs.FullRowSelect = true;
             this.patientAppointLs.GridLines = true;
             this.patientAppointLs.HideSelection = false;
-            this.patientAppointLs.Location = new System.Drawing.Point(6, 274);
+            this.patientAppointLs.Location = new System.Drawing.Point(6, 175);
             this.patientAppointLs.Name = "patientAppointLs";
-            this.patientAppointLs.Size = new System.Drawing.Size(479, 391);
+            this.patientAppointLs.Size = new System.Drawing.Size(465, 490);
             this.patientAppointLs.TabIndex = 1;
             this.patientAppointLs.UseCompatibleStateImageBehavior = false;
             this.patientAppointLs.View = System.Windows.Forms.View.Details;
@@ -842,9 +840,9 @@
             // 
             this.endTimeFilt.CustomFormat = "MM/dd/yyyy";
             this.endTimeFilt.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.endTimeFilt.Location = new System.Drawing.Point(249, 211);
+            this.endTimeFilt.Location = new System.Drawing.Point(249, 140);
             this.endTimeFilt.Name = "endTimeFilt";
-            this.endTimeFilt.Size = new System.Drawing.Size(240, 20);
+            this.endTimeFilt.Size = new System.Drawing.Size(220, 20);
             this.endTimeFilt.TabIndex = 3;
             this.endTimeFilt.ValueChanged += new System.EventHandler(this.EndTimeFilt_ValueChanged);
             // 
@@ -864,9 +862,9 @@
             // 
             this.startTimeFilt.CustomFormat = "MM/dd/yyyy";
             this.startTimeFilt.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.startTimeFilt.Location = new System.Drawing.Point(249, 162);
+            this.startTimeFilt.Location = new System.Drawing.Point(249, 100);
             this.startTimeFilt.Name = "startTimeFilt";
-            this.startTimeFilt.Size = new System.Drawing.Size(240, 20);
+            this.startTimeFilt.Size = new System.Drawing.Size(220, 20);
             this.startTimeFilt.TabIndex = 2;
             this.startTimeFilt.ValueChanged += new System.EventHandler(this.StartTimeFilt_ValueChanged);
             // 
@@ -950,7 +948,7 @@
             // 
             this.pNameCheckBox.AutoSize = true;
             this.pNameCheckBox.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pNameCheckBox.Location = new System.Drawing.Point(11, 236);
+            this.pNameCheckBox.Location = new System.Drawing.Point(11, 140);
             this.pNameCheckBox.Name = "pNameCheckBox";
             this.pNameCheckBox.Size = new System.Drawing.Size(64, 23);
             this.pNameCheckBox.TabIndex = 1;
@@ -972,13 +970,6 @@
             this.dayBtn.Text = "DAY";
             this.dayBtn.UseVisualStyleBackColor = false;
             this.dayBtn.Click += new System.EventHandler(this.DayBtn_Click);
-            // 
-            // dayViewMonthlyCal
-            // 
-            this.dayViewMonthlyCal.Location = new System.Drawing.Point(10, 69);
-            this.dayViewMonthlyCal.Name = "dayViewMonthlyCal";
-            this.dayViewMonthlyCal.TabIndex = 0;
-            this.dayViewMonthlyCal.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.DayViewMonthlyCal_DateSelected);
             // 
             // birthDateTB
             // 
@@ -1104,6 +1095,5 @@
         private System.Windows.Forms.Button weekBtn;
         private System.Windows.Forms.CheckBox pNameCheckBox;
         private System.Windows.Forms.Button dayBtn;
-        private System.Windows.Forms.MonthCalendar dayViewMonthlyCal;
     }
 }
