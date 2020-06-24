@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType> 
+    <TargetFrameworks>netcoreapp3.1;net46</TargetFrameworks>
+    <!--TargetFrameworkVersion>v3.1</TargetFrameworkVersion-->
+  </PropertyGroup>
+
+</Project>
