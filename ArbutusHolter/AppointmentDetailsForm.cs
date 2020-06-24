@@ -36,7 +36,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointEndTimePick.Value = app.AppointmentEndTime;
                     devPickTimePick.Value = app.PickupDate.Value;
                     devReturnTimePick.Value = app.DeviceReturnDate.Value;
-                    devLocTB.Text = app.DeviceLocation;
                     deviceLocCB.Text = app.DeviceLocation;
                     firstNameLabel.Text = app.FirstName;
                     lastNameLabel.Text = app.LastName;
