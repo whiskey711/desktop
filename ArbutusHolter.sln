@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayView", "DayView\DayView.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{C8F16397-B52F-43A9-AC85-239D684C0028}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECG_ISHNE", "ECG_ISHNE\ECG_ISHNE.csproj", "{6CF64CB7-E181-4A85-8CCF-F3362DAE1A3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{18529F33-801B-4BF1-92DC-8A3BDD5D1B84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECG_ISHNE.Tests", "Test\ECG_ISHNE.Tests\ECG_ISHNE.Tests.csproj", "{AB0FC76D-2F57-4AA4-9A46-04792DD03527}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +33,22 @@ Global
 		{C8F16397-B52F-43A9-AC85-239D684C0028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8F16397-B52F-43A9-AC85-239D684C0028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8F16397-B52F-43A9-AC85-239D684C0028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CF64CB7-E181-4A85-8CCF-F3362DAE1A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF64CB7-E181-4A85-8CCF-F3362DAE1A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF64CB7-E181-4A85-8CCF-F3362DAE1A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF64CB7-E181-4A85-8CCF-F3362DAE1A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB0FC76D-2F57-4AA4-9A46-04792DD03527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0FC76D-2F57-4AA4-9A46-04792DD03527}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB0FC76D-2F57-4AA4-9A46-04792DD03527}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0FC76D-2F57-4AA4-9A46-04792DD03527}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DDB665D7-6336-4B34-89EE-04F3984871CE}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB0FC76D-2F57-4AA4-9A46-04792DD03527} = {18529F33-801B-4BF1-92DC-8A3BDD5D1B84}
 	EndGlobalSection
 EndGlobal
