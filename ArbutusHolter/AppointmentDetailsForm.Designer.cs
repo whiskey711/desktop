@@ -30,7 +30,6 @@
             this.devPickLabel = new System.Windows.Forms.Label();
             this.devReturnLabel = new System.Windows.Forms.Label();
             this.devLocLabel = new System.Windows.Forms.Label();
-            this.devLocTB = new System.Windows.Forms.TextBox();
             this.appointEndTimePick = new System.Windows.Forms.DateTimePicker();
             this.okBtn = new System.Windows.Forms.Button();
             this.appointStartTimePick = new System.Windows.Forms.DateTimePicker();
@@ -92,13 +91,6 @@
             this.devLocLabel.TabIndex = 4;
             this.devLocLabel.Text = "Device location";
             // 
-            // devLocTB
-            // 
-            this.devLocTB.Location = new System.Drawing.Point(174, 324);
-            this.devLocTB.Name = "devLocTB";
-            this.devLocTB.Size = new System.Drawing.Size(200, 20);
-            this.devLocTB.TabIndex = 9;
-            // 
             // appointEndTimePick
             // 
             this.appointEndTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
@@ -155,7 +147,6 @@
             this.appointGroup.Controls.Add(this.deviceCombo);
             this.appointGroup.Controls.Add(this.startTimeLabel);
             this.appointGroup.Controls.Add(this.devReturnTimePick);
-            this.appointGroup.Controls.Add(this.devLocTB);
             this.appointGroup.Controls.Add(this.appointStartTimePick);
             this.appointGroup.Controls.Add(this.devLocLabel);
             this.appointGroup.Controls.Add(this.devPickTimePick);
@@ -173,7 +164,7 @@
             // deviceLocCB
             // 
             this.deviceLocCB.FormattingEnabled = true;
-            this.deviceLocCB.Location = new System.Drawing.Point(175, 297);
+            this.deviceLocCB.Location = new System.Drawing.Point(175, 324);
             this.deviceLocCB.Name = "deviceLocCB";
             this.deviceLocCB.Size = new System.Drawing.Size(200, 21);
             this.deviceLocCB.TabIndex = 20;
@@ -264,7 +255,6 @@
         private System.Windows.Forms.Label devPickLabel;
         private System.Windows.Forms.Label devReturnLabel;
         private System.Windows.Forms.Label devLocLabel;
-        private System.Windows.Forms.TextBox devLocTB;
         private System.Windows.Forms.DateTimePicker appointEndTimePick;
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.DateTimePicker appointStartTimePick;
