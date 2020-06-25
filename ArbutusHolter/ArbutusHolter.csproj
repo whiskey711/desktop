@@ -77,6 +77,12 @@
     </Compile>
     <Compile Include="Client.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="CreatePatientForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreatePatientForm.Designer.cs">
+      <DependentUpon>CreatePatientForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ECG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,6 +167,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AppointmentForm.resx">
       <DependentUpon>AppointmentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreatePatientForm.resx">
+      <DependentUpon>CreatePatientForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ECG.resx">
       <DependentUpon>ECG.cs</DependentUpon>
