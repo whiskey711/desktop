@@ -25,7 +25,6 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientResource patientResource = new PatientResource();
         DeviceResource dResource = new DeviceResource();
         Client appointFormClient;
-        bool createIndicator = false;
         string errorMsg;
         PatientInfo selectedP;
         Uvic_Ecg_Model.Appointment selectedA;
@@ -139,10 +138,8 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void CreateBtn_Click(object sender, EventArgs e)
         {
-            ClearText(PatientDetailsGroup);
-            createIndicator = true;
-            PatientDetailsGroup.Enabled = true;
-            PatientDetailsGroup.Focus();
+            CreatePatientForm cpForm = new CreatePatientForm(appointFormClient);
+            cpForm.Show();
         }
         private void PatientListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -237,42 +234,22 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         MessageBox.Show(ErrorInfo.WrongMail.ErrorMessage);
                         return;
-                    }
-                    if (createIndicator)
+                    }                    
+                    updatedPatient = new PatientInfo(selectedP.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text,
+                                                     null, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
+                                                     genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                     null, null, null, null, null, null, ageTB.Text);
+                    errorMsg = patientResource.UpdatePatient(updatedPatient, appointFormClient);
+                    if (errorMsg == ErrorInfo.OK.ErrorMessage)
                     {
-                        PatientInfo newPatient = new PatientInfo(lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text, null,
-                                                                 provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                                 genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
-                                                                 null, null, null, null, null, null, ageTB.Text);
-                        errorMsg = patientResource.CreatePatient(newPatient, appointFormClient);
-                        if (errorMsg == ErrorInfo.OK.ErrorMessage)
-                        {
-                            MessageBox.Show(ErrorInfo.Created.ErrorMessage);
-                        }
-                        else
-                        {
-                            MessageBox.Show(errorMsg);
-                        }
-                        createIndicator = false;
+                        MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                        selectedP = updatedPatient;
+                        SrhPatient(selectedP.PatientLastName, selectedP.PatientFirstName, null, null, selectedP.PatientId);
+                        LoadPatientAppointment(selectedP);
                     }
                     else
                     {
-                        updatedPatient = new PatientInfo(selectedP.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text,
-                                                         null, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                         genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
-                                                         null, null, null, null, null, null, ageTB.Text);
-                        errorMsg = patientResource.UpdatePatient(updatedPatient, appointFormClient);
-                        if (errorMsg == ErrorInfo.OK.ErrorMessage)
-                        {
-                            MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
-                            selectedP = updatedPatient;
-                            SrhPatient(selectedP.PatientLastName, selectedP.PatientFirstName, null, null, selectedP.PatientId);
-                            LoadPatientAppointment(selectedP);
-                        }
-                        else
-                        {
-                            MessageBox.Show(errorMsg);
-                        }
+                        MessageBox.Show(errorMsg);
                     }
                     saveBtn.Enabled = false;
                     //PatientDetailsGroup.Enabled = false;

@@ -516,11 +516,11 @@
             // 
             this.mailLabel.AutoSize = true;
             this.mailLabel.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mailLabel.Location = new System.Drawing.Point(463, 183);
+            this.mailLabel.Location = new System.Drawing.Point(455, 183);
             this.mailLabel.Name = "mailLabel";
             this.mailLabel.Size = new System.Drawing.Size(45, 19);
             this.mailLabel.TabIndex = 27;
-            this.mailLabel.Text = "Email";
+            this.mailLabel.Text = "*Email";
             // 
             // homeNumLabel
             // 
@@ -530,7 +530,7 @@
             this.homeNumLabel.Name = "homeNumLabel";
             this.homeNumLabel.Size = new System.Drawing.Size(102, 19);
             this.homeNumLabel.TabIndex = 26;
-            this.homeNumLabel.Text = "Home Number";
+            this.homeNumLabel.Text = "*Phone Number";
             // 
             // phoneNumLabel
             // 
@@ -540,22 +540,22 @@
             this.phoneNumLabel.Name = "phoneNumLabel";
             this.phoneNumLabel.Size = new System.Drawing.Size(104, 19);
             this.phoneNumLabel.TabIndex = 25;
-            this.phoneNumLabel.Text = "Phone Number";
+            this.phoneNumLabel.Text = "2nd Phone Number";
             // 
             // homeNumTB
             // 
             this.homeNumTB.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.homeNumTB.Location = new System.Drawing.Point(116, 145);
+            this.homeNumTB.Location = new System.Drawing.Point(120, 145);
             this.homeNumTB.Name = "homeNumTB";
-            this.homeNumTB.Size = new System.Drawing.Size(617, 27);
+            this.homeNumTB.Size = new System.Drawing.Size(613, 27);
             this.homeNumTB.TabIndex = 24;
             // 
             // phoneNumTB
             // 
             this.phoneNumTB.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.phoneNumTB.Location = new System.Drawing.Point(116, 180);
+            this.phoneNumTB.Location = new System.Drawing.Point(140, 180);
             this.phoneNumTB.Name = "phoneNumTB";
-            this.phoneNumTB.Size = new System.Drawing.Size(341, 27);
+            this.phoneNumTB.Size = new System.Drawing.Size(310, 27);
             this.phoneNumTB.TabIndex = 23;
             // 
             // midNameLabel
