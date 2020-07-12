@@ -243,7 +243,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AppointmentDetailsForm";
-            this.Text = "AppointDetails";
+            this.Text = "Appointment details";
             this.appointGroup.ResumeLayout(false);
             this.appointGroup.PerformLayout();
             this.ResumeLayout(false);

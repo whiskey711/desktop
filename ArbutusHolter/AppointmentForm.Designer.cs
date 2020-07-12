@@ -997,7 +997,7 @@
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.appointTabletPanel);
             this.Name = "AppointmentForm";
-            this.Text = "AppointmentF";
+            this.Text = "Appointments";
             this.Load += new System.EventHandler(this.AppointmentF_Load);
             this.appointTabletPanel.ResumeLayout(false);
             this.srhGroup.ResumeLayout(false);
