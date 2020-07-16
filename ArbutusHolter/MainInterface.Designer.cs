@@ -795,6 +795,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainInterface_FormClosing);
             this.Controls.Add(this.mainTableLayoutPanel);
             this.Name = "MainInterface";
             this.Text = "Test monitoring";

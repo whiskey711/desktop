@@ -27,6 +27,7 @@
         {
             Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
             this.appointTabletPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.inProgressTestGroup = new System.Windows.Forms.GroupBox();
             this.srhGroup = new System.Windows.Forms.GroupBox();
             this.dateFormatLab = new System.Windows.Forms.Label();
             this.createBtn = new System.Windows.Forms.Button();
@@ -38,7 +39,6 @@
             this.phnLabel = new System.Windows.Forms.Label();
             this.birthLabel = new System.Windows.Forms.Label();
             this.PLastNameLabel = new System.Windows.Forms.Label();
-            this.sidePanel = new System.Windows.Forms.Panel();
             this.PatientLsGroup = new System.Windows.Forms.GroupBox();
             this.patientListView = new System.Windows.Forms.ListView();
             this.lastName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -94,6 +94,9 @@
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.start = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.end = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.inProgressTestLs = new System.Windows.Forms.ListView();
+            this.pName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.endT = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.endTimeFilt = new System.Windows.Forms.DateTimePicker();
             this.gorightBtn = new System.Windows.Forms.Button();
             this.startTimeFilt = new System.Windows.Forms.DateTimePicker();
@@ -107,8 +110,8 @@
             this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.appointTabletPanel.SuspendLayout();
+            this.inProgressTestGroup.SuspendLayout();
             this.srhGroup.SuspendLayout();
-            this.sidePanel.SuspendLayout();
             this.PatientLsGroup.SuspendLayout();
             this.PatientDetailsGroup.SuspendLayout();
             this.detailPanel.SuspendLayout();
@@ -126,7 +129,7 @@
             this.appointTabletPanel.Controls.Add(this.PatientDetailsGroup, 2, 0);
             this.appointTabletPanel.Controls.Add(this.PatientLsGroup, 1, 0);
             this.appointTabletPanel.Controls.Add(this.srhGroup, 0, 0);
-            this.appointTabletPanel.Controls.Add(this.sidePanel, 3, 1);
+            this.appointTabletPanel.Controls.Add(this.inProgressTestGroup, 3, 1);
             this.appointTabletPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.appointTabletPanel.Location = new System.Drawing.Point(0, 0);
             this.appointTabletPanel.Name = "appointTabletPanel";
@@ -136,7 +139,17 @@
             this.appointTabletPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.appointTabletPanel.Size = new System.Drawing.Size(1904, 1041);
             this.appointTabletPanel.TabIndex = 0;
-            // 
+            //
+            // inProgressTestGroup
+            //
+            this.inProgressTestGroup.Controls.Add(this.inProgressTestLs);
+            this.inProgressTestGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inProgressTestGroup.Location = new System.Drawing.Point(1639, 367);
+            this.inProgressTestGroup.Name = "inProgressTestGroup";
+            this.inProgressTestGroup.Size = new System.Drawing.Size(262, 671);
+            this.inProgressTestGroup.TabIndex = 6;
+            this.inProgressTestGroup.Text = "ECG test(s) in progress";
+            //
             // srhGroup
             // 
             this.srhGroup.Controls.Add(this.dateFormatLab);
@@ -266,14 +279,6 @@
             this.PLastNameLabel.Size = new System.Drawing.Size(78, 19);
             this.PLastNameLabel.TabIndex = 0;
             this.PLastNameLabel.Text = "Last Name";
-            // 
-            // sidePanel
-            // 
-            this.sidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.sidePanel.Location = new System.Drawing.Point(1639, 367);
-            this.sidePanel.Name = "sidePanel";
-            this.sidePanel.Size = new System.Drawing.Size(262, 671);
-            this.sidePanel.TabIndex = 6;
             // 
             // PatientLsGroup
             // 
@@ -835,6 +840,34 @@
             // 
             this.end.Text = "End Time";
             this.end.Width = 130;
+            //
+            // inProgressTestLs
+            //
+            this.inProgressTestLs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inProgressTestLs.Columns.AddRange(new System.Windows.Forms.ColumnHeader [] {
+                this.pName,
+                this.endT
+            });
+            this.inProgressTestLs.FullRowSelect = true;
+            this.inProgressTestLs.GridLines = true;
+            this.inProgressTestLs.HideSelection = false;
+            this.inProgressTestLs.Location = new System.Drawing.Point(5, 16);
+            this.inProgressTestLs.Name = "inProgressTestLs";
+            this.inProgressTestLs.Size = new System.Drawing.Size(251, 650);
+            this.inProgressTestLs.UseCompatibleStateImageBehavior = false;
+            this.inProgressTestLs.View = System.Windows.Forms.View.Details;
+            this.inProgressTestLs.SelectedIndexChanged += new System.EventHandler(this.InProgressTestLs_SelectedIndexChanged);
+            //
+            // pName
+            //
+            this.pName.Text = "Patient";
+            this.pName.Width = 120;
+            //
+            // endT
+            //
+            this.endT.Text = "Scheduled end time";
+            this.endT.Width = 122;
             // 
             // endTimeFilt
             // 
@@ -1000,10 +1033,10 @@
             this.Text = "Appointments";
             this.Load += new System.EventHandler(this.AppointmentF_Load);
             this.appointTabletPanel.ResumeLayout(false);
+            this.inProgressTestGroup.ResumeLayout(false);
+            this.inProgressTestGroup.PerformLayout();
             this.srhGroup.ResumeLayout(false);
             this.srhGroup.PerformLayout();
-            this.sidePanel.ResumeLayout(false);
-            this.sidePanel.PerformLayout();
             this.PatientLsGroup.ResumeLayout(false);
             this.PatientDetailsGroup.ResumeLayout(false);
             this.PatientDetailsGroup.PerformLayout();
@@ -1016,7 +1049,7 @@
         }
         #endregion
         private System.Windows.Forms.TableLayoutPanel appointTabletPanel;
-        private System.Windows.Forms.Panel sidePanel;
+        private System.Windows.Forms.GroupBox inProgressTestGroup;
         private System.Windows.Forms.GroupBox srhGroup;
         private System.Windows.Forms.Label dateFormatLab;
         private System.Windows.Forms.PlaceholderTextBox birthText;
@@ -1085,6 +1118,9 @@
         private System.Windows.Forms.ColumnHeader name;
         private System.Windows.Forms.ColumnHeader start;
         private System.Windows.Forms.ColumnHeader end;
+        private System.Windows.Forms.ListView inProgressTestLs;
+        private System.Windows.Forms.ColumnHeader pName;
+        private System.Windows.Forms.ColumnHeader endT;
         private System.Windows.Forms.DateTimePicker endTimeFilt;
         private System.Windows.Forms.Button gorightBtn;
         private System.Windows.Forms.DateTimePicker startTimeFilt;

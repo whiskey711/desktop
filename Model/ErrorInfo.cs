@@ -33,6 +33,12 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo TimeConflict = new ErrorInfo("Start time should be earlier than end time");
         public static readonly ErrorInfo RegistrationComlete = new ErrorInfo("Thank you for completing the registration. You may log in now.");
         public static readonly ErrorInfo EarlyThanNow = new ErrorInfo("Device pick-up time is earlier than now");
+        public static readonly ErrorInfo TerminateWarn = new ErrorInfo("Are you sure to terminate ongoing test ?");
+        public static readonly ErrorInfo Caption = new ErrorInfo("?");
+        public static readonly ErrorInfo ClosingWarn = new ErrorInfo("Are youy sure to close the form ?");
+        public static readonly ErrorInfo ReordingStart = new ErrorInfo("The ECG test has begun");
+        public static readonly ErrorInfo TestTerminated = new ErrorInfo("The ECG test has been terminated");
+        public static readonly ErrorInfo OngoingTest = new ErrorInfo("Sorry, the test is in progress, you cannot hoopkup now");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

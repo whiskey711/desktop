@@ -30,34 +30,51 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime date;
         DateTime tempDate;
         PatientInfo updatedPatient;
-        Appointment theApp;
         bool isNotFirstTime = true;
-        public MainInterface(Client client, Appointment app)
+        bool recordingStarted = false;
+        int aDay = 24;
+        public EcgTest theEcgTest { get; set; }
+        public Appointment theAppoint { get; set; }
+        public MainInterface(Client client, Appointment app, EcgTest test)
         {
             InitializeComponent();
             displayBtnclicked = false;
             date = Convert.ToDateTime("1996/11/10");
             mainFormClient = client;
+            theEcgTest = test;
             status = "";
-            theApp = app;
-            PatientInfo_Load(theApp);
-            CreateEcgTest(theApp);
-            firstNameTB.Enabled = false;
+            theAppoint = app;
+            PatientInfo_Load();
+            if (test != null)
+            {
+                indicatorLed.Blink(500);
+                recordBtn.Enabled = false;
+                // ToDo: Duration and start time should be restored
+            }
+            else
+            {
+                ecgStartBtn.Enabled = false;
+                terminateBtn.Enabled = false;
+                recordBtn.Enabled = false;
+            }
         }
-        public void CreateEcgTest(Appointment app)
+        private void CreateEcgTest()
         {
-            EcgTest newTest = new EcgTest(app.AppointmentStartTime, app.AppointmentEndTime, null, app.PatientId, app.NurseId, app.DeviceId, null, app.AppointmentRecordId);
-            eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, newTest);
+            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, 1/*should be config variable*/);
+            eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
             if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
             {
                 MessageBox.Show(eRestMod.ErrorMessage);
+                return;
             }
+            theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
+            theAppoint.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
         }
-        public void PatientInfo_Load(Appointment app)
+        private void PatientInfo_Load()
         {
             try
             {
-                restmodel = patientResource.GetPatient(app.LastName, app.FirstName, "2447/01/01", null, mainFormClient);
+                restmodel = patientResource.GetPatient(theAppoint.LastName, theAppoint.FirstName, null, null, mainFormClient);
                 if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     foreach (var ent in restmodel.Feed.Entities)
@@ -66,7 +83,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     foreach (PatientInfo p in returnPls)
                     {
-                        if (p.PatientId == app.PatientId)
+                        if (p.PatientId == theAppoint.PatientId)
                         {
                             firstNameTB.Text = p.PatientFirstName;
                             midNameTB.Text = p.PatientMidName;
@@ -259,7 +276,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private bool TryToGetData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theApp.PatientId, theApp.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
             if (ecgRawDataModel.Entity == null)
             {
                 return false;
@@ -316,7 +333,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void UpdateData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theApp.PatientId, theApp.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
             //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
             //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
             if (date.Year == 1996)
@@ -379,7 +396,18 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                RestModel<ResultJson> result = ecgDataResources.SetHookup(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                if (theAppoint.EcgTestId.HasValue)
+                {
+                    MessageBox.Show(ErrorInfo.OngoingTest.ErrorMessage);
+                    return;
+                }
+                else
+                {
+                    CreateEcgTest();
+                    recordBtn.Enabled = true;
+                    ecgStartBtn.Enabled = true;
+                }
+                RestModel<ResultJson> result = ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTestId.Value, theAppoint.DeviceId);
                 var test = result.ErrorMessage;
                 //indicatorLed stop blink
                 if (status.Equals("record"))
@@ -458,7 +486,16 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                RestModel<ResultJson> result = ecgDataResources.SetRecord(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                theEcgTest.StartTime = DateTime.Now;
+                theEcgTest.ScheduledEndTime = DateTime.Now.AddHours(aDay);
+                //theEcgTest.EcgTestId = 28; //test only, remove later
+                eRestMod = ecgDataResources.UpdateEcgTest(mainFormClient, theEcgTest);
+                if (!ErrorInfo.OK.ErrorMessage.Equals(eRestMod.ErrorMessage))
+                {
+                    MessageBox.Show(eRestMod.ErrorMessage);
+                    return;
+                }
+                RestModel<ResultJson> result = ecgDataResources.SetRecord(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
                 indicatorLed.Blink(500);
                 countTImer.Start();
@@ -470,6 +507,8 @@ namespace Uvic_Ecg_ArbutusHolter
                 statusChanges = true;
                 statusFlag.Text = status;
                 nowTimer.Stop();
+                terminateBtn.Enabled = true;
+                recordingStarted = true;
             }
             catch (Exception ex)
             {
@@ -481,15 +520,23 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void TerminateBtn_Click(object sender, EventArgs e)
         {
+            DialogResult res = MessageBox.Show(ErrorInfo.TerminateWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.OKCancel);
+            if (res == DialogResult.Cancel)
+            {
+                return;
+            }
             try
             {
-                RestModel<ResultJson> result = ecgDataResources.Terminated(mainFormClient, theApp.EcgTestId.Value, theApp.DeviceId);
+                RestModel<ResultJson> result = ecgDataResources.Terminated(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
                 StopTimers();
                 //indicatorLed stop blink
+                indicatorLed.Blink(0);
                 status = "terminated";
                 statusChanges = true;
                 statusFlag.Text = status;
+                terminateBtn.Enabled = false;
+                DialogResult = DialogResult.Abort;
             }
             catch (Exception ex)
             {
@@ -503,7 +550,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                updatedPatient = new PatientInfo(theApp.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, birthDateTB.Text, address1TB.Text,
+                updatedPatient = new PatientInfo(theAppoint.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, birthDateTB.Text, address1TB.Text,
                                                  address2TB.Text, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
                                                  genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
                                                  null, null, null, null, null, remarkRichTextBox.Text, ageTB.Text);
@@ -523,6 +570,25 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
+            }
+        }
+        private void MainInterface_FormClosing(object sender, FormClosingEventArgs e)
+        {  
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                DialogResult res = MessageBox.Show(ErrorInfo.ClosingWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.OKCancel);
+                if (res == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+                else if (recordingStarted)
+                {
+                    DialogResult = DialogResult.Yes;
+                }
+                else
+                {
+                    DialogResult = DialogResult.No;
+                }          
             }
         }
     }

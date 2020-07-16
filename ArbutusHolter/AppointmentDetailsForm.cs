@@ -14,21 +14,24 @@ namespace Uvic_Ecg_ArbutusHolter
         private Client inClient;
         List<Device> returnDls;
         string[] nameLs;
-        Appointment theApp;
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
         public DateTime startTime { get; set; }
         public DateTime endTime { get; set; }
         public DateTime pickTime { get; set; }
         public DateTime returnTime { get; set; }
-        public AppointmentDetailsForm(Client client, Appointment app, string name)
+        public EcgTest theTest { get; set; }
+        public Appointment theAppoint { get; set; }
+        public AppointmentDetailsForm(Client client, Appointment app, EcgTest runningTest, string name)
         {
             try
             {
                 InitializeComponent();
                 inClient = client;
-                theApp = app;
+                theAppoint = app;
+                theTest = runningTest;
                 nameLs = name.Split(' ');
+                continueBtn.Visible = false;
                 ClassifyDeviceLocation(client);
                 if (app != null)
                 {
@@ -53,11 +56,17 @@ namespace Uvic_Ecg_ArbutusHolter
                             }
                         }
                     }
-                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0)
+                    if (runningTest != null)
+                    {
+                        startBtn.Visible = false;
+                        continueBtn.Visible = true;
+                    }
+                    else if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 || app.EcgTestId.HasValue)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
-                    }
+                        editMailBtn.Enabled = false;
+                    }  
                 }
                 else
                 {
@@ -113,7 +122,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.Later.ErrorMessage);
                     return;
                 }
-                if (DateTime.Compare(devPickTimePick.Value, DateTime.Now) > 0)
+                if (DateTime.Compare(devPickTimePick.Value, DateTime.Now) < 0)
                 {
                     MessageBox.Show(ErrorInfo.EarlyThanNow.ErrorMessage);
                     return;
@@ -123,6 +132,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.SelectDeivce.ErrorMessage);
                     return;
                 }
+                // Ok means user only click save btn which ecgtest is not created
                 DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -194,10 +204,38 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            MainInterface mainForm = new MainInterface(inClient, theApp);
-            mainForm.Show();
+            using (MainInterface mainForm = new MainInterface(inClient, theAppoint, null))
+            {
+                DialogResult res = mainForm.ShowDialog();
+                if (res == DialogResult.Yes)
+                {
+                    theTest = mainForm.theEcgTest;
+                    theAppoint = mainForm.theAppoint;
+                    // Yes means user clicked the start btn which gurantees ecgtest is created
+                    DialogResult = DialogResult.Yes;
+                }else if (res == DialogResult.No)
+                {
+                    DialogResult = DialogResult.No;
+                }
+            }
         }
-
+        private void ContinueBtn_Click(object sender, EventArgs e)
+        {
+            using (MainInterface mainForm = new MainInterface(inClient, theAppoint, theTest))
+            {
+                DialogResult res = mainForm.ShowDialog();
+                if (res == DialogResult.Abort)
+                {
+                    theTest = mainForm.theEcgTest;
+                    theAppoint = mainForm.theAppoint;
+                    // Abort means user clicked the terminate btn
+                    DialogResult = DialogResult.Abort;
+                }else if (res == DialogResult.No)
+                {
+                    DialogResult = DialogResult.No;
+                }
+            }
+        }
         private void ClassifyDeviceLocation(Client client)
         {
             try

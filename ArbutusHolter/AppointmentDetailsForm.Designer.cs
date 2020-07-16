@@ -42,6 +42,7 @@
             this.firstNameLabel = new System.Windows.Forms.Label();
             this.deviceCombo = new System.Windows.Forms.ComboBox();
             this.startBtn = new System.Windows.Forms.Button();
+            this.continueBtn = new System.Windows.Forms.Button();
             this.editMailBtn = new System.Windows.Forms.Button();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
@@ -213,9 +214,19 @@
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(75, 23);
             this.startBtn.TabIndex = 16;
-            this.startBtn.Text = "Start Uvic_Ecg_EcgAnimationView";
+            this.startBtn.Text = "Start";
             this.startBtn.UseVisualStyleBackColor = true;
             this.startBtn.Click += new System.EventHandler(this.StartBtn_Click);
+            //
+            // continueBtn
+            //
+            this.continueBtn.Location = new System.Drawing.Point(349, 465);
+            this.continueBtn.Name = "continueBtn";
+            this.continueBtn.Size = new System.Drawing.Size(75, 23);
+            this.continueBtn.TabIndex = 22;
+            this.continueBtn.Text = "Continue";
+            this.continueBtn.UseVisualStyleBackColor = true;
+            this.continueBtn.Click += new System.EventHandler(this.ContinueBtn_Click);
             // 
             // editMailBtn
             // 
@@ -237,6 +248,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(436, 500);
             this.Controls.Add(this.startBtn);
+            this.Controls.Add(this.continueBtn);
             this.Controls.Add(this.appointGroup);
             this.Controls.Add(this.editMailBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -265,6 +277,7 @@
         private System.Windows.Forms.Label lastNameLabel;
         private System.Windows.Forms.Label firstNameLabel;
         private System.Windows.Forms.Button startBtn;
+        private System.Windows.Forms.Button continueBtn;
         private System.Windows.Forms.Label deviceNameLab;
         private System.Windows.Forms.ComboBox deviceLocCB;
         private System.Windows.Forms.Button editMailBtn;
