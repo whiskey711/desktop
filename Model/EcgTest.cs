@@ -5,9 +5,11 @@ namespace Uvic_Ecg_Model
 {
     public class EcgTest
     {
+        [JsonProperty] private int ecgTestId;
         [JsonProperty] private DateTime startTime;
         [JsonProperty] private DateTime scheduledEndTime;
         [JsonProperty] private DateTime? actualEndTime = null;
+        [JsonProperty] private int clinicId;
         [JsonProperty] private int patientId;
         [JsonProperty] private int nurseId;
         [JsonProperty] private int deviceId;
@@ -22,6 +24,8 @@ namespace Uvic_Ecg_Model
         public int DeviceId { get => deviceId; set => deviceId = value; }
         public string Comment { get => comment; set => comment = value; }
         public int? AppointmentId { get => appointmentId; set => appointmentId = value; }
+        public int EcgTestId { get => ecgTestId; set => ecgTestId = value; }
+        public int ClinicId { get => clinicId; set => clinicId = value; }
 
         public EcgTest(DateTime startTimei,
                        DateTime scheduledEndTimei,
@@ -30,7 +34,8 @@ namespace Uvic_Ecg_Model
                        int nurseIdi,
                        int deviceIdi,
                        string commenti,
-                       int? appointId)
+                       int? appointId,
+                       int clinici)
         {
             StartTime = startTimei;
             ScheduledEndTime = scheduledEndTimei;
@@ -40,7 +45,19 @@ namespace Uvic_Ecg_Model
             DeviceId = deviceIdi;
             Comment = commenti;
             AppointmentId = appointId;
+            ClinicId = clinici;
         }
+
         public EcgTest() { }
+        public EcgTest(int testId,
+                       DateTime start,
+                       DateTime scheduledEnd,
+                       int clinicI)
+        {
+            EcgTestId = testId;
+            StartTime = start;
+            ScheduledEndTime = scheduledEnd;
+            ClinicId = clinicI;
+        }
     }
 }
