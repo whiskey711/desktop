@@ -797,7 +797,7 @@
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.mainTableLayoutPanel);
             this.Name = "MainInterface";
-            this.Text = "MainInterface";
+            this.Text = "Test monitoring";
             this.mainTableLayoutPanel.ResumeLayout(false);
             this.detailPanel.ResumeLayout(false);
             this.detailPanel.PerformLayout();
