@@ -587,7 +587,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else
                 {
-                    DialogResult = DialogResult.No;
+                    DialogResult = DialogResult.Cancel;
                 }          
             }
         }
