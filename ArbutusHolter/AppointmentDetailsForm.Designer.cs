@@ -1,4 +1,6 @@
-﻿namespace Uvic_Ecg_ArbutusHolter
+﻿using System.Windows.Forms.VisualStyles;
+
+namespace Uvic_Ecg_ArbutusHolter
 {
     partial class AppointmentDetailsForm
     {
@@ -44,6 +46,7 @@
             this.startBtn = new System.Windows.Forms.Button();
             this.continueBtn = new System.Windows.Forms.Button();
             this.editMailBtn = new System.Windows.Forms.Button();
+            this.generateReportBtn = new System.Windows.Forms.Button();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -240,6 +243,16 @@
             this.editMailBtn.Text = "Appoinment notification email";
             this.editMailBtn.UseVisualStyleBackColor = true;
             this.editMailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
+            //
+            // generateReportBtn
+            //
+            this.generateReportBtn.Location = new System.Drawing.Point(200, 465);
+            this.generateReportBtn.Name = "generateReportBtn";
+            this.generateReportBtn.Size = new System.Drawing.Size(100, 23);
+            this.generateReportBtn.TabIndex = 23;
+            this.generateReportBtn.Text = "Generate Report";
+            this.generateReportBtn.UseVisualStyleBackColor = true;
+            this.generateReportBtn.Enabled = false;
             // 
             // AppointmentDetailsForm
             // 
@@ -251,6 +264,7 @@
             this.Controls.Add(this.continueBtn);
             this.Controls.Add(this.appointGroup);
             this.Controls.Add(this.editMailBtn);
+            this.Controls.Add(this.generateReportBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -281,5 +295,6 @@
         private System.Windows.Forms.Label deviceNameLab;
         private System.Windows.Forms.ComboBox deviceLocCB;
         private System.Windows.Forms.Button editMailBtn;
+        private System.Windows.Forms.Button generateReportBtn;
     }
 }

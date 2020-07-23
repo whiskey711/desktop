@@ -772,8 +772,8 @@ namespace Uvic_Ecg_ArbutusHolter
                                                                                 theApp.FirstName + " " + theApp.LastName))
             {
                 DialogResult res = appDForm.ShowDialog();
-                // If dialogresult is no, user did not do anything
-                if (res == DialogResult.No)
+                // If dialogresult is cancel, user did not do anything
+                if (res == DialogResult.Cancel)
                 {
                     return;
                 }
@@ -803,7 +803,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     runningTestDict.Add(appDForm.theTest.EcgTestId, appDForm.theTest);
                     app = appDForm.theAppoint;
                 }
-                // Remove the selected appoint to add updated one later
+                // Remove the selected appoint and add updated one later
                 List<int> index = new List<int>();
                 foreach (var a in appointLs)
                 {

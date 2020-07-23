@@ -66,6 +66,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
                         editMailBtn.Enabled = false;
+                        generateReportBtn.Enabled = true;
                     }  
                 }
                 else
@@ -213,9 +214,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     theAppoint = mainForm.theAppoint;
                     // Yes means user clicked the start btn which gurantees ecgtest is created
                     DialogResult = DialogResult.Yes;
-                }else if (res == DialogResult.No)
+                }else if (res == DialogResult.Cancel)
                 {
-                    DialogResult = DialogResult.No;
+                    DialogResult = DialogResult.Cancel;
                 }
             }
         }
@@ -230,9 +231,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     theAppoint = mainForm.theAppoint;
                     // Abort means user clicked the terminate btn
                     DialogResult = DialogResult.Abort;
-                }else if (res == DialogResult.No)
+                }else if (res == DialogResult.Cancel)
                 {
-                    DialogResult = DialogResult.No;
+                    DialogResult = DialogResult.Cancel;
                 }
             }
         }
