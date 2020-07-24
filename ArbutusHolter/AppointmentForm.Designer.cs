@@ -109,6 +109,7 @@
             this.dayBtn = new System.Windows.Forms.Button();
             this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.birthText = new System.Windows.Forms.PlaceholderTextBox();
+            this.notify = new System.Windows.Forms.NotifyIcon();
             this.appointTabletPanel.SuspendLayout();
             this.inProgressTestGroup.SuspendLayout();
             this.srhGroup.SuspendLayout();
@@ -1023,6 +1024,15 @@
             this.birthText.PlaceholderText = "MM/DD/YYYY";
             this.birthText.Size = new System.Drawing.Size(278, 27);
             this.birthText.TabIndex = 10;
+            //
+            // notify
+            //
+            this.notify.BalloonTipTitle = "Project Arbutus";
+            this.notify.BalloonTipText = "The program is running in the background";
+            this.notify.Text = "notify";
+            this.notify.Icon = new System.Drawing.Icon("ico2.ico");
+            this.notify.Visible = true;
+            this.notify.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Notify_MouseDoubleClick);
             // 
             // AppointmentForm
             // 
@@ -1032,6 +1042,7 @@
             this.Name = "AppointmentForm";
             this.Text = "Appointments";
             this.Load += new System.EventHandler(this.AppointmentF_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AppointmentForm_FormClosing);
             this.appointTabletPanel.ResumeLayout(false);
             this.inProgressTestGroup.ResumeLayout(false);
             this.inProgressTestGroup.PerformLayout();
@@ -1131,5 +1142,6 @@
         private System.Windows.Forms.Button weekBtn;
         private System.Windows.Forms.CheckBox pNameCheckBox;
         private System.Windows.Forms.Button dayBtn;
+        private System.Windows.Forms.NotifyIcon notify;
     }
 }
