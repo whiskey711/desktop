@@ -25,8 +25,6 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientResource patientResource = new PatientResource();
         DeviceResource dResource = new DeviceResource();
         Client appointFormClient;
-        bool createIndicator = false;
-        //List<EcgTest> runningTests = new List<EcgTest>();
         Dictionary<int, EcgTest> runningTestDict = new Dictionary<int, EcgTest>();
         string errorMsg;
         PatientInfo selectedP;
@@ -936,6 +934,23 @@ namespace Uvic_Ecg_ArbutusHolter
                 MessageBox.Show(restModel.ErrorMessage);
             }
             
+        }
+        private void AppointmentForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                WindowState = FormWindowState.Minimized;
+                ShowInTaskbar = false;
+                notify.Visible = true;
+                notify.ShowBalloonTip(1000);
+            }
+        }
+        private void Notify_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowInTaskbar = true;
+            WindowState = FormWindowState.Normal;
+            notify.Visible = false;
         }
     }
 }

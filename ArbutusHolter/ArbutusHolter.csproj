@@ -236,4 +236,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug copy "$(SolutionDir)\ico2.ico" "$(TargetDir)\ico2.ico"
+if $(ConfigurationName) == Release copy "$(SolutionDir)\ico2.ico" "$(TargetDir)\ico2.ico"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
