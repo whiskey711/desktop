@@ -45,14 +45,14 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                if (RegexUtilities.IsValidEmail(toTextBox.Text))
-                {
-                    MessageBox.Show(ErrorInfo.WrongMail.ErrorMessage);
-                    return;
-                }
                 if (string.IsNullOrWhiteSpace(toTextBox.Text) || string.IsNullOrWhiteSpace(subjectTextBox.Text))
                 {
                     MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
+                    return;
+                }
+                if (!RegexUtilities.IsValidEmail(toTextBox.Text))
+                {
+                    MessageBox.Show(ErrorInfo.WrongMail.ErrorMessage);
                     return;
                 }
                 mail = new AppointmentMail(toTextBox.Text, mailContentRichTB.Text);
