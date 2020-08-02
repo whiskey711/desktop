@@ -217,7 +217,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show("please start hook up or record first");
                     return;
                 }
-                else if (isFirstTime)
+                else if (!isFirstTime)
                 {
                     StartDisplay();
                     return;
