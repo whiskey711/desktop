@@ -60,7 +60,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void CreateEcgTest()
         {
-            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, 1/*should be config variable*/);
+            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, Config.ClinicId);
             eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
             if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
             {

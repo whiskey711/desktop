@@ -59,7 +59,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 PatientInfo newPatient = new PatientInfo(lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text, null,
                                                          provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                         genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                         genderCB.Text, postCodeTB.Text, false, Config.ClinicId, pacemakerTB.Text, superPhyTB.Text,
                                                          null, null, null, null, null, null, ageTB.Text);
                 string errorMsg = patientResource.CreatePatient(newPatient, cpFormClient);
                 if (errorMsg == ErrorInfo.OK.ErrorMessage)
