@@ -30,7 +30,7 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime date;
         DateTime tempDate;
         PatientInfo updatedPatient;
-        bool isNotFirstTime = true;
+        bool isFirstTime = true;
         bool recordingStarted = false;
         int aDay = 24;
         public EcgTest theEcgTest { get; set; }
@@ -217,7 +217,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show("please start hook up or record first");
                     return;
                 }
-                else if (!isNotFirstTime)
+                else if (isFirstTime)
                 {
                     StartDisplay();
                     return;
@@ -242,7 +242,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 ecgStartBtn.Enabled = false;
-                isNotFirstTime = true;
+                isFirstTime = false;
                 waitingTimer.Start();
             }
             catch (Exception ex)
