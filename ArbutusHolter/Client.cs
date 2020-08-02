@@ -15,12 +15,13 @@ namespace Uvic_Ecg_ArbutusHolter
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;
-        private ErrorInfo errorInfo;
+        private int nurseId;
         public HttpResponseMessage Result { get => result; set => result = value; }
         public HttpClient HttpClient { get => httpClient; set => httpClient = value; }
         public HttpContent Content { get => content; set => content = value; }
-        public ErrorInfo ErrorInfo { get => errorInfo; set => errorInfo = value; }
         public string Token { get => token; set => token = value; }
+        public int NurseId { get => nurseId; }
+
         public string getUrl()
         {
             return this.url;
@@ -49,15 +50,18 @@ namespace Uvic_Ecg_ArbutusHolter
                     int beginIndex = fullToken.IndexOf('r', fullToken.IndexOf('r') + 1);
                     //store the token in the 'token' string
                     Token = fullToken.Substring(beginIndex + 1);
-                    errorInfo = ErrorInfo.OK;
+                    string s = fullerrorMsg.Split(':').Last().Trim('"', ' ', '{', '}');
+                    nurseId = int.Parse(s);
+                    return ErrorInfo.OK;
                 }
                 //else return cannot find token
+                return ErrorInfo.Failed;
             }
             else
             {
-                errorInfo = ErrorInfo.Failed;
+                nurseId = -1;
+                return ErrorInfo.Failed;
             }
-            return errorInfo;
         }
         public bool Register(Nurse newNurse)
         {

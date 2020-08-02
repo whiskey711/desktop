@@ -238,7 +238,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     }                    
                     updatedPatient = new PatientInfo(selectedP.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text,
                                                      null, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                     genderCB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
+                                                     genderCB.Text, postCodeTB.Text, false, Config.ClinicId, pacemakerTB.Text, superPhyTB.Text,
                                                      null, null, null, null, null, null, ageTB.Text);
                     errorMsg = patientResource.UpdatePatient(updatedPatient, appointFormClient);
                     if (errorMsg == ErrorInfo.OK.ErrorMessage)
@@ -713,9 +713,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     if (appointDForm.ShowDialog() == DialogResult.OK)
                     {
                         // Create new appointment
-                        app = new Uvic_Ecg_Model.Appointment(1, selectedP.PatientId, appointDForm.selectDev.DeviceId, appointDForm.startTime, appointDForm.endTime,
-                                          DateTime.Now, appointDForm.pickTime, appointDForm.returnTime, appointDForm.deviceLoc, null, false, 1,
-                                          selectedP.PatientFirstName, selectedP.PatientLastName, null);
+                        app = new Uvic_Ecg_Model.Appointment(appointFormClient.NurseId, selectedP.PatientId, appointDForm.selectDev.DeviceId, 
+                                                             appointDForm.startTime, appointDForm.endTime, DateTime.Now, appointDForm.pickTime, 
+                                                             appointDForm.returnTime, appointDForm.deviceLoc, null, false, Config.ClinicId,
+                                                             selectedP.PatientFirstName, selectedP.PatientLastName, null);
                         errorMsg = nResource.CreateAppointment(app, appointFormClient);
                         if (errorMsg == ErrorInfo.OK.ErrorMessage)
                         {
@@ -778,10 +779,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 // If dialogresult is ok, user didn't start test
                 else if (res == DialogResult.OK)
                 {
-                    app = new Uvic_Ecg_Model.Appointment((int)theApp.AppointmentRecordId, 1, (int)theApp.PatientId, appDForm.selectDev.DeviceId,
-                                                appDForm.startTime, appDForm.endTime, (DateTime)theApp.ReservationTime, appDForm.pickTime,
-                                                appDForm.returnTime, appDForm.deviceLoc, (string)theApp.Instruction, false, 1,
-                                                (string)theApp.FirstName, (string)theApp.LastName, (int?)theApp.EcgTestId);
+                    app = new Uvic_Ecg_Model.Appointment((int)theApp.AppointmentRecordId, appointFormClient.NurseId, (int)theApp.PatientId, 
+                                                        appDForm.selectDev.DeviceId, appDForm.startTime, appDForm.endTime, 
+                                                        (DateTime)theApp.ReservationTime, appDForm.pickTime,
+                                                        appDForm.returnTime, appDForm.deviceLoc, (string)theApp.Instruction, false, Config.ClinicId,
+                                                        (string)theApp.FirstName, (string)theApp.LastName, (int?)theApp.EcgTestId);
                     
                 }
                 // If dialogresult is yes, user must created a ecgtest
