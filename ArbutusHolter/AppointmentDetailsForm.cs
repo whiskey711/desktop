@@ -259,5 +259,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
+        private void ViewNoteBtn_Click(object sender, EventArgs e)
+        {
+            NoteForm noteF = new NoteForm();
+            noteF.ShowDialog();
+        }
     }
 }
