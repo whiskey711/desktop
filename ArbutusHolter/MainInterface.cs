@@ -58,17 +58,28 @@ namespace Uvic_Ecg_ArbutusHolter
                 recordBtn.Enabled = false;
             }
         }
-        private void CreateEcgTest()
+        private bool CreateEcgTest()
         {
             theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, Config.ClinicId);
-            eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
+            try
+            {
+                eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
             if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
             {
                 MessageBox.Show(eRestMod.ErrorMessage);
-                return;
+                return false;
             }
             theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
             theAppoint.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
+            return true;
         }
         private void PatientInfo_Load()
         {
@@ -403,7 +414,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else
                 {
-                    CreateEcgTest();
+                    if (!CreateEcgTest())
+                    {
+                        return;
+                    }
                     recordBtn.Enabled = true;
                     ecgStartBtn.Enabled = true;
                 }
