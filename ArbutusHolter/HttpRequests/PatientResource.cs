@@ -12,12 +12,16 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         HttpContent content;
         public RestModel<PatientInfo> GetPatient(string lastname, string firstname, string birth, string phn, Client client)
         {
+            string subUrl;
             if (string.IsNullOrWhiteSpace(birth))
             {
-                birth = "2447/01/01";
+                subUrl = "test/patient/information?lastname=" + lastname + "&firstname=" + firstname + "&phn=" + phn;
             }
-            string theurl = "test/patient/information?lastname=" + lastname + "&firstname=" + firstname + "&birthday=" + birth + "&phn=" + phn;
-            restModel = requests.GetAll(theurl, client);
+            else
+            {
+                subUrl = "test/patient/information?lastname=" + lastname + "&firstname=" + firstname + "&birthday=" + birth + "&phn=" + phn;
+            }
+            restModel = requests.GetAll(subUrl, client);
             return restModel;
         }
         public String CreatePatient(PatientInfo newPatient, Client client)
