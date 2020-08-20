@@ -11,9 +11,11 @@ namespace Uvic_Ecg_ArbutusHolter
     {
         RestModel<Device> restModel;
         private DeviceResource dResource = new DeviceResource();
+        private NurseResource nResource = new NurseResource();
         private Client inClient;
         List<Device> returnDls;
         string[] nameLs;
+        string errorMsg;
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
         public DateTime startTime { get; set; }
@@ -22,7 +24,8 @@ namespace Uvic_Ecg_ArbutusHolter
         public DateTime returnTime { get; set; }
         public EcgTest theTest { get; set; }
         public Appointment theAppoint { get; set; }
-        public AppointmentDetailsForm(Client client, Appointment app, EcgTest runningTest, string name)
+        private PatientInfo thePat;
+        public AppointmentDetailsForm(Client client, Appointment app, EcgTest runningTest, PatientInfo patient)
         {
             try
             {
@@ -30,7 +33,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 inClient = client;
                 theAppoint = app;
                 theTest = runningTest;
-                nameLs = name.Split(' ');
+                thePat = patient;
                 continueBtn.Visible = false;
                 ClassifyDeviceLocation(client);
                 if (app != null)
@@ -71,8 +74,8 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else
                 {
-                    firstNameLabel.Text = nameLs[0];
-                    lastNameLabel.Text = nameLs[1];
+                    firstNameLabel.Text = thePat.PatientFirstName;
+                    lastNameLabel.Text = thePat.PatientLastName;
                     startBtn.Visible = false;
                 }
             }
@@ -134,7 +137,43 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 // Ok means user only click save btn which ecgtest is not created
-                DialogResult = DialogResult.OK;
+                if (theAppoint == null)
+                {
+                    Appointment newApp = new Appointment(inClient.NurseId, thePat.PatientId, selectDev.DeviceId,
+                                                         startTime, endTime, DateTime.Now, pickTime,
+                                                         returnTime, deviceLoc, null, false, Config.ClinicId,
+                                                         thePat.PatientFirstName, thePat.PatientLastName, null);
+                    errorMsg = nResource.CreateAppointment(newApp, inClient);
+                    if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                    {
+                        MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                        DialogResult = DialogResult.OK;
+                    }
+                    else
+                    {
+                        MessageBox.Show(errorMsg);
+                        DialogResult = DialogResult.Cancel;
+                    }
+                    return;
+                }
+                Appointment updatedApp = new Appointment((int)theAppoint.AppointmentRecordId, inClient.NurseId, 
+                                                        (int)theAppoint.PatientId, selectDev.DeviceId, 
+                                                        startTime, endTime,
+                                                        (DateTime)theAppoint.ReservationTime, pickTime,
+                                                        returnTime, deviceLoc, (string)theAppoint.Instruction, 
+                                                        false, Config.ClinicId, (string)theAppoint.FirstName,
+                                                        (string)theAppoint.LastName, (int?)theAppoint.EcgTestId);
+                errorMsg = nResource.UpdateAppointment(updatedApp, inClient);
+                if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                {
+                    MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                    DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    MessageBox.Show(errorMsg);
+                    DialogResult = DialogResult.Cancel;
+                }
             }
             catch (Exception ex)
             {
@@ -193,7 +232,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             return devls;
         }
-        private List<String> CreateDeviceLocLs(List<Entity<Device>> entls)
+        private List<string> CreateDeviceLocLs(List<Entity<Device>> entls)
         {
             List<String> devLocLs = new List<String>();
             foreach (var ent in entls)
