@@ -69,8 +69,10 @@
             this.hookupBtn = new System.Windows.Forms.Button();
             this.startTitle = new System.Windows.Forms.Label();
             this.durationLabel = new System.Windows.Forms.Label();
+            this.endTimeLabel = new System.Windows.Forms.Label();
             this.timeLabel = new System.Windows.Forms.Label();
             this.durationTitle = new System.Windows.Forms.Label();
+            this.endTimeTitile = new System.Windows.Forms.Label();
             this.indicatorLed = new Bulb.LedBulb();
             this.recordBtn = new System.Windows.Forms.Button();
             this.ecgPanel = new System.Windows.Forms.Panel();
@@ -499,7 +501,9 @@
             this.indicatorGroup.Controls.Add(this.hookupBtn);
             this.indicatorGroup.Controls.Add(this.startTitle);
             this.indicatorGroup.Controls.Add(this.durationLabel);
+            this.indicatorGroup.Controls.Add(this.endTimeLabel);
             this.indicatorGroup.Controls.Add(this.timeLabel);
+            this.indicatorGroup.Controls.Add(this.endTimeTitile);
             this.indicatorGroup.Controls.Add(this.durationTitle);
             this.indicatorGroup.Controls.Add(this.indicatorLed);
             this.indicatorGroup.Controls.Add(this.recordBtn);
@@ -553,18 +557,28 @@
             this.durationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.durationLabel.AutoSize = true;
             this.durationLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.durationLabel.Location = new System.Drawing.Point(448, 216);
+            this.durationLabel.Location = new System.Drawing.Point(448, 175);
             this.durationLabel.Name = "durationLabel";
             this.durationLabel.Size = new System.Drawing.Size(90, 26);
             this.durationLabel.TabIndex = 3;
             this.durationLabel.Text = "00:00:00";
+            //
+            // endTimeLabel
+            //
+            this.endTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.endTimeLabel.AutoSize = true;
+            this.endTimeLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.endTimeLabel.Location = new System.Drawing.Point(342, 140);
+            this.endTimeLabel.Name = "endTimeLabel";
+            this.endTimeLabel.Size = new System.Drawing.Size();
+            this.endTimeLabel.Text = "endTime";
             // 
             // timeLabel
             // 
             this.timeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.timeLabel.AutoSize = true;
             this.timeLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.timeLabel.Location = new System.Drawing.Point(448, 175);
+            this.timeLabel.Location = new System.Drawing.Point(448, 216);
             this.timeLabel.Name = "timeLabel";
             this.timeLabel.Size = new System.Drawing.Size(54, 26);
             this.timeLabel.TabIndex = 2;
@@ -580,6 +594,16 @@
             this.durationTitle.Size = new System.Drawing.Size(87, 26);
             this.durationTitle.TabIndex = 1;
             this.durationTitle.Text = "Duration";
+            //
+            // endTimeTitle
+            //
+            this.endTimeTitile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.endTimeTitile.AutoSize = true;
+            this.endTimeTitile.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.endTimeTitile.Location = new System.Drawing.Point(342, 110);
+            this.endTimeTitile.Name = "endTimeTitle";
+            this.endTimeTitile.Size = new System.Drawing.Size();
+            this.endTimeTitile.Text = "Schedule End Time";
             // 
             // indicatorLed
             // 
@@ -881,5 +905,7 @@
         private System.Windows.Forms.Label lastNameLabel;
         private System.Windows.Forms.TableLayoutPanel ecgLayoutPanel;
         private System.Windows.Forms.Panel ecgSidePanel;
+        private System.Windows.Forms.Label endTimeTitile;
+        private System.Windows.Forms.Label endTimeLabel;
     }
 }

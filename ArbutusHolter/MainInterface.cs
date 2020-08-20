@@ -79,7 +79,14 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
             theAppoint.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
-            return true;
+            if (DateTime.Compare(theEcgTest.StartTime.AddHours(aDay), theAppoint.AppointmentEndTime) < 0)
+            {
+                endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString("hh:mm:ss tt");
+            }
+            else
+            {
+                endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString("hh:mm:ss tt");
+            }
         }
         private void PatientInfo_Load()
         {
