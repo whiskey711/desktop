@@ -24,19 +24,25 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             restModel = requests.GetAll(subUrl, client);
             return restModel;
         }
-        public String CreatePatient(PatientInfo newPatient, Client client)
+        public string CreatePatient(PatientInfo newPatient, Client client)
         {
             string json = JsonConvert.SerializeObject(newPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel = requests.Post("test/patient/information", content, client);
             return restModel.ErrorMessage;
         }
-        public String UpdatePatient(PatientInfo updatedPatient, Client client)
+        public string UpdatePatient(PatientInfo updatedPatient, Client client)
         {
             string json = JsonConvert.SerializeObject(updatedPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel = requests.Put("test/patient/information/" + updatedPatient.PatientId, content, client);
             return restModel.ErrorMessage;
         }
+        public RestModel<PatientInfo> GetPatientById(int pid, Client client)
+        {
+            restModel = requests.GetAll("test/patient/information/" + pid, client);
+            return restModel;
+        }
+
     }
 }

@@ -87,6 +87,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString("hh:mm:ss tt");
             }
+            return true;
         }
         private void PatientInfo_Load()
         {
