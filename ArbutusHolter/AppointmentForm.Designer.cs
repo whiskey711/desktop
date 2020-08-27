@@ -110,6 +110,7 @@
             this.birthDateTB = new System.Windows.Forms.PlaceholderTextBox();
             this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.notify = new System.Windows.Forms.NotifyIcon();
+            this.appointRefreshTimer = new System.Windows.Forms.Timer();
             this.appointTabletPanel.SuspendLayout();
             this.inProgressTestGroup.SuspendLayout();
             this.srhGroup.SuspendLayout();
@@ -1033,6 +1034,11 @@
             this.notify.Icon = new System.Drawing.Icon("ico2.ico");
             this.notify.Visible = true;
             this.notify.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Notify_MouseDoubleClick);
+            //
+            // appointRefreshTimer
+            //
+            this.appointRefreshTimer.Interval = 60000;
+            this.appointRefreshTimer.Tick += new System.EventHandler(this.AppointRefreshTimer_Tick);
             // 
             // AppointmentForm
             // 
@@ -1143,5 +1149,6 @@
         private System.Windows.Forms.CheckBox pNameCheckBox;
         private System.Windows.Forms.Button dayBtn;
         private System.Windows.Forms.NotifyIcon notify;
+        private System.Windows.Forms.Timer appointRefreshTimer;
     }
 }

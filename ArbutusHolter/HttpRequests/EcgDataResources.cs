@@ -10,9 +10,12 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         RestModel<EcgRawData> restModel;
         RestModel<ResultJson> restModel2;
         RestModel<ResultJson> testRestMod;
+        RestModel<EcgTest> ecgTestRestMod;
         private Requests<EcgRawData> requests = new Requests<EcgRawData>();
         private Requests<ResultJson> requests2 = new Requests<ResultJson>();
         private Requests<ResultJson> testReq = new Requests<ResultJson>();
+        private Requests<EcgTest> ecgTestReq = new Requests<EcgTest>();
+
         HttpContent content;
         public RestModel<EcgRawData> GetEcgData(Client client, String status, int pid, int tId)
         {
@@ -59,5 +62,27 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             testRestMod = testReq.Put("test/patient/ecg-tests", content, client);
             return testRestMod;
         }
+        public RestModel<EcgTest> GetRunningTest(Client client)
+        {
+            ecgTestRestMod = ecgTestReq.GetAll("test/patient/running-tests", client);
+            return ecgTestRestMod;
+        }
+        public RestModel<EcgTest> GetFinishedTest(Client client, DateTime start, DateTime end)
+        {
+            ecgTestRestMod = ecgTestReq.GetAll("test/patient/ecg-test?period-start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                                               + "-0000&period-end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
+            return ecgTestRestMod;
+        }
+        public RestModel<EcgRawData> GetRawDataLs(Client client, int testid)
+        {
+            restModel = requests.GetAll("test/patient/ecg-test/" + testid, client);
+            return restModel;
+        }
+        public RestModel<EcgRawData> GetData(Client client, int dataid)
+        {
+            restModel = requests.GetAll("test/patient/ecg-test/ecg-raw-data/" + dataid, client);
+            return restModel;
+        }
+
     }
 }

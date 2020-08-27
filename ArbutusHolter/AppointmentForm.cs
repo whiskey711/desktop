@@ -21,9 +21,11 @@ namespace Uvic_Ecg_ArbutusHolter
         RestModel<Uvic_Ecg_Model.Appointment> restModel;
         RestModel<PatientInfo> pRestMod;
         RestModel<Device> dRestMod;
+        RestModel<EcgTest> ecgTestMod;
         NurseResource nResource = new NurseResource();
         PatientResource patientResource = new PatientResource();
         DeviceResource dResource = new DeviceResource();
+        EcgDataResources eResource = new EcgDataResources();
         Client appointFormClient;
         Dictionary<int, EcgTest> runningTestDict = new Dictionary<int, EcgTest>();
         string errorMsg;
@@ -57,10 +59,12 @@ namespace Uvic_Ecg_ArbutusHolter
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
             appointFormClient = client;
-            LoadAllAppointments();
             ClassifyDeviceLocation(appointFormClient);
+            LoadAllAppointments();
+            RefreshRunningTest();
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
+            appointRefreshTimer.Start();
         }
         private void SrhBtn_Click(object sender, EventArgs e)
         {
@@ -435,6 +439,16 @@ namespace Uvic_Ecg_ArbutusHolter
             List<String> devLocDistinctLs = devLocLs.Distinct().ToList();
             return devLocDistinctLs;
         }
+        private List<EcgTest> CreateTestLs(List<Entity<EcgTest>> entls)
+        {
+            List<EcgTest> els = new List<EcgTest>();
+            foreach (var ent in entls)
+            {
+                els.Add(ent.Model);
+            }
+            return els;
+        }
+
         private bool DateFormat(string date, string type)
         {
             DateTime result;
@@ -743,19 +757,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 // If dialogresult is yes, user must created a ecgtest
                 else if (res == DialogResult.Yes)
                 {
-                    // Checking is the test already in the list
-                    if (runningTestDict.TryGetValue(appDForm.theTest.EcgTestId, out EcgTest theTest)) 
-                    {
-                        return;
-                    }
-                    // Add new ecg test in inprogresstestls
-                    var row = new string[] {selectedP.PatientFirstName + "\t" + selectedP.PatientLastName,
-                                                appDForm.theTest.ScheduledEndTime.ToString()};
-                    var lisitem = new ListViewItem(row);
-                    lisitem.Tag = appDForm.theTest.EcgTestId;
-                    inProgressTestLs.Items.Add(lisitem);
-                    runningTestDict.Add(appDForm.theTest.EcgTestId, appDForm.theTest);
-                    app = appDForm.theAppoint;
+                    RefreshRunningTest();
                 }
             }
         }
@@ -767,8 +769,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (appDForm.ShowDialog() == DialogResult.Abort)
                 {
                     runningTestDict.Remove(testid);
-                    // RefreshRunningTestDict() was wriiten in another branch, this should be called here once that branch is merged
-                    // RefreshRunningTestDict()
+                    RefreshRunningTest();
                     MessageBox.Show(ErrorInfo.TestTerminated.ErrorMessage);
                 }
             }
@@ -803,7 +804,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             // Abort means user click the terminate btn
                             if (mainForm.ShowDialog() == DialogResult.Abort)
                             {
-                                inProgressTestLs.SelectedItems[0].Remove();
+                                RefreshRunningTest();
                                 runningTestDict.Remove(theTestId);
                                 break;
                             }
@@ -834,5 +835,31 @@ namespace Uvic_Ecg_ArbutusHolter
             WindowState = FormWindowState.Normal;
             notify.Visible = false;
         }
+        private void AppointRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            LoadAllAppointments();
+            RefreshRunningTest();
+        }
+        private void RefreshRunningTest()
+        {
+            ecgTestMod = eResource.GetRunningTest(appointFormClient);
+            if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage)
+            {
+                List<EcgTest> returnEls = CreateTestLs(ecgTestMod.Feed.Entities);
+                PatientInfo p;
+                runningTestDict.Clear();
+                inProgressTestLs.Items.Clear();
+                foreach (EcgTest returnE in returnEls)
+                {
+                    runningTestDict.Add(returnE.EcgTestId, returnE);
+                    p = patientResource.GetPatientById(returnE.PatientId, appointFormClient).Entity.Model;
+                    var row = new string[] { p.PatientFirstName + "\t" + p.PatientLastName, returnE.ScheduledEndTime.ToString() };
+                    var lisitem = new ListViewItem(row);
+                    lisitem.Tag = returnE.EcgTestId;
+                    inProgressTestLs.Items.Add(lisitem);
+                }
+            }
+        }
+
     }
 }
