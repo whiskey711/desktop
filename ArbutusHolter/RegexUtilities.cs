@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 namespace Uvic_Ecg_ArbutusHolter
@@ -44,5 +45,22 @@ namespace Uvic_Ecg_ArbutusHolter
                 return false;
             }
         }
+        public static List<string[]> MatchComment(string input)
+        {
+            List<string[]> result = new List<string[]>();
+            string timePattern = @"\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{1,2}:\d{1,2}.\d{1,3}[\+-]\d{1,2}:\d{1,2}";
+            string comPattern = @"(?<starttime>" + timePattern + ") (?<endtime>" + timePattern + ") (?<comment>.+)\n*";
+            MatchCollection matches = Regex.Matches(input, comPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            foreach (Match match in matches)
+            {
+                GroupCollection group = match.Groups;
+                DateTime start = DateTime.Parse(group["starttime"].Value);
+                DateTime end = DateTime.Parse(group["endtime"].Value);
+                string[] oneComment = { start.ToString(), end.ToString(), group["comment"].Value };
+                result.Add(oneComment);
+            }
+            return result;
+        }
+        
     }
 }

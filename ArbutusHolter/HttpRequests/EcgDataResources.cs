@@ -15,11 +15,10 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         private Requests<ResultJson> requests2 = new Requests<ResultJson>();
         private Requests<ResultJson> testReq = new Requests<ResultJson>();
         private Requests<EcgTest> ecgTestReq = new Requests<EcgTest>();
-
         HttpContent content;
         public RestModel<EcgRawData> GetEcgData(Client client, String status, int pid, int tId)
         {
-            String url = "test/patient/" + pid + "/" + tId + "/ecg-raw-data/" + status;
+            string url = "test/patient/" + pid + "/" + tId + "/ecg-raw-data/" + status;
             restModel = requests.GetAll(url, client);
             return restModel;
         }
@@ -83,6 +82,10 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             restModel = requests.GetAll("test/patient/ecg-test/ecg-raw-data/" + dataid, client);
             return restModel;
         }
-
+        public EcgTest GetTestById(int ecgTestId, int patientId, Client client)
+        {
+            ecgTestRestMod = ecgTestReq.GetAll("test/patient/" + patientId + "/ecg-test/" + ecgTestId, client);
+            return ecgTestRestMod.Entity.Model;
+        }
     }
 }

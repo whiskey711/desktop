@@ -35,6 +35,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 theTest = runningTest;
                 thePat = patient;
                 continueBtn.Visible = false;
+                viewNoteBtn.Enabled = false;
                 ClassifyDeviceLocation(client);
                 if (app != null)
                 {
@@ -64,12 +65,14 @@ namespace Uvic_Ecg_ArbutusHolter
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
                     }
-                    else if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 || app.EcgTestId.HasValue)
+                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 || app.EcgTestId.HasValue)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
                         editMailBtn.Enabled = false;
                         generateReportBtn.Enabled = true;
+                        viewNoteBtn.Enabled = true;
+                        continueBtn.Enabled = false;
                     }  
                 }
                 else
@@ -300,7 +303,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void ViewNoteBtn_Click(object sender, EventArgs e)
         {
-            NoteForm noteF = new NoteForm();
+            NoteForm noteF = new NoteForm(theTest);
             noteF.ShowDialog();
         }
     }

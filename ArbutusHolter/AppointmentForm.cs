@@ -602,11 +602,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 weeklyCal.Enabled = false;
                 if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
                 {
-                    ContinueTest(selectedA, selectedA.EcgTestId.Value);
+                    ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
                 }
                 else
                 {
-                    UpdateAppointment(selectedA);
+                    ShowAppointDetailFormForUpcomingAppoint(selectedA);
                 }
                 weeklyCal.Enabled = true;
                 weeklyCal.Invalidate();
@@ -651,11 +651,15 @@ namespace Uvic_Ecg_ArbutusHolter
             selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
             if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
             {
-                ContinueTest(selectedA, selectedA.EcgTestId.Value);
+                ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
+            }
+            else if (selectedA.EcgTestId.HasValue && !runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out test))
+            {
+                ShowAppointDetailFormForFinishedAppoint(selectedA);
             }
             else
             {
-                UpdateAppointment(selectedA);
+                ShowAppointDetailFormForUpcomingAppoint(selectedA);
             }
         }
         private void RegionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -738,7 +742,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void UpdateAppointment(Uvic_Ecg_Model.Appointment theApp)
+        private void ShowAppointDetailFormForUpcomingAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
             using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, null,
                                                                                 selectedP))
@@ -761,7 +765,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void ContinueTest(Uvic_Ecg_Model.Appointment theApp, int testid)
+        private void ShowAppointDetailFormForInProgressAppoint(Uvic_Ecg_Model.Appointment theApp, int testid)
         {
             using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, 
                                                                                 runningTestDict[testid], null))
@@ -773,6 +777,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.TestTerminated.ErrorMessage);
                 }
             }
+        }
+        private void ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
+        {
+            EcgTest test = eResource.GetTestById(theApp.EcgTestId.Value, theApp.PatientId, appointFormClient);
+            AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, theApp.FirstName + " " + theApp.LastName);
+            appDForm.Show();
         }
         private void InProgressTestLs_SelectedIndexChanged(object sender, EventArgs e)
         {

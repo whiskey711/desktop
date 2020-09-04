@@ -1,4 +1,6 @@
-﻿namespace Uvic_Ecg_ArbutusHolter
+﻿using System.Runtime.CompilerServices;
+
+namespace Uvic_Ecg_ArbutusHolter
 {
     partial class NoteForm
     {
@@ -28,24 +30,53 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.noteTextBox = new System.Windows.Forms.RichTextBox();
+            this.commentLs = new System.Windows.Forms.ListView();
+            this.startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.endTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.comment = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
-            // 
-            // noteTextBox
-            // 
-            this.noteTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.noteTextBox.Location = new System.Drawing.Point(0, 0);
-            this.noteTextBox.Name = "noteTextBox";
-            this.noteTextBox.Size = new System.Drawing.Size(800, 450);
-            this.noteTextBox.TabIndex = 0;
-            this.noteTextBox.Text = "";
+            //
+            // commentLs
+            //
+            this.commentLs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[]
+            {
+                this.startTime,
+                this.endTime,
+                this.comment
+            });
+            this.commentLs.FullRowSelect = true;
+            this.commentLs.GridLines = true;
+            this.commentLs.HideSelection = false;
+            this.commentLs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commentLs.Location = new System.Drawing.Point(0, 0);
+            this.commentLs.Name = "commentLs";
+            this.commentLs.TabIndex = 0;
+            this.commentLs.ShowItemToolTips = true;
+            this.commentLs.UseCompatibleStateImageBehavior = false;
+            this.commentLs.View = System.Windows.Forms.View.Details;
+            this.commentLs.SelectedIndexChanged += new System.EventHandler(this.CommentLs_SelectedIndexChanged);
+            //
+            // startTime
+            //
+            this.startTime.Text = "Start Time";
+            this.startTime.Width = 130;
+            //
+            // endTime
+            //
+            this.endTime.Text = "End Time";
+            this.endTime.Width = 130;
+            //
+            // comment
+            //
+            this.comment.Text = "Comment";
+            this.comment.Width = 550;
             // 
             // NoteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.noteTextBox);
+            this.Controls.Add(this.commentLs);
             this.Name = "NoteForm";
             this.Text = "NoteForm";
             this.ResumeLayout(false);
@@ -54,6 +85,9 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox noteTextBox;
+        private System.Windows.Forms.ListView commentLs;
+        private System.Windows.Forms.ColumnHeader startTime;
+        private System.Windows.Forms.ColumnHeader endTime;
+        private System.Windows.Forms.ColumnHeader comment;
     }
 }
