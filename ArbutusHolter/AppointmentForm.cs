@@ -781,7 +781,8 @@ namespace Uvic_Ecg_ArbutusHolter
         private void ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
             EcgTest test = eResource.GetTestById(theApp.EcgTestId.Value, theApp.PatientId, appointFormClient);
-            AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, theApp.FirstName + " " + theApp.LastName);
+            PatientInfo patient = patientResource.GetPatientById(theApp.PatientId, appointFormClient).Entity.Model;
+            AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
             appDForm.Show();
         }
         private void InProgressTestLs_SelectedIndexChanged(object sender, EventArgs e)
