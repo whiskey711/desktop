@@ -199,6 +199,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
                 startTimeFilt.Value = returnAls.First().AppointmentStartTime.Date;
                 endTimeFilt.Value = returnAls.Last().AppointmentEndTime.Date;
+                TimeFilt_Changed();
             }
             else if (restModel.ErrorMessage == "Others")
             {
@@ -448,7 +449,6 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             return els;
         }
-
         private bool DateFormat(string date, string type)
         {
             DateTime result;
@@ -673,7 +673,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 if (pNameCheckBox.Checked)
                 {
-                    pNameCheckBox.CheckState = CheckState.Unchecked;
+                    LoadPatientAppointment(selectedP);
                 }
                 else
                 {
