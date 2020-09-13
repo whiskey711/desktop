@@ -5,9 +5,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType> 
-    <TargetFrameworks>netcoreapp3.1;net46</TargetFrameworks>
-    <!--TargetFrameworkVersion>v3.1</TargetFrameworkVersion-->
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
