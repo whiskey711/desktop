@@ -11,6 +11,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private PublicResources publicResources = new PublicResources();
         private Client registrationClient = new Client();
         Nurse newNurse;
+        int minLen = 10;
         public RegisterForm()
         {
             InitializeComponent();
@@ -22,31 +23,37 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && RegexUtilities.IsValidEmail(email.Text))
                 {
-                    if (password.Text == confirmPass.Text)
+                    if (password.Text.Length >= minLen)
                     {
-                        newNurse = new Nurse(4,
-                                             lastN.Text,
-                                             null,
-                                             firstN.Text,
-                                             null,
-                                             email.Text,
-                                             1,
-                                             password.Text,
-                                             false);
-                        string errorMsg = publicResources.Registration(email.Text, registrationClient).ErrorMessage;
-                        if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
+                        if (password.Text == confirmPass.Text)
                         {
-                            finishPanel.Visible = true;
+                            newNurse = new Nurse(lastN.Text,
+                                                 null,
+                                                 firstN.Text,
+                                                 null,
+                                                 email.Text,
+                                                 1,
+                                                 password.Text,
+                                                 false);
+                            string errorMsg = publicResources.Registration(email.Text, registrationClient).ErrorMessage;
+                            if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
+                            {
+                                finishPanel.Visible = true;
+                            }
+                            else
+                            {
+                                MessageBox.Show(errorMsg);
+                                email.Text = "";
+                            }
                         }
                         else
                         {
-                            MessageBox.Show(errorMsg);
-                            email.Text = "";
+                            MessageBox.Show(ErrorInfo.Confirm.ErrorMessage);
                         }
                     }
                     else
                     {
-                        MessageBox.Show(ErrorInfo.Confirm.ErrorMessage);
+                        MessageBox.Show(ErrorInfo.PinTooShort.ErrorMessage);
                     }
                 }
                 else

@@ -39,6 +39,7 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo ReordingStart = new ErrorInfo("The ECG test has begun");
         public static readonly ErrorInfo TestTerminated = new ErrorInfo("The ECG test has been terminated");
         public static readonly ErrorInfo OngoingTest = new ErrorInfo("Sorry, the test is in progress, you cannot hoopkup now");
+        public static readonly ErrorInfo PinTooShort = new ErrorInfo("Sorry, your password has to be longer than 10 digits");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

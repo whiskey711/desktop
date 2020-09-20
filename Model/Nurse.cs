@@ -14,8 +14,7 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private int clinicId;
         [JsonProperty] private string password;
         [JsonProperty] private bool deleted;
-        public Nurse(int nId,
-                     string nLastname,
+        public Nurse(string nLastname,
                      string nMidname,
                      string nFirstName,
                      string nPhoneNum,
@@ -24,7 +23,6 @@ namespace Uvic_Ecg_Model
                      string pass,
                      bool delete)
         {
-            nurseId = nId;
             nurseLastName = nLastname;
             nurseMidName = nMidname;
             nurseFirstName = nFirstName;
