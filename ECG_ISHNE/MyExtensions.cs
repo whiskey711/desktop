@@ -136,7 +136,7 @@ namespace ECG_ISHNE
             }
 
             value = value.ToLower();
-            if (!value.Equals("man") && !value.Equals("male") && !value.Equals("woman") && !value.Equals("female"))
+            if (!value.Equals("man") && !value.Equals("male") && !value.Equals("woman") && !value.Equals("female") && !value.Equals("other"))
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -147,6 +147,10 @@ namespace ECG_ISHNE
             else if (value.Equals("woman") || value.Equals("female"))
             {
                 ch[0] = 2;
+            }
+            else if (value.Equals("other"))
+            {
+                ch[0] = 0;
             }
         }
 
