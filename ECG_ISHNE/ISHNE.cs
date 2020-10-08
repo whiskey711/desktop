@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Uvic_Ecg_Model;
 
 namespace ECG_ISHNE
@@ -19,6 +20,16 @@ namespace ECG_ISHNE
         /// <param name="patientInfo"></param>
         /// <param name="test"></param>
         /// <param name="outputPath"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="PathTooLongException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="SecurityException"></exception>
         public static void ConvertToISHNE(List<string> rawDataPaths, PatientInfo patientInfo, EcgTest ecgTest, string outputPath)
         {
             ConvertToISHNE(rawDataPaths, patientInfo, ecgTest, outputPath, "");
@@ -32,6 +43,16 @@ namespace ECG_ISHNE
         /// <param name="test"></param>
         /// <param name="outputPath"></param>
         /// <param name="varLengthBlockMessage"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="PathTooLongException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="SecurityException"></exception>
         public static void ConvertToISHNE(List<string> rawDataPaths, PatientInfo patientInfo, EcgTest ecgTest, string outputPath, string varLengthBlockMessage)
         {
             ISHNEPackage package = new ISHNEPackage();
@@ -40,11 +61,6 @@ namespace ECG_ISHNE
             package.EcgTest = ecgTest;
             package.VarLengthBlockContent = varLengthBlockMessage;
             package.WriteToFile(outputPath);
-        }
-
-        public static void Main()
-        {
-
         }
     }
 }
