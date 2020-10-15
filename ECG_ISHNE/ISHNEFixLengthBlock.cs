@@ -13,6 +13,7 @@ namespace ECG_ISHNE
         /// Fixed-length (512 bytes) of header block.
         /// </summary>
         public static readonly uint FIX_BLOCK_LEN = 512;
+        private static readonly short RESOLUTION_DEFALUT = 4103;
 
         /// <summary>
         /// Default sample rate : 250
@@ -216,6 +217,8 @@ namespace ECG_ISHNE
 
             Resolution = new short[12];
             Resolution.SetDefault();
+            Resolution[0] = RESOLUTION_DEFALUT;
+            Resolution[1] = RESOLUTION_DEFALUT;
 
             Pacemaker = 0;
 
