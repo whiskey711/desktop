@@ -11,14 +11,14 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         HttpContent content;
         public RestModel<ResultJson> GetTemplate(Client client)
         {
-            restmodel = request.GetAll("test/mail-template", client);
+            restmodel = request.GetAll("mail-template", client);
             return restmodel;
         }
         public RestModel<ResultJson> SendMail(Client client, AppointmentMail mail)
         {
             string json = JsonConvert.SerializeObject(mail);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restmodel = request.Post("test/appoint-mail", content, client);
+            restmodel = request.Post("appoint-mail", content, client);
             return restmodel;
         }
     }

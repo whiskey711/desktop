@@ -8,7 +8,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
     {
         private RestModel<T> restModel;
         private ErrorInfo errorInfo;
-        private readonly string rootUrl = "http://ecg.uvic.ca:8080/v1/";
+        private readonly string rootUrl = "http://ecg.uvic.ca:8080/v1/test/";
         public RestModel<T> Put(string url, HttpContent content, Client client)
         {
             client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);

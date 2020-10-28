@@ -18,7 +18,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         HttpContent content;
         public RestModel<EcgRawData> GetEcgData(Client client, String status, int pid, int tId)
         {
-            string url = "test/patient/" + pid + "/" + tId + "/ecg-raw-data/" + status;
+            string url = "patient/" + pid + "/" + tId + "/ecg-raw-data/" + status;
             restModel = requests.GetAll(url, client);
             return restModel;
         }
@@ -27,7 +27,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             EcgTest dummyTest = new EcgTest();
             string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel2 = requests2.Put("test/patient/ecg-test/"+tId+"/start-hookup/"+dId, content, client);
+            restModel2 = requests2.Put("patient/ecg-test/"+tId+"/start-hookup/"+dId, content, client);
             return restModel2;
         }
         public RestModel<ResultJson> Terminated(Client client, int tId, int dId)
@@ -35,7 +35,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             EcgTest dummyTest = new EcgTest();
             string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel2 = requests2.Put("test/patient/ecg-test/" + tId + "/stop/" + dId, content, client);
+            restModel2 = requests2.Put("patient/ecg-test/" + tId + "/stop/" + dId, content, client);
             return restModel2;
         }
         public RestModel<ResultJson> SetRecord(Client client, int tId, int dId)
@@ -44,47 +44,47 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             StringContent dummy = new StringContent("");
-            restModel2 = requests2.Put("test/patient/ecg-test/" + tId + "/start-record/" + dId, content, client);
+            restModel2 = requests2.Put("patient/ecg-test/" + tId + "/start-record/" + dId, content, client);
             return restModel2;
         }
         public RestModel<ResultJson> CreateEcgtest(Client client, EcgTest test)
         {
             string json = JsonConvert.SerializeObject(test, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local});
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            testRestMod = testReq.Post("test/patient/ecg-tests", content, client);
+            testRestMod = testReq.Post("patient/ecg-tests", content, client);
             return testRestMod;
         }
         public RestModel<ResultJson> UpdateEcgTest(Client client, EcgTest upEcgTest)
         {
             string json = JsonConvert.SerializeObject(upEcgTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            testRestMod = testReq.Put("test/patient/ecg-tests", content, client);
+            testRestMod = testReq.Put("patient/ecg-tests", content, client);
             return testRestMod;
         }
         public RestModel<EcgTest> GetRunningTest(Client client)
         {
-            ecgTestRestMod = ecgTestReq.GetAll("test/patient/running-tests", client);
+            ecgTestRestMod = ecgTestReq.GetAll("patient/running-tests", client);
             return ecgTestRestMod;
         }
         public RestModel<EcgTest> GetFinishedTest(Client client, DateTime start, DateTime end)
         {
-            ecgTestRestMod = ecgTestReq.GetAll("test/patient/ecg-test?period-start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+            ecgTestRestMod = ecgTestReq.GetAll("patient/ecg-test?period-start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
                                                + "-0000&period-end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
             return ecgTestRestMod;
         }
         public RestModel<EcgRawData> GetRawDataLs(Client client, int testid)
         {
-            restModel = requests.GetAll("test/patient/ecg-test/" + testid, client);
+            restModel = requests.GetAll("patient/ecg-test/" + testid, client);
             return restModel;
         }
         public RestModel<EcgRawData> GetData(Client client, int dataid)
         {
-            restModel = requests.GetAll("test/patient/ecg-test/ecg-raw-data/" + dataid, client);
+            restModel = requests.GetAll("patient/ecg-test/ecg-raw-data/" + dataid, client);
             return restModel;
         }
         public EcgTest GetTestById(int ecgTestId, int patientId, Client client)
         {
-            ecgTestRestMod = ecgTestReq.GetAll("test/patient/" + patientId + "/ecg-test/" + ecgTestId, client);
+            ecgTestRestMod = ecgTestReq.GetAll("patient/" + patientId + "/ecg-test/" + ecgTestId, client);
             return ecgTestRestMod.Entity.Model;
         }
     }

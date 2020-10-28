@@ -15,11 +15,11 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             string subUrl;
             if (string.IsNullOrWhiteSpace(birth))
             {
-                subUrl = "test/patient/information?lastname=" + lastname + "&firstname=" + firstname + "&phn=" + phn;
+                subUrl = "patient/information?lastname=" + lastname + "&firstname=" + firstname + "&phn=" + phn;
             }
             else
             {
-                subUrl = "test/patient/information?lastname=" + lastname + "&firstname=" + firstname + "&birthday=" + birth + "&phn=" + phn;
+                subUrl = "patient/information?lastname=" + lastname + "&firstname=" + firstname + "&birthday=" + birth + "&phn=" + phn;
             }
             restModel = requests.GetAll(subUrl, client);
             return restModel;
@@ -28,19 +28,19 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         {
             string json = JsonConvert.SerializeObject(newPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = requests.Post("test/patient/information", content, client);
+            restModel = requests.Post("patient/information", content, client);
             return restModel.ErrorMessage;
         }
         public string UpdatePatient(PatientInfo updatedPatient, Client client)
         {
             string json = JsonConvert.SerializeObject(updatedPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = requests.Put("test/patient/information/" + updatedPatient.PatientId, content, client);
+            restModel = requests.Put("patient/information/" + updatedPatient.PatientId, content, client);
             return restModel.ErrorMessage;
         }
         public RestModel<PatientInfo> GetPatientById(int pid, Client client)
         {
-            restModel = requests.GetAll("test/patient/information/" + pid, client);
+            restModel = requests.GetAll("patient/information/" + pid, client);
             return restModel;
         }
 
