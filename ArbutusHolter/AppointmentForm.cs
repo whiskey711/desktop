@@ -810,7 +810,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     if (theTestId == returnA.EcgTestId)
                     {
-                        using (MainInterface mainForm = new MainInterface(appointFormClient, returnA, runningTestDict[theTestId]))
+                        using (TestMonitorForm mainForm = new TestMonitorForm(appointFormClient, returnA, runningTestDict[theTestId]))
                         {
                             // Abort means user click the terminate btn
                             if (mainForm.ShowDialog() == DialogResult.Abort)

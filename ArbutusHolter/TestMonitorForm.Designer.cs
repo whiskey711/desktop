@@ -1,6 +1,6 @@
 ﻿namespace Uvic_Ecg_ArbutusHolter
 {
-    partial class MainInterface
+    partial class TestMonitorForm
     {
         /// <summary>
         /// Required designer variable.

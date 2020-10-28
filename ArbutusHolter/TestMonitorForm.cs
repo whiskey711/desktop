@@ -7,7 +7,7 @@ using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter
 {
-    public partial class MainInterface : Form
+    public partial class TestMonitorForm : Form
     {
         bool displayBtnclicked;
         int h, m, s, nextCallTimer, timeToWait;
@@ -35,7 +35,7 @@ namespace Uvic_Ecg_ArbutusHolter
         int aDay = 24;
         public EcgTest theEcgTest { get; set; }
         public Appointment theAppoint { get; set; }
-        public MainInterface(Client client, Appointment app, EcgTest test)
+        public TestMonitorForm(Client client, Appointment app, EcgTest test)
         {
             InitializeComponent();
             displayBtnclicked = false;

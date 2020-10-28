@@ -247,7 +247,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            using (MainInterface mainForm = new MainInterface(inClient, theAppoint, null))
+            using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, null))
             {
                 DialogResult res = mainForm.ShowDialog();
                 if (res == DialogResult.Yes)
@@ -264,7 +264,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void ContinueBtn_Click(object sender, EventArgs e)
         {
-            using (MainInterface mainForm = new MainInterface(inClient, theAppoint, theTest))
+            using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, theTest))
             {
                 DialogResult res = mainForm.ShowDialog();
                 if (res == DialogResult.Abort)
