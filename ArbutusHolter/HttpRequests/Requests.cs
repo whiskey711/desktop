@@ -41,10 +41,6 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             {
                 restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
             }
-            else
-            {
-                restModel.ErrorMessage = "Others";
-            }
             return restModel;
         }
     }
