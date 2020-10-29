@@ -48,6 +48,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.editMailBtn = new System.Windows.Forms.Button();
             this.generateReportBtn = new System.Windows.Forms.Button();
             this.viewNoteBtn = new System.Windows.Forms.Button();
+            this.returnDevBtn = new System.Windows.Forms.Button();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -264,19 +265,29 @@ namespace Uvic_Ecg_ArbutusHolter
             this.viewNoteBtn.Text = "Note";
             this.viewNoteBtn.UseVisualStyleBackColor = true;
             this.viewNoteBtn.Click += new System.EventHandler(this.ViewNoteBtn_Click);
+            //
+            // returnDevBtn
+            //
+            this.returnDevBtn.Location = new System.Drawing.Point(12, 490);
+            this.returnDevBtn.Name = "returnDevBtn";
+            this.returnDevBtn.Size = new System.Drawing.Size(100, 23);
+            this.returnDevBtn.Text = "Return Device";
+            this.returnDevBtn.UseVisualStyleBackColor = true;
+            this.returnDevBtn.Click += new System.EventHandler(this.ReturnDevBtn_Click);
             // 
             // AppointmentDetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(436, 500);
+            this.ClientSize = new System.Drawing.Size(436, 520);
             this.Controls.Add(this.startBtn);
             this.Controls.Add(this.continueBtn);
             this.Controls.Add(this.appointGroup);
             this.Controls.Add(this.editMailBtn);
             this.Controls.Add(this.generateReportBtn);
             this.Controls.Add(this.viewNoteBtn);
+            this.Controls.Add(this.returnDevBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -309,5 +320,6 @@ namespace Uvic_Ecg_ArbutusHolter
         private System.Windows.Forms.Button editMailBtn;
         private System.Windows.Forms.Button generateReportBtn;
         private System.Windows.Forms.Button viewNoteBtn;
+        private System.Windows.Forms.Button returnDevBtn;
     }
 }

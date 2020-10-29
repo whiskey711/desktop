@@ -12,6 +12,7 @@ namespace Uvic_Ecg_Model
         {
             this.errorMessage = errorMsg;
         }
+        public static readonly ErrorInfo DeviceReturned = new ErrorInfo("Device has been returned");
         public static readonly ErrorInfo FillAll = new ErrorInfo("Please fill in all required field");
         public static readonly ErrorInfo OK = new ErrorInfo("OK");
         public static readonly ErrorInfo Failed = new ErrorInfo("Login failed");

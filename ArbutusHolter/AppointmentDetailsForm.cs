@@ -10,6 +10,7 @@ namespace Uvic_Ecg_ArbutusHolter
     public partial class AppointmentDetailsForm : Form
     {
         RestModel<Device> restModel;
+        RestModel<ResultJson> jsonRestMod;
         private DeviceResource dResource = new DeviceResource();
         private NurseResource nResource = new NurseResource();
         private Client inClient;
@@ -56,6 +57,10 @@ namespace Uvic_Ecg_ArbutusHolter
                             {
                                 selectDev = returnD;
                                 deviceCombo.Text = returnD.DeviceName;
+                                if (!returnD.Occupied)
+                                {
+                                    returnDevBtn.Enabled = false;
+                                }
                                 break;
                             }
                         }
@@ -313,6 +318,31 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             NoteForm noteF = new NoteForm(theTest);
             noteF.ShowDialog();
+        }
+        private void ReturnDevBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                jsonRestMod = dResource.ReturnPhoneAndDevice(inClient, theAppoint.DeviceId);
+                if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
+                {
+                    MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
+                    returnDevBtn.Enabled = false;
+                }
+                else
+                {
+                    MessageBox.Show(jsonRestMod.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+                MessageBox.Show(ex.ToString());
+            }
+            
         }
     }
 }
