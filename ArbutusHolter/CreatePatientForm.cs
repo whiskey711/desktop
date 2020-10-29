@@ -20,12 +20,12 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientResource patientResource = new PatientResource();
         public CreatePatientForm(Client client)
         {
+            InitializeComponent();
             cpFormClient = client;
             foreach (var gen in Enum.GetValues(typeof(Config.Gender)))
             {
                 genderCB.Items.Add(gen);
             }
-            InitializeComponent();
         }
 
         private void createBtn_Click(object sender, EventArgs e)
