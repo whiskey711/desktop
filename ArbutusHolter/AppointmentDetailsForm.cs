@@ -65,7 +65,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
                     }
-                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 || app.EcgTestId.HasValue)
+                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 && app.EcgTestId.HasValue)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
