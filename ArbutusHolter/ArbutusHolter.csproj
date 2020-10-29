@@ -132,11 +132,11 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainInterface.cs">
+    <Compile Include="TestMonitorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainInterface.Designer.cs">
-      <DependentUpon>MainInterface.cs</DependentUpon>
+    <Compile Include="TestMonitorForm.Designer.cs">
+      <DependentUpon>TestMonitorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NoteForm.cs">
       <SubType>Form</SubType>
@@ -195,8 +195,8 @@
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainInterface.resx">
-      <DependentUpon>MainInterface.cs</DependentUpon>
+    <EmbeddedResource Include="TestMonitorForm.resx">
+      <DependentUpon>TestMonitorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NoteForm.resx">
       <DependentUpon>NoteForm.cs</DependentUpon>

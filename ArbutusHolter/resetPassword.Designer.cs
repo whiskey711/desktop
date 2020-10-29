@@ -108,7 +108,7 @@
             this.Controls.Add(this.newPswdConfirm);
             this.Controls.Add(this.newPswd);
             this.Name = "ResetPassword";
-            this.Text = "resetPassword";
+            this.Text = "Reset Password";
             this.ResumeLayout(false);
             this.PerformLayout();
         }
