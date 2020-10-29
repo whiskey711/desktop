@@ -110,10 +110,18 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 deviceLoc = deviceLocCB.Text;
-                startTime = appointStartTimePick.Value;
-                endTime = appointEndTimePick.Value;
-                pickTime = devPickTimePick.Value;
-                returnTime = devReturnTimePick.Value;
+                startTime = appointStartTimePick.Value
+                                .AddSeconds(-appointStartTimePick.Value.Second)
+                                .AddMilliseconds(-appointStartTimePick.Value.Millisecond);
+                endTime = appointEndTimePick.Value
+                                .AddSeconds(-appointEndTimePick.Value.Second)
+                                .AddMilliseconds(-appointEndTimePick.Value.Millisecond);
+                pickTime = devPickTimePick.Value
+                                .AddSeconds(-devPickTimePick.Value.Second)
+                                .AddMilliseconds(-devPickTimePick.Value.Millisecond);
+                returnTime = devReturnTimePick.Value
+                                .AddSeconds(-devReturnTimePick.Value.Second)
+                                .AddMilliseconds(-devReturnTimePick.Value.Millisecond);
                 if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
                 {
                     MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
