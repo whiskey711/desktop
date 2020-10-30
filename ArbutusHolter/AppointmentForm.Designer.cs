@@ -859,7 +859,7 @@
             this.inProgressTestLs.Size = new System.Drawing.Size(251, 650);
             this.inProgressTestLs.UseCompatibleStateImageBehavior = false;
             this.inProgressTestLs.View = System.Windows.Forms.View.Details;
-            this.inProgressTestLs.SelectedIndexChanged += new System.EventHandler(this.InProgressTestLs_SelectedIndexChanged);
+            this.inProgressTestLs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.InProgressTestLs_MouseDoubleClick);
             //
             // pName
             //
