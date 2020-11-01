@@ -806,7 +806,7 @@ namespace Uvic_Ecg_ArbutusHolter
             AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
             appDForm.Show();
         }
-        private void InProgressTestLs_SelectedIndexChanged(object sender, EventArgs e)
+        private void InProgressTestLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (inProgressTestLs.SelectedItems.Count <= 0)
             {
@@ -848,7 +848,6 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 MessageBox.Show(restModel.ErrorMessage);
             }
-            
         }
         private void AppointmentForm_FormClosing(object sender, FormClosingEventArgs e)
         {
