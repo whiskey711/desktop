@@ -336,22 +336,48 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
                 appointLs.Clear();
-                foreach (var returnA in returnAls)
+                if (pNameCheckBox.Checked)
                 {
-                    appointStart = new Calendar.Appointment();
-                    appointStart.StartDate = returnA.AppointmentStartTime;
-                    appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
-                    appointStart.Color = Color.DeepSkyBlue;
-                    appointStart.Appoint = returnA;
-                    appointStart.Title = returnA.FirstName + " " + returnA.LastName;
-                    appointEnd = new Calendar.Appointment();
-                    appointEnd.StartDate = returnA.AppointmentEndTime;
-                    appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
-                    appointEnd.Color = Color.Crimson;
-                    appointEnd.Appoint = returnA;
-                    appointEnd.Title = returnA.FirstName + " " + returnA.LastName;
-                    appointLs.Add(appointStart);
-                    appointLs.Add(appointEnd);
+                    foreach (var returnA in returnAls)
+                    {
+                        appointStart = new Calendar.Appointment();
+                        appointStart.StartDate = returnA.AppointmentStartTime;
+                        appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
+                        appointStart.Color = Color.DeepSkyBlue;
+                        appointStart.Appoint = returnA;
+                        appointStart.Title = returnA.FirstName + " " + returnA.LastName;
+                        appointEnd = new Calendar.Appointment();
+                        appointEnd.StartDate = returnA.AppointmentEndTime;
+                        appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
+                        appointEnd.Color = Color.Crimson;
+                        appointEnd.Appoint = returnA;
+                        appointEnd.Title = returnA.FirstName + " " + returnA.LastName;
+                        if (returnA.PatientId == selectedP.PatientId)
+                        {
+                            appointLs.Add(appointStart);
+                            appointLs.Add(appointEnd);
+                        }    
+                    }
+                }
+                else
+                {
+                    foreach (var returnA in returnAls)
+                    {
+                        appointStart = new Calendar.Appointment();
+                        appointStart.StartDate = returnA.AppointmentStartTime;
+                        appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
+                        appointStart.Color = Color.DeepSkyBlue;
+                        appointStart.Appoint = returnA;
+                        appointStart.Title = returnA.FirstName + " " + returnA.LastName;
+                        appointEnd = new Calendar.Appointment();
+                        appointEnd.StartDate = returnA.AppointmentEndTime;
+                        appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
+                        appointEnd.Color = Color.Crimson;
+                        appointEnd.Appoint = returnA;
+                        appointEnd.Title = returnA.FirstName + " " + returnA.LastName;
+                        appointLs.Add(appointStart);
+                        appointLs.Add(appointEnd);
+                    }
                 }
                 weeklyCal.StartDate = DateTime.Today;
                 weeklyCal.NewAppointment += new NewAppointmentEventHandler(DayView_NewAppointment);
@@ -616,7 +642,18 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                CheckedChanged();
+                if (!pNameCheckBox.Checked)
+                {
+                    patientAppointLs.Items.Clear();
+                    patientListView.Items.Clear();
+                    ClearText(PatientDetailsGroup);
+                    ClearText(srhGroup);
+                    pNameCheckBox.Text = "Clinic";
+                    pNameCheckBox.Enabled = false;
+                    startTimeFilt.Value = DateTime.Today;
+                    endTimeFilt.Value = DateTime.Today.AddDays(7);
+                }
+                LoadAllAppointments();
             }
             catch (Exception ex)
             {
@@ -625,22 +662,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-        }
-        private void CheckedChanged()
-        {
-            if (pNameCheckBox.Checked)
-            {
-                return;
-            }
-            patientAppointLs.Items.Clear();
-            patientListView.Items.Clear();
-            ClearText(PatientDetailsGroup);
-            ClearText(srhGroup);
-            pNameCheckBox.Text = "Clinic";
-            pNameCheckBox.Enabled = false;
-            startTimeFilt.Value = DateTime.Today;
-            endTimeFilt.Value = DateTime.Today.AddDays(7);
-            LoadAllAppointments();
         }
         private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
