@@ -126,6 +126,25 @@ namespace Uvic_Ecg_ArbutusHolter
                             break;
                         }
                     }
+                    firstNameTB.ReadOnly = true;
+                    midNameTB.ReadOnly = true;
+                    lastNameTB.ReadOnly = true;
+                    birthDateTB.ReadOnly = true;
+                    phnTB.ReadOnly = true;
+                    genderTB.ReadOnly = true;
+                    ageTB.ReadOnly = true;
+                    address1TB.ReadOnly = true;
+                    address2TB.ReadOnly = true;
+                    cityTB.ReadOnly = true;
+                    provinceTB.ReadOnly = true;
+                    postCodeTB.ReadOnly = true;
+                    phoneNumTB.ReadOnly = true;
+                    homeNumTB.ReadOnly = true;
+                    mailTB.ReadOnly = true;
+                    pacemakerTB.ReadOnly = true;
+                    superPhyTB.ReadOnly = true;
+                    medTB.ReadOnly = true;
+                    remarkRichTextBox.ReadOnly = true;
                 }
                 else
                 {
