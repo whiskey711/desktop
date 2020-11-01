@@ -14,6 +14,7 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private DateTime? reservationTime = null;
         [JsonProperty] private DateTime? pickupDate = null;
         [JsonProperty] private DateTime? deviceReturnDate = null;
+        [JsonProperty] private DateTime? deviceActualReturnTime = null;
         [JsonProperty] private string deviceLocation;
         [JsonProperty] private string instruction;
         [JsonProperty] private bool deleted;
@@ -62,6 +63,7 @@ namespace Uvic_Ecg_Model
                                              DateTime reserveTime,
                                              DateTime devPickupDate,
                                              DateTime returnTime,
+                                             DateTime? devActualReturnTime,
                                              string devLocation,
                                              string instruct,
                                              bool delete,
@@ -79,6 +81,7 @@ namespace Uvic_Ecg_Model
             ReservationTime = reserveTime;
             PickupDate = devPickupDate;
             DeviceReturnDate = returnTime;
+            DeviceActualReturnTime = devActualReturnTime;
             DeviceLocation = devLocation;
             Instruction = instruct;
             Deleted = delete;
@@ -103,5 +106,6 @@ namespace Uvic_Ecg_Model
         public string FirstName { get => firstName; set => firstName = value; }
         public string LastName { get => lastName; set => lastName = value; }
         public int? EcgTestId { get => ecgTestId; set => ecgTestId = value; }
+        public DateTime? DeviceActualReturnTime { get => deviceActualReturnTime; set => deviceActualReturnTime = value; }
     }
 }

@@ -57,13 +57,13 @@ namespace Uvic_Ecg_ArbutusHolter
                             {
                                 selectDev = returnD;
                                 deviceCombo.Text = returnD.DeviceName;
-                                if (!returnD.Occupied)
-                                {
-                                    returnDevBtn.Enabled = false;
-                                }
                                 break;
                             }
                         }
+                    }
+                    if (app.DeviceActualReturnTime.HasValue)
+                    {
+                        returnDevBtn.Enabled = false;
                     }
                     if (runningTest != null)
                     {
@@ -176,7 +176,8 @@ namespace Uvic_Ecg_ArbutusHolter
                                                         (int)theAppoint.PatientId, selectDev.DeviceId, 
                                                         startTime, endTime,
                                                         (DateTime)theAppoint.ReservationTime, pickTime,
-                                                        returnTime, deviceLoc, (string)theAppoint.Instruction, 
+                                                        returnTime, theAppoint.DeviceActualReturnTime, deviceLoc, 
+                                                        (string)theAppoint.Instruction, 
                                                         false, Config.ClinicId, (string)theAppoint.FirstName,
                                                         (string)theAppoint.LastName, (int?)theAppoint.EcgTestId);
                 errorMsg = nResource.UpdateAppointment(updatedApp, inClient);
