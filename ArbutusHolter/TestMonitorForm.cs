@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using Uvic_Ecg_ArbutusHolter.EcgRawDataProcessing;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
@@ -44,7 +45,7 @@ namespace Uvic_Ecg_ArbutusHolter
             theEcgTest = test;
             status = "";
             theAppoint = app;
-            PatientInfo_Load();
+            Task.Run(async () => await PatientInfo_Load());
             if (test != null)
             {
                 indicatorLed.Blink(500);
@@ -58,12 +59,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 recordBtn.Enabled = false;
             }
         }
-        private bool CreateEcgTest()
+        private async Task<bool> CreateEcgTest()
         {
             theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, Config.ClinicId);
             try
             {
-                eRestMod = ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
+                eRestMod = await ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
             }
             catch (Exception ex)
             {
@@ -89,11 +90,11 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             return true;
         }
-        private void PatientInfo_Load()
+        private async Task PatientInfo_Load()
         {
             try
             {
-                restmodel = patientResource.GetPatient(theAppoint.LastName, theAppoint.FirstName, null, null, mainFormClient);
+                restmodel = await patientResource.GetPatient(theAppoint.LastName, theAppoint.FirstName, null, null, mainFormClient);
                 if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     foreach (var ent in restmodel.Feed.Entities)
@@ -164,7 +165,7 @@ namespace Uvic_Ecg_ArbutusHolter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NextCall(object sender, EventArgs e)
+        private async Task NextCall(object sender, EventArgs e)
         {
             try
             {
@@ -180,9 +181,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         if (nextCallTimer == 5)
                         {
-                            if (TryToGetData())
+                            bool b = await TryToGetData();
+                            if (b)
                             {
-                                UpdateData();
+                                await UpdateData();
                             }
                             nextCallTimer = 0;
                         }
@@ -191,7 +193,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         if (nextCallTimer == 50)
                         {
-                            UpdateData();
+                            await UpdateData();
                             nextCallTimer = 0;
                         }
                     }
@@ -241,7 +243,7 @@ namespace Uvic_Ecg_ArbutusHolter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EcgStartBtn_Click(object sender, EventArgs e)
+        private async void EcgStartBtn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -257,7 +259,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else if (!isFirstTime)
                 {
-                    StartDisplay();
+                    await StartDisplay();
                     return;
                 }
                 else if (status.Equals("record"))// && !TryToGetData()
@@ -268,16 +270,20 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     timeToWait = 70;
                 }
-                else if (!TryToGetData())
-                {
-                    MessageBox.Show("No data is transmitting. Please check connection");
-                    return;
-                }
                 else if (status.Equals("hookup"))//&& !TryToGetData()
                 {
                     //timeToWait = 10;
-                    StartDisplay();
+                    await StartDisplay();
                     return;
+                }
+                else
+                {
+                    bool b = await TryToGetData();
+                    if (!b)
+                    {
+                        MessageBox.Show("No data is transmitting. Please check connection");
+                        return;
+                    }
                 }
                 ecgStartBtn.Enabled = false;
                 isFirstTime = false;
@@ -291,11 +297,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void StartDisplay()
+        private async Task StartDisplay()
         {
             if (displayBtnclicked == false)
             {
-                UpdateData();
+                await UpdateData();
                 nextCalltimer.Start();
                 channel1.StartTick();
                 channel2.StartTick();
@@ -312,9 +318,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 ecgStartBtn.Text = "DISPLAY";
             }
         }
-        private bool TryToGetData()
+        private async Task<bool> TryToGetData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
             if (ecgRawDataModel.Entity == null)
             {
                 return false;
@@ -369,9 +375,9 @@ namespace Uvic_Ecg_ArbutusHolter
             channel1.CleanTheData();
             channel2.CleanTheData();
         }
-        private void UpdateData()
+        private async Task UpdateData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
             //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
             //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
             if (date.Year == 1996)
@@ -421,16 +427,16 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             timeLabel.Text = DateTime.Now.ToLongTimeString();
         }
-        private void Timer1_Tick(object sender, EventArgs e)
+        private async void Timer1_Tick(object sender, EventArgs e)
         {
-            NextCall(sender, e);
+            await NextCall(sender, e);
         }
         /// <summary>
         /// hook up btn clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HookupBtn_Click(object sender, EventArgs e)
+        private async void HookupBtn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -441,14 +447,15 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else
                 {
-                    if (!CreateEcgTest())
+                    bool b = await CreateEcgTest();
+                    if (!b)
                     {
                         return;
                     }
                     recordBtn.Enabled = true;
                     ecgStartBtn.Enabled = true;
                 }
-                RestModel<ResultJson> result = ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTestId.Value, theAppoint.DeviceId);
+                RestModel<ResultJson> result = await ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTestId.Value, theAppoint.DeviceId);
                 var test = result.ErrorMessage;
                 //indicatorLed stop blink
                 if (status.Equals("record"))
@@ -471,7 +478,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void WaitingTimer_Tick(object sender, EventArgs e)
+        private async void WaitingTimer_Tick(object sender, EventArgs e)
         {
             try
             {
@@ -481,12 +488,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     waitingTimer.Stop();
                     ecgStartBtn.Enabled = true;
-                    if (!TryToGetData())
+                    bool b = await TryToGetData();
+                    if (!b)
                     {
                         MessageBox.Show("No data is transmitting check your connection");
                         return;
                     }
-                    StartDisplay();
+                    await StartDisplay();
                 }
             }
             catch (Exception ex)
@@ -523,20 +531,20 @@ namespace Uvic_Ecg_ArbutusHolter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void StartButton_Click(object sender, EventArgs e)
+        private async void StartButton_Click(object sender, EventArgs e)
         {
             try
             {
                 theEcgTest.StartTime = DateTime.Now;
                 theEcgTest.ScheduledEndTime = DateTime.Now.AddHours(aDay);
                 //theEcgTest.EcgTestId = 28; //test only, remove later
-                eRestMod = ecgDataResources.UpdateEcgTest(mainFormClient, theEcgTest);
+                eRestMod = await ecgDataResources.UpdateEcgTest(mainFormClient, theEcgTest);
                 if (!ErrorInfo.OK.ErrorMessage.Equals(eRestMod.ErrorMessage))
                 {
                     MessageBox.Show(eRestMod.ErrorMessage);
                     return;
                 }
-                RestModel<ResultJson> result = ecgDataResources.SetRecord(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
+                RestModel<ResultJson> result = await ecgDataResources.SetRecord(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
                 indicatorLed.Blink(500);
                 countTImer.Start();
@@ -559,7 +567,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void TerminateBtn_Click(object sender, EventArgs e)
+        private async void TerminateBtn_Click(object sender, EventArgs e)
         {
             DialogResult res = MessageBox.Show(ErrorInfo.TerminateWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.OKCancel);
             if (res == DialogResult.Cancel)
@@ -568,7 +576,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             try
             {
-                RestModel<ResultJson> result = ecgDataResources.Terminated(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
+                RestModel<ResultJson> result = await ecgDataResources.Terminated(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
                 StopTimers();
                 //indicatorLed stop blink
@@ -587,7 +595,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void SaveRemarkBtn_Click(object sender, EventArgs e)
+        private async void SaveRemarkBtn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -595,7 +603,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                                  address2TB.Text, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
                                                  genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
                                                  null, null, null, null, null, remarkRichTextBox.Text, ageTB.Text);
-                errorMsg = patientResource.UpdatePatient(updatedPatient, mainFormClient);
+                errorMsg = await patientResource.UpdatePatient(updatedPatient, mainFormClient);
                 if (errorMsg == ErrorInfo.OK.ErrorMessage)
                 {
                     MessageBox.Show("The changes on the current patient has successfully saved");

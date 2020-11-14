@@ -449,7 +449,7 @@
             this.createBtn.TabIndex = 6;
             this.createBtn.Text = "Create";
             this.createBtn.UseVisualStyleBackColor = true;
-            this.createBtn.Click += new System.EventHandler(this.createBtn_Click);
+            this.createBtn.Click += new System.EventHandler(this.CreateBtn_Click);
             // 
             // CreatePatientForm
             // 

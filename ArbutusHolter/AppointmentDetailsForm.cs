@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
@@ -28,32 +29,36 @@ namespace Uvic_Ecg_ArbutusHolter
         private PatientInfo thePat;
         public AppointmentDetailsForm(Client client, Appointment app, EcgTest runningTest, PatientInfo patient)
         {
+            InitializeComponent();
+            inClient = client;
+            theAppoint = app;
+            theTest = runningTest;
+            thePat = patient;
+            continueBtn.Visible = false;
+            Task.Run(async () => await ClassifyDeviceLocation());
+            Task.Run(async () => await PrepareForm());
+        }
+        private async Task PrepareForm()
+        {
+            appointGroup.UseWaitCursor = true;
             try
             {
-                InitializeComponent();
-                inClient = client;
-                theAppoint = app;
-                theTest = runningTest;
-                thePat = patient;
-                continueBtn.Visible = false;
-                viewNoteBtn.Enabled = false;
-                ClassifyDeviceLocation(client);
-                if (app != null)
+                if (theAppoint != null)
                 {
-                    appointStartTimePick.Value = app.AppointmentStartTime;
-                    appointEndTimePick.Value = app.AppointmentEndTime;
-                    devPickTimePick.Value = app.PickupDate.Value;
-                    devReturnTimePick.Value = app.DeviceReturnDate.Value;
-                    deviceLocCB.Text = app.DeviceLocation;
-                    firstNameLabel.Text = app.FirstName;
-                    lastNameLabel.Text = app.LastName;
-                    restModel = dResource.GetAllDevice(inClient);
+                    appointStartTimePick.Value = theAppoint.AppointmentStartTime;
+                    appointEndTimePick.Value = theAppoint.AppointmentEndTime;
+                    devPickTimePick.Value = theAppoint.PickupDate.Value;
+                    devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
+                    deviceLocCB.Text = theAppoint.DeviceLocation;
+                    firstNameLabel.Text = theAppoint.FirstName;
+                    lastNameLabel.Text = theAppoint.LastName;
+                    restModel = await dResource.GetAllDevice(inClient);
                     if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                     {
                         returnDls = CreateDevLs(restModel.Feed.Entities);
                         foreach (var returnD in returnDls)
                         {
-                            if (returnD.DeviceId == app.DeviceId)
+                            if (returnD.DeviceId == theAppoint.DeviceId)
                             {
                                 selectDev = returnD;
                                 deviceCombo.Text = returnD.DeviceName;
@@ -61,24 +66,22 @@ namespace Uvic_Ecg_ArbutusHolter
                             }
                         }
                     }
-                    if (app.DeviceActualReturnTime.HasValue)
+                    if (theAppoint.DeviceActualReturnTime.HasValue)
                     {
                         returnDevBtn.Enabled = false;
                     }
-                    if (runningTest != null)
+                    if (theTest != null)
                     {
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
                     }
-                    if (DateTime.Compare(app.AppointmentEndTime, DateTime.Now) <= 0 && app.EcgTestId.HasValue)
+                    if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theAppoint.EcgTestId.HasValue)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
                         editMailBtn.Enabled = false;
                         generateReportBtn.Enabled = true;
-                        viewNoteBtn.Enabled = true;
-                        continueBtn.Enabled = false;
-                    }  
+                    }
                 }
                 else
                 {
@@ -94,6 +97,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            appointGroup.UseWaitCursor = false;
         }
         private void EditMailBtn_Click(object sender, EventArgs e)
         {
@@ -110,8 +114,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void OkBtn_Click(object sender, EventArgs e)
+        private async void OkBtn_Click(object sender, EventArgs e)
         {
+            appointGroup.UseWaitCursor = true;
             try
             {
                 deviceLoc = deviceLocCB.Text;
@@ -159,7 +164,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                                          startTime, endTime, DateTime.Now, pickTime,
                                                          returnTime, deviceLoc, null, false, Config.ClinicId,
                                                          thePat.PatientFirstName, thePat.PatientLastName, null);
-                    errorMsg = nResource.CreateAppointment(newApp, inClient);
+                    errorMsg = await nResource.CreateAppointment(newApp, inClient);
                     if (ErrorInfo.OK.ErrorMessage == errorMsg)
                     {
                         MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
@@ -180,7 +185,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                                         (string)theAppoint.Instruction, 
                                                         false, Config.ClinicId, (string)theAppoint.FirstName,
                                                         (string)theAppoint.LastName, (int?)theAppoint.EcgTestId);
-                errorMsg = nResource.UpdateAppointment(updatedApp, inClient);
+                errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
                 if (ErrorInfo.OK.ErrorMessage == errorMsg)
                 {
                     MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
@@ -199,6 +204,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            appointGroup.UseWaitCursor = false;
         }
         private void DeviceCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -212,8 +218,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void DeviceCombo_Click(object sender, EventArgs e)
+        private async void DeviceCombo_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             try
             {
                 if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
@@ -221,10 +228,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
                     return;
                 }
-                restModel = dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value, deviceLocCB.Text);
+                deviceCombo.Items.Clear();
+                restModel = await dResource.GetAvailableDevices(inClient, devPickTimePick.Value, devReturnTimePick.Value, deviceLocCB.Text);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
-                    deviceCombo.Items.Clear();
                     returnDls = CreateDevLs(restModel.Feed.Entities);
                     foreach (var returnD in returnDls)
                     {
@@ -239,6 +246,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            Cursor.Current = Cursors.Default;
         }
         private List<Device> CreateDevLs(List<Entity<Device>> entls)
         {
@@ -293,11 +301,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void ClassifyDeviceLocation(Client client)
+        private async Task ClassifyDeviceLocation()
         {
             try
             {
-                restModel = dResource.GetAllDevice(client);
+                restModel = await dResource.GetAllDevice(inClient);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
@@ -320,11 +328,12 @@ namespace Uvic_Ecg_ArbutusHolter
             NoteForm noteF = new NoteForm(theTest);
             noteF.ShowDialog();
         }
-        private void ReturnDevBtn_Click(object sender, EventArgs e)
+        private async void ReturnDevBtn_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
-                jsonRestMod = dResource.ReturnPhoneAndDevice(inClient, theAppoint.DeviceId);
+                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.DeviceId);
                 if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
                 {
                     MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
@@ -343,7 +352,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 MessageBox.Show(ex.ToString());
             }
-            
+            UseWaitCursor = false;
         }
     }
 }

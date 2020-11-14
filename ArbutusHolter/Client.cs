@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter
 {
@@ -11,7 +12,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private HttpClient httpClient = new HttpClient();
         private HttpResponseMessage result;
         private HttpContent content;
-        private string url = "http://ecg.uvic.ca:8080/v1/test/";
+        private string url = "http://ecg.uvic.ca:8080/v1/";
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;
@@ -30,7 +31,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             this.url = newUrl;
         }
-        public ErrorInfo Login(string inputUserName, string inputPassword)
+        public async Task<ErrorInfo> Login(string inputUserName, string inputPassword)
         {
             User user = new User
             {
@@ -39,7 +40,7 @@ namespace Uvic_Ecg_ArbutusHolter
             };
             string json = JsonConvert.SerializeObject(user);
             Content = new StringContent(json, Encoding.UTF8, "application/json");
-            Result = HttpClient.PostAsync(getUrl() + "login", Content).Result;
+            Result = await HttpClient.PostAsync(getUrl() + "test/login", Content);
             string fullerrorMsg = Result.Content.ReadAsStringAsync().Result;
             if (Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -56,6 +57,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 //else return cannot find token
                 return ErrorInfo.Failed;
+         
             }
             else
             {
@@ -63,11 +65,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 return ErrorInfo.Failed;
             }
         }
-        public bool Register(Nurse newNurse)
+        public async Task<bool> Register(Nurse newNurse)
         {
             string json = JsonConvert.SerializeObject(newNurse);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            result = httpClient.PostAsync(getUrl() + "nurses", content).Result;
+            result = await httpClient.PostAsync("public/registerEmail", content);
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return true;

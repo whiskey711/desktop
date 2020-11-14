@@ -10,6 +10,7 @@ namespace Uvic_Ecg_ArbutusHolter
         Client client = new Client();
         private PublicResources publicResources = new PublicResources();
         private Client registrationClient = new Client();
+        RestModel<Nurse> nRestMod;
         Nurse newNurse;
         int minLen = 10;
         public RegisterForm()
@@ -17,25 +18,25 @@ namespace Uvic_Ecg_ArbutusHolter
             InitializeComponent();
         }
         // After user click registerButton, the finishPanel is visible
-        private void RegisterButton_Click(object sender, EventArgs e)
+        private async void RegisterButton_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (lastN.Text != "" && firstN.Text != "" && password.Text != "" && confirmPass.Text != "" && RegexUtilities.IsValidEmail(email.Text))
                 {
                     if (password.Text.Length >= minLen)
                     {
-                        if (password.Text == confirmPass.Text)
-                        {
+                        if (password.Text == confirmPass.Text) {
                             newNurse = new Nurse(lastN.Text,
-                                                 null,
-                                                 firstN.Text,
-                                                 null,
-                                                 email.Text,
-                                                 1,
-                                                 password.Text,
-                                                 false);
-                            string errorMsg = publicResources.Registration(email.Text, registrationClient).ErrorMessage;
+                                                     null,
+                                                     firstN.Text,
+                                                     null,
+                                                     email.Text,
+                                                     1,
+                                                     password.Text,
+                                                     false);
+                            string errorMsg = await publicResources.Registration(email.Text, registrationClient);
                             if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                             {
                                 finishPanel.Visible = true;
@@ -45,6 +46,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                 MessageBox.Show(errorMsg);
                                 email.Text = "";
                             }
+                            
                         }
                         else
                         {
@@ -68,6 +70,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
         private void Password_TextChanged(object sender, EventArgs e)
         {
@@ -91,14 +94,16 @@ namespace Uvic_Ecg_ArbutusHolter
                 confirmPass.PasswordChar = '\0';
             }
         }
-        private void Submit_Click(object sender, EventArgs e)
+        private async void Submit_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
-                string errorMsg = publicResources.VeriFycode(regVerifyTextBox.Text, client).ErrorMessage;
-                if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
+                nRestMod = await publicResources.VeriFycode(regVerifyTextBox.Text, client);
+                if (ErrorInfo.OK.ErrorMessage.Equals(nRestMod.ErrorMessage))
                 {
-                    if (client.Register(newNurse))
+                    bool b = await client.Register(newNurse);
+                    if (b)
                     {
                         DialogResult result = MessageBox.Show(ErrorInfo.RegistrationComlete.ErrorMessage);
                         if (result == DialogResult.OK)
@@ -119,6 +124,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
     }
 }
