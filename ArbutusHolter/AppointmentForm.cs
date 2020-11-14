@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
@@ -59,15 +60,16 @@ namespace Uvic_Ecg_ArbutusHolter
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
             appointFormClient = client;
-            ClassifyDeviceLocation(appointFormClient);
-            LoadAllAppointments();
-            RefreshRunningTest();
+            Task.Run(async () => await ClassifyDeviceLocation(appointFormClient));
+            Task.Run(async () => await LoadAllAppointments());
+            Task.Run(async () => await RefreshRunningTest());
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
             appointRefreshTimer.Start();
         }
-        private void SrhBtn_Click(object sender, EventArgs e)
+        private async void SrhBtn_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (string.IsNullOrWhiteSpace(pLastNameTextBox.Text) && string.IsNullOrWhiteSpace(pFirstNameTextBox.Text) &&
@@ -84,7 +86,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         return;
                     }                   
                 }
-                SrhPatient(pLastNameTextBox.Text, pFirstNameTextBox.Text, birthText.Text, phnTextBox.Text, invalidPid);
+                await SrhPatient(pLastNameTextBox.Text, pFirstNameTextBox.Text, birthText.Text, phnTextBox.Text, invalidPid);
             }
             catch (Exception ex)
             {
@@ -93,11 +95,22 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
-        private void SrhPatient(string lastName, string firstName, string birth, string phn, int pid)
+        private async Task SrhPatient(string lastName, string firstName, string birth, string phn, int pid)
         {
             patientListView.Items.Clear();
-            pRestMod = patientResource.GetPatient(lastName, firstName, birth, phn, appointFormClient);
+            try
+            {
+                pRestMod = await patientResource.GetPatient(lastName, firstName, birth, phn, appointFormClient);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
             if (pRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
@@ -146,8 +159,9 @@ namespace Uvic_Ecg_ArbutusHolter
             CreatePatientForm cpForm = new CreatePatientForm(appointFormClient);
             cpForm.Show();
         }
-        private void PatientListView_SelectedIndexChanged(object sender, EventArgs e)
+        private async void PatientListView_SelectedIndexChanged(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (patientListView.SelectedItems.Count <= 0)
@@ -156,7 +170,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 selectedP = (PatientInfo)patientListView.SelectedItems[0].Tag;
                 LoadPatientInfo(selectedP);
-                LoadPatientAppointment(selectedP);
+                await LoadPatientAppointment(selectedP);
             }
             catch (Exception ex)
             {
@@ -165,6 +179,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
         private void LoadPatientInfo(PatientInfo theOne)
         {
@@ -190,9 +205,19 @@ namespace Uvic_Ecg_ArbutusHolter
             pNameCheckBox.CheckState = CheckState.Checked;
             pNameCheckBox.Enabled = true;
         }
-        private void LoadPatientAppointment(PatientInfo theOne)
+        private async Task LoadPatientAppointment(PatientInfo theOne)
         {
-            restModel = nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
+            try
+            {
+                restModel = await nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
             patientAppointLs.Items.Clear();
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
@@ -210,8 +235,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 MessageBox.Show(restModel.ErrorMessage);
             }
         }
-        private void SaveBtn_Click(object sender, EventArgs e)
+        private async void SaveBtn_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (!string.IsNullOrWhiteSpace(lastNameTB.Text) &&
@@ -245,13 +271,13 @@ namespace Uvic_Ecg_ArbutusHolter
                                                      null, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
                                                      genderCB.Text, postCodeTB.Text, false, Config.ClinicId, pacemakerTB.Text, superPhyTB.Text,
                                                      null, null, null, null, null, null, ageTB.Text);
-                    errorMsg = patientResource.UpdatePatient(updatedPatient, appointFormClient);
+                    errorMsg = await patientResource.UpdatePatient(updatedPatient, appointFormClient);
                     if (errorMsg == ErrorInfo.OK.ErrorMessage)
                     {
                         MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
                         selectedP = updatedPatient;
-                        SrhPatient(selectedP.PatientLastName, selectedP.PatientFirstName, null, null, selectedP.PatientId);
-                        LoadPatientAppointment(selectedP);
+                        await SrhPatient(selectedP.PatientLastName, selectedP.PatientFirstName, null, null, selectedP.PatientId);
+                        await LoadPatientAppointment(selectedP);
                     }
                     else
                     {
@@ -272,6 +298,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
         private string ChangeFormat(string originDate)
         {
@@ -329,9 +356,19 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void LoadAllAppointments()
+        private async Task LoadAllAppointments()
         {
-            restModel = nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd, devLoc);
+            try
+            {
+                restModel = await nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd, devLoc);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
@@ -391,9 +428,9 @@ namespace Uvic_Ecg_ArbutusHolter
             weeklyCal.DaysToShow = 7;
             weeklyCal.Invalidate();
         }
-        private void ClassifyDeviceLocation(Client client)
+        private async Task ClassifyDeviceLocation(Client client)
         {
-            dRestMod = dResource.GetAllDevice(client);
+            dRestMod = await dResource.GetAllDevice(client);
             if (dRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 returnDevLocLs = CreateDeviceLocLs(dRestMod.Feed.Entities);
@@ -500,7 +537,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             weeklyCal.DaysToShow = 7;
         }
-        private void AddAppointBtn_Click(object sender, EventArgs e)
+        private async void AddAppointBtn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -513,7 +550,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(ErrorInfo.Occuiped.ErrorMessage);
                 }
-                AddNewAppoinment();
+                await AddNewAppoinment();
             }
             catch (Exception ex)
             {
@@ -611,7 +648,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void WeeklyCal_Click(object sender, EventArgs e)
+        private async void WeeklyCal_Click(object sender, EventArgs e)
         {
             if (weeklyCal.SelectedAppointment == null)
             {
@@ -620,7 +657,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.SelectPatient.ErrorMessage);
                     return;
                 }
-                AddNewAppoinment();
+                await AddNewAppoinment();
             }
             else
             {
@@ -628,17 +665,17 @@ namespace Uvic_Ecg_ArbutusHolter
                 weeklyCal.Enabled = false;
                 if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
                 {
-                    ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
+                    await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
                 }
                 else
                 {
-                    ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                    await ShowAppointDetailFormForUpcomingAppoint(selectedA);
                 }
                 weeklyCal.Enabled = true;
                 weeklyCal.Invalidate();
             }
         }
-        private void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
+        private async void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
@@ -663,7 +700,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
+        private async void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (patientAppointLs.SelectedItems.Count <= 0)
             {
@@ -672,18 +709,18 @@ namespace Uvic_Ecg_ArbutusHolter
             selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
             if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
             {
-                ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
+                await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
             }
             else if (selectedA.EcgTestId.HasValue && !runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out test))
             {
-                ShowAppointDetailFormForFinishedAppoint(selectedA);
+                await ShowAppointDetailFormForFinishedAppoint(selectedA);
             }
             else
             {
-                ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                await ShowAppointDetailFormForUpcomingAppoint(selectedA);
             }
         }
-        private void RegionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private async void RegionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
@@ -694,11 +731,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 if (pNameCheckBox.Checked)
                 {
-                    LoadPatientAppointment(selectedP);
+                    await LoadPatientAppointment(selectedP);
                 }
                 else
                 {
-                    LoadAllAppointments();
+                    await LoadAllAppointments();
                 }               
                 weeklyCal.Invalidate();
             }
@@ -710,7 +747,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void PatientAppointLs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void PatientAppointLs_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
@@ -721,7 +758,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
                 weeklyCal.StartDate = selectedA.AppointmentStartTime;
                 string[] name = patientAppointLs.SelectedItems[0].Text.Split(' ');
-                SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
+                await SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
                 yearIndicateLab.Text = selectedA.AppointmentStartTime.ToString(monthYear);
             }
             catch (Exception ex)
@@ -742,7 +779,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     ClearText(c);
             }
         }
-        private void AddNewAppoinment()
+        private async Task AddNewAppoinment()
         {
             try
             {
@@ -751,7 +788,8 @@ namespace Uvic_Ecg_ArbutusHolter
                     // If dialogresult is ok, user didn't start a test
                     if (appointDForm.ShowDialog() == DialogResult.OK)
                     {
-                        LoadAllAppointments();
+                        UseWaitCursor = true;
+                        await LoadAllAppointments();
                     }
                 }
             }
@@ -762,8 +800,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
-        private void ShowAppointDetailFormForUpcomingAppoint(Uvic_Ecg_Model.Appointment theApp)
+        private async Task ShowAppointDetailFormForUpcomingAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
             using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, null,
                                                                                 selectedP))
@@ -777,16 +816,16 @@ namespace Uvic_Ecg_ArbutusHolter
                 // If dialogresult is ok, user didn't start test
                 else if (res == DialogResult.OK)
                 {
-                    LoadAllAppointments();
+                    await LoadAllAppointments();
                 }
                 // If dialogresult is yes, user must created a ecgtest
                 else if (res == DialogResult.Yes)
                 {
-                    RefreshRunningTest();
+                    await RefreshRunningTest();
                 }
             }
         }
-        private void ShowAppointDetailFormForInProgressAppoint(Uvic_Ecg_Model.Appointment theApp, int testid)
+        private async Task ShowAppointDetailFormForInProgressAppoint(Uvic_Ecg_Model.Appointment theApp, int testid)
         {
             using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, 
                                                                                 runningTestDict[testid], null))
@@ -794,19 +833,42 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (appDForm.ShowDialog() == DialogResult.Abort)
                 {
                     runningTestDict.Remove(testid);
-                    RefreshRunningTest();
+                    await RefreshRunningTest();
                     MessageBox.Show(ErrorInfo.TestTerminated.ErrorMessage);
                 }
             }
         }
-        private void ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
+        private async Task ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
-            EcgTest test = eResource.GetTestById(theApp.EcgTestId.Value, theApp.PatientId, appointFormClient);
-            PatientInfo patient = patientResource.GetPatientById(theApp.PatientId, appointFormClient).Entity.Model;
-            AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
-            appDForm.Show();
+            try
+            {
+                UseWaitCursor = true;
+                ecgTestMod = await eResource.GetTestById(theApp.EcgTestId.Value, theApp.PatientId, appointFormClient);
+                pRestMod = await patientResource.GetPatientById(theApp.PatientId, appointFormClient);
+                UseWaitCursor = false;
+                if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage && ErrorInfo.OK.ErrorMessage == pRestMod.ErrorMessage)
+                {
+                    EcgTest test = ecgTestMod.Entity.Model;
+                    PatientInfo patient = pRestMod.Entity.Model;
+                    AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
+                    appDForm.Show();
+                }
+                else
+                {
+                    MessageBox.Show(ErrorInfo.ConnectionProblem.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+                MessageBox.Show(ex.ToString());
+            }
+            UseWaitCursor = false;
         }
-        private void InProgressTestLs_MouseDoubleClick(object sender, MouseEventArgs e)
+        private async void InProgressTestLs_MouseDoubleClick(object sender, EventArgs e)
         {
             if (inProgressTestLs.SelectedItems.Count <= 0)
             {
@@ -815,7 +877,8 @@ namespace Uvic_Ecg_ArbutusHolter
             int theTestId = (int)inProgressTestLs.SelectedItems[0].Tag;
             try
             {
-                restModel = nResource.GetPatientAppoint(runningTestDict[theTestId].PatientId, appointFormClient);
+                UseWaitCursor = true;
+                restModel = await nResource.GetPatientAppoint(runningTestDict[theTestId].PatientId, appointFormClient);
             }
             catch (Exception ex)
             {
@@ -824,6 +887,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
@@ -836,7 +900,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             // Abort means user click the terminate btn
                             if (mainForm.ShowDialog() == DialogResult.Abort)
                             {
-                                RefreshRunningTest();
+                                await RefreshRunningTest();
                                 runningTestDict.Remove(theTestId);
                                 break;
                             }
@@ -866,28 +930,39 @@ namespace Uvic_Ecg_ArbutusHolter
             WindowState = FormWindowState.Normal;
             notify.Visible = false;
         }
-        private void AppointRefreshTimer_Tick(object sender, EventArgs e)
+        private async void AppointRefreshTimer_Tick(object sender, EventArgs e)
         {
-            LoadAllAppointments();
-            RefreshRunningTest();
+            await LoadAllAppointments();
+            await RefreshRunningTest();
         }
-        private void RefreshRunningTest()
+        private async Task RefreshRunningTest()
         {
-            ecgTestMod = eResource.GetRunningTest(appointFormClient);
-            if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage)
+            try
             {
-                List<EcgTest> returnEls = CreateTestLs(ecgTestMod.Feed.Entities);
-                PatientInfo p;
-                runningTestDict.Clear();
-                inProgressTestLs.Items.Clear();
-                foreach (EcgTest returnE in returnEls)
+                ecgTestMod = await eResource.GetRunningTest(appointFormClient);
+                if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage)
                 {
-                    runningTestDict.Add(returnE.EcgTestId, returnE);
-                    p = patientResource.GetPatientById(returnE.PatientId, appointFormClient).Entity.Model;
-                    var row = new string[] { p.PatientFirstName + "\t" + p.PatientLastName, returnE.ScheduledEndTime.ToString() };
-                    var lisitem = new ListViewItem(row);
-                    lisitem.Tag = returnE.EcgTestId;
-                    inProgressTestLs.Items.Add(lisitem);
+                    List<EcgTest> returnEls = CreateTestLs(ecgTestMod.Feed.Entities);
+                    PatientInfo p;
+                    runningTestDict.Clear();
+                    inProgressTestLs.Items.Clear();
+                    foreach (EcgTest returnE in returnEls)
+                    {
+                        runningTestDict.Add(returnE.EcgTestId, returnE);
+                        pRestMod = await patientResource.GetPatientById(returnE.PatientId, appointFormClient);
+                        p = pRestMod.Entity.Model;
+                        var row = new string[] { p.PatientFirstName + "\t" + p.PatientLastName, returnE.ScheduledEndTime.ToString() };
+                        var lisitem = new ListViewItem(row);
+                        lisitem.Tag = returnE.EcgTestId;
+                        inProgressTestLs.Items.Add(lisitem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }

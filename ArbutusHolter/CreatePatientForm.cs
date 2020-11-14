@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 genderCB.Items.Add(gen);
             }
         }
-
-        private void createBtn_Click(object sender, EventArgs e)
+        private async void CreateBtn_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(lastNameTB.Text) &&
                 !string.IsNullOrWhiteSpace(firstNameTB.Text) &&
@@ -58,19 +58,32 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 PatientInfo newPatient = new PatientInfo(lastNameTB.Text, midNameTB.Text, firstNameTB.Text, replaceDate, address1TB.Text, null,
-                                                         provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
-                                                         genderCB.Text, postCodeTB.Text, false, Config.ClinicId, pacemakerTB.Text, superPhyTB.Text,
-                                                         null, null, null, null, null, null, ageTB.Text);
-                string errorMsg = patientResource.CreatePatient(newPatient, cpFormClient);
-                if (errorMsg == ErrorInfo.OK.ErrorMessage)
+                                                                     provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
+                                                                     genderCB.Text, postCodeTB.Text, false, Config.ClinicId, pacemakerTB.Text, superPhyTB.Text,
+                                                                     null, null, null, null, null, null, ageTB.Text);
+                UseWaitCursor = true;
+                try
                 {
-                    MessageBox.Show(ErrorInfo.Created.ErrorMessage);
-                    Close();
+                    string errorMsg = await patientResource.CreatePatient(newPatient, cpFormClient);
+                    if (errorMsg == ErrorInfo.OK.ErrorMessage)
+                    {
+                        MessageBox.Show(ErrorInfo.Created.ErrorMessage);
+                        Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show(errorMsg);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show(errorMsg);
+                    using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                    {
+                        LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                    }
+                    MessageBox.Show(ex.ToString());
                 }
+                UseWaitCursor = false;
             }
         }
         private bool DateFormat(string date, string type)

@@ -4,6 +4,7 @@ using PdfSharp.Pdf;
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter
@@ -23,11 +24,15 @@ namespace Uvic_Ecg_ArbutusHolter
         AppointmentMail mail;
         public Email(Client client)
         {
+            InitializeComponent();
+            mailClient = client;
+            Task.Run(async () => await LoadMailTemplate());
+        }
+        private async Task LoadMailTemplate()
+        {
             try
             {
-                InitializeComponent();
-                mailClient = client;
-                restmodel = mRespurce.GetTemplate(mailClient);
+                restmodel = await mRespurce.GetTemplate(mailClient);
                 if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     mailContentRichTB.Text = restmodel.Entity.Model.Message;
@@ -41,8 +46,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void SendMailBtn_Click(object sender, EventArgs e)
+        private async void SendMailBtn_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (string.IsNullOrWhiteSpace(toTextBox.Text) || string.IsNullOrWhiteSpace(subjectTextBox.Text))
@@ -56,7 +62,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 mail = new AppointmentMail(toTextBox.Text, mailContentRichTB.Text);
-                restmodel = mRespurce.SendMail(mailClient, mail);
+                restmodel = await mRespurce.SendMail(mailClient, mail);
                 if (ErrorInfo.OK.ErrorMessage.Equals(restmodel.ErrorMessage))
                 {
                     MessageBox.Show("Email has been sent");
@@ -73,6 +79,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
         private void SavePdfBtn_Click(object sender, EventArgs e)
         {

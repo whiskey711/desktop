@@ -17,8 +17,9 @@ namespace Uvic_Ecg_ArbutusHolter
             resetPswFormClinet = client;
             updatedNurse = nurse;
         }
-        private void ConfirmBtn_Click(object sender, EventArgs e)
+        private async void ConfirmBtn_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (string.IsNullOrWhiteSpace(newPswd.Text))
@@ -32,7 +33,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     return;
                 }
                 updatedNurse.Password = newPswd.Text;
-                errorMsg = publicResources.ResetPassword(updatedNurse, resetPswFormClinet).ErrorMessage;
+                errorMsg = await publicResources.ResetPassword(updatedNurse, resetPswFormClinet);
                 if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                 {
                     MessageBox.Show(ErrorInfo.Complete.ErrorMessage);
@@ -50,6 +51,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
     }
 }

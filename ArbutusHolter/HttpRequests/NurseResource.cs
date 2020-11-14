@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter.HttpRequests
 {
@@ -12,43 +13,43 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         HttpContent content;
         RestModel<Appointment> appointRestMod;
         private Requests<Appointment> appointRequest = new Requests<Appointment>();
-        public RestModel<Nurse> GetallNurse(Client client)
+        public async Task<RestModel<Nurse>> GetallNurse(Client client)
         {
-            restModel = requests.GetAll("getnurses", client);
+            restModel = await requests.GetAll("getnurses", client);
             return restModel;
         }
-        public RestModel<Appointment> GetAppointments(Client client, DateTime start, DateTime end, string location)
+        public async Task<RestModel<Appointment>> GetAppointments(Client client, DateTime start, DateTime end, string location)
         {
             if (string.IsNullOrEmpty(location))
             {
-                appointRestMod = appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
                                                            + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
             }
             else
             {
-                appointRestMod = appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
                                                            + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000" +
                                                            "&location=" + location, client);
             }
             return appointRestMod;
         }
-        public String CreateAppointment(Appointment newAppoint, Client client)
+        public async Task<string> CreateAppointment(Appointment newAppoint, Client client)
         {
             string json = JsonConvert.SerializeObject(newAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            appointRestMod = appointRequest.Post("appointment-records", content, client);
+            appointRestMod = await appointRequest.Post("appointment-records", content, client);
             return appointRestMod.ErrorMessage;
         }
-        public String UpdateAppointment(Appointment updateAppoint, Client client)
+        public async Task<string> UpdateAppointment(Appointment updateAppoint, Client client)
         {
             string json = JsonConvert.SerializeObject(updateAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            appointRestMod = appointRequest.Put("appointment-record/" + updateAppoint.AppointmentRecordId, content, client);
+            appointRestMod = await appointRequest.Put("appointment-record/" + updateAppoint.AppointmentRecordId, content, client);
             return appointRestMod.ErrorMessage;
         }
-        public RestModel<Appointment> GetPatientAppoint(int patientId, Client client)
+        public async Task<RestModel<Appointment>> GetPatientAppoint(int patientId, Client client)
         {
-            appointRestMod = appointRequest.GetAll("appointment-records/" + patientId, client);
+            appointRestMod = await appointRequest.GetAll("appointment-records/" + patientId, client);
             return appointRestMod;
         }
     }

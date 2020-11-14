@@ -48,16 +48,17 @@ namespace Uvic_Ecg_ArbutusHolter
             }
         }
         // after user clicked login button, they will be directed to maininterface
-        private void LoginButton_Click(object sender, EventArgs e)
+        private async void LoginButton_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
-                if (userEmail.Text == "" || password.Text == "")
+                if (string.IsNullOrEmpty(userEmail.Text)|| string.IsNullOrEmpty(password.Text))
                 {
                     MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
                     return;
                 }
-                errorInfo = client.Login(userEmail.Text, password.Text);
+                errorInfo = await client.Login(userEmail.Text, password.Text);
                 if (ErrorInfo.OK.ErrorMessage.Equals(errorInfo.ErrorMessage))
                 {
                     Hide();
@@ -86,6 +87,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 System.Diagnostics.Process.Start(FileName.Log.Name);
             }
+            UseWaitCursor = false;
         }
         private void Password_TextChanged(object sender, EventArgs e)
         {
@@ -97,24 +99,6 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 password.PasswordChar = '\0';
             }
-        }
-
-        private void LoginForm_Load(object sender, EventArgs e)
-        {
-            /*
-            password.Left = (this.ClientSize.Width - password.Width) / 2;
-            password.Top = (this.ClientSize.Height - password.Height) / 2;
-            userEmail.Left = password.Left;
-            userEmail.Top = password.Top - userEmail.Height - 2;
-            welcomeLabel.Left = (this.ClientSize.Width - welcomeLabel.Width) / 2;
-            welcomeLabel.Top = userEmail.Top - welcomeLabel.Height - 15;
-            forgetPWButton.Left = (this.ClientSize.Width - forgetPWButton.Width) / 2;
-            forgetPWButton.Top = password.Bottom + forgetPWButton.Height + 15;
-            loginButton.Left = forgetPWButton.Left;
-            loginButton.Top = forgetPWButton.Top - loginButton.Height - 2;
-            registerButton.Top = loginButton.Top;
-            registerButton.Left = loginButton.Right + 10;
-            */
         }
     }
 }

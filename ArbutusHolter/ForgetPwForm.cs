@@ -18,11 +18,12 @@ namespace Uvic_Ecg_ArbutusHolter
             InitializeComponent();
         }
         // After user click submitButton, the finishPanel is visible
-        private void SubmitButton_Click(object sender, EventArgs e)
+        private async void SubmitButton_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
-                String errorMsg = publicResources.ForgetPassword(mailTextbox.Text, forgetPwFormClinet).ErrorMessage;
+                errorMsg = await publicResources.ForgetPassword(mailTextbox.Text, forgetPwFormClinet);
                 if (!ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                 {
                     MessageBox.Show(errorMsg);
@@ -38,11 +39,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
-            }   
+            }
+            UseWaitCursor = false;
         }
         // After user clicked back button, they will be directed to loginForm
-        private void Confirm_Click(object sender, EventArgs e)
+        private async void Confirm_Click(object sender, EventArgs e)
         {
+            UseWaitCursor = true;
             try
             {
                 if (string.IsNullOrWhiteSpace(CodeText.Text))
@@ -50,7 +53,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
                     return;
                 }
-                restModel = publicResources.VeriFycode(CodeText.Text, forgetPwFormClinet);
+                restModel = await publicResources.VeriFycode(CodeText.Text, forgetPwFormClinet);
                 errorMsg = restModel.ErrorMessage;
                 if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                 {
@@ -72,6 +75,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
+            UseWaitCursor = false;
         }
         private void Back_Click_1(object sender, EventArgs e)
         {

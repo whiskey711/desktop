@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter.HttpRequests
 {
@@ -10,7 +11,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         RestModel<PatientInfo> restModel;
         private Requests<PatientInfo> requests = new Requests<PatientInfo>();
         HttpContent content;
-        public RestModel<PatientInfo> GetPatient(string lastname, string firstname, string birth, string phn, Client client)
+        public async Task<RestModel<PatientInfo>> GetPatient(string lastname, string firstname, string birth, string phn, Client client)
         {
             string subUrl;
             if (string.IsNullOrWhiteSpace(birth))
@@ -21,26 +22,26 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             {
                 subUrl = "patient/information?lastname=" + lastname + "&firstname=" + firstname + "&birthday=" + birth + "&phn=" + phn;
             }
-            restModel = requests.GetAll(subUrl, client);
+            restModel = await requests.GetAll(subUrl, client);
             return restModel;
         }
-        public string CreatePatient(PatientInfo newPatient, Client client)
+        public async Task<string> CreatePatient(PatientInfo newPatient, Client client)
         {
             string json = JsonConvert.SerializeObject(newPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = requests.Post("patient/information", content, client);
+            restModel = await requests.Post("test/patient/information", content, client);
             return restModel.ErrorMessage;
         }
-        public string UpdatePatient(PatientInfo updatedPatient, Client client)
+        public async Task<string> UpdatePatient(PatientInfo updatedPatient, Client client)
         {
             string json = JsonConvert.SerializeObject(updatedPatient);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = requests.Put("patient/information/" + updatedPatient.PatientId, content, client);
+            restModel = await requests.Put("patient/information/" + updatedPatient.PatientId, content, client);
             return restModel.ErrorMessage;
         }
-        public RestModel<PatientInfo> GetPatientById(int pid, Client client)
+        public async Task<RestModel<PatientInfo>> GetPatientById(int pid, Client client)
         {
-            restModel = requests.GetAll("patient/information/" + pid, client);
+            restModel = await requests.GetAll("patient/information/" + pid, client);
             return restModel;
         }
 
