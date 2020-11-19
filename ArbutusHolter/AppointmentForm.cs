@@ -636,7 +636,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         };
                     var lsitem = new ListViewItem(row);
                     lsitem.Tag = returnA;
-                    patientAppointLs.Items.Add(lsitem);
+                    patientAppointLs.Invoke(new MethodInvoker(delegate { patientAppointLs.Items.Add(lsitem); }));
                 }
                 weeklyCal.StartDate = startTimeFilt.Value;
             }
@@ -690,7 +690,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     startTimeFilt.Value = DateTime.Today;
                     endTimeFilt.Value = DateTime.Today.AddDays(7);
                 }
-                LoadAllAppointments();
+                await LoadAllAppointments();
             }
             catch (Exception ex)
             {

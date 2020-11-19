@@ -61,7 +61,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             if (returnD.DeviceId == theAppoint.DeviceId)
                             {
                                 selectDev = returnD;
-                                deviceCombo.Text = returnD.DeviceName;
+                                deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnD.DeviceName; }));
                                 break;
                             }
                         }
@@ -311,7 +311,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
                     foreach (var returnDevLoc in returnDevLocLs)
                     {
-                        deviceLocCB.Items.Add(returnDevLoc);
+                        deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
                     }
                 }
             }
