@@ -1,6 +1,7 @@
 using Calendar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -648,8 +649,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private async void WeeklyCal_Click(object sender, EventArgs e)
+        private async void WeeklyCal_MouseClick(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Right)
+            {
+                return;
+            }
             if (weeklyCal.SelectedAppointment == null)
             {
                 if (!pNameCheckBox.Checked)
@@ -747,25 +752,28 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private async void PatientAppointLs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void PatientAppointLs_MouseClick(object sender, MouseEventArgs e)
         {
-            try
+            if (e.Button == MouseButtons.Left)
             {
-                if (patientAppointLs.SelectedItems.Count <= 0)
+                try
                 {
-                    return;
+                    if (patientAppointLs.SelectedItems.Count <= 0)
+                    {
+                        return;
+                    }
+                    selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
+                    weeklyCal.StartDate = selectedA.AppointmentStartTime;
+                    string[] name = patientAppointLs.SelectedItems[0].Text.Split(' ');
+                    await SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
+                    yearIndicateLab.Text = selectedA.AppointmentStartTime.ToString(monthYear);
                 }
-                selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
-                weeklyCal.StartDate = selectedA.AppointmentStartTime;
-                string[] name = patientAppointLs.SelectedItems[0].Text.Split(' ');
-                await SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
-                yearIndicateLab.Text = selectedA.AppointmentStartTime.ToString(monthYear);
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                catch (Exception ex)
                 {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                    using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                    {
+                        LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                    }
                 }
             }
         }
@@ -966,6 +974,55 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-
+        private async void DeleteMenuItem_Click(object sender, EventArgs e)
+        {
+            if (weeklyCal.SelectedAppointment != null)
+            {
+                await DeleteAppointment(weeklyCal.SelectedAppointment.Appoint);
+            }
+        }
+        private async void PalcmDeleteMenuItem_Click(object sender, EventArgs e)
+        {
+            if (patientAppointLs.SelectedItems[0] != null)
+            {
+                await DeleteAppointment((Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag);
+            }
+        }
+        private async Task DeleteAppointment(Uvic_Ecg_Model.Appointment deleteAppointment)
+        {
+            try
+            {
+                DialogResult res = MessageBox.Show(ErrorInfo.DeleteWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.YesNo);
+                if (DialogResult.No == res)
+                {
+                    return;
+                }
+                errorMsg = await nResource.DeleteAppointment(deleteAppointment, appointFormClient);
+                if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                {
+                    MessageBox.Show(ErrorInfo.Deleted.ErrorMessage);
+                    await LoadAllAppointments();
+                }
+                else
+                {
+                    MessageBox.Show(errorMsg);
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
+        }
+        private void ContextMenu_Open(object sender, CancelEventArgs e)
+        {
+            e.Cancel = weeklyCal.SelectedAppointment == null;
+        }
+        private void PatientAppointLsContextMenu_Open(object sender, CancelEventArgs e)
+        {
+            e.Cancel = patientAppointLs.SelectedItems.Count <= 0;
+        }
     }
 }

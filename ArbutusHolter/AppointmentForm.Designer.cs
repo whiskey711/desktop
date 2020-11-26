@@ -111,6 +111,12 @@
             this.birthText = new System.Windows.Forms.PlaceholderTextBox();
             this.notify = new System.Windows.Forms.NotifyIcon();
             this.appointRefreshTimer = new System.Windows.Forms.Timer();
+            this.calendarContextMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.patientAppointLsContextMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.ccmDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.palcmDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.calendarContextMenu.SuspendLayout();
+            this.patientAppointLsContextMenu.SuspendLayout();
             this.appointTabletPanel.SuspendLayout();
             this.inProgressTestGroup.SuspendLayout();
             this.srhGroup.SuspendLayout();
@@ -816,6 +822,7 @@
             this.name,
             this.start,
             this.end});
+            this.patientAppointLs.ContextMenuStrip = patientAppointLsContextMenu;
             this.patientAppointLs.FullRowSelect = true;
             this.patientAppointLs.GridLines = true;
             this.patientAppointLs.HideSelection = false;
@@ -825,8 +832,8 @@
             this.patientAppointLs.TabIndex = 1;
             this.patientAppointLs.UseCompatibleStateImageBehavior = false;
             this.patientAppointLs.View = System.Windows.Forms.View.Details;
-            this.patientAppointLs.SelectedIndexChanged += new System.EventHandler(this.PatientAppointLs_SelectedIndexChanged);
             this.patientAppointLs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PatientAppointLs_MouseDoubleClick);
+            this.patientAppointLs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatientAppointLs_MouseClick);
             // 
             // name
             // 
@@ -934,6 +941,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.weeklyCal.AppHeightMode = Calendar.DayView.AppHeightDrawMode.TrueHeightAll;
+            this.weeklyCal.ContextMenuStrip = calendarContextMenu;
             this.weeklyCal.DrawAllAppBorder = false;
             this.weeklyCal.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.weeklyCal.Location = new System.Drawing.Point(495, 81);
@@ -948,7 +956,7 @@
             this.weeklyCal.WorkingHourEnd = 23;
             this.weeklyCal.WorkingHourStart = 0;
             this.weeklyCal.WorkingMinuteStart = 0;
-            this.weeklyCal.Click += new System.EventHandler(this.WeeklyCal_Click);
+            this.weeklyCal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.WeeklyCal_MouseClick);
             // 
             // addAppointBtn
             // 
@@ -1039,6 +1047,40 @@
             //
             this.appointRefreshTimer.Interval = 60000;
             this.appointRefreshTimer.Tick += new System.EventHandler(this.AppointRefreshTimer_Tick);
+            //
+            // calendarContextMenu
+            //
+            this.calendarContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.ccmDeleteMenuItem
+            });
+            this.calendarContextMenu.Name = "calendarContexMenu";
+            this.calendarContextMenu.Size = new System.Drawing.Size(181, 48);
+            this.calendarContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Open);
+            //
+            // patientAppointLsContextMenu
+            //
+            this.patientAppointLsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.palcmDeleteMenuItem
+            }); 
+            this.patientAppointLsContextMenu.Name = "patientAppointLsContextMenu";
+            this.patientAppointLsContextMenu.Size = new System.Drawing.Size(181, 48);
+            this.patientAppointLsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.PatientAppointLsContextMenu_Open);
+            //
+            // ccmDeleteMenuItem
+            //
+            this.ccmDeleteMenuItem.Name = "ccmDeleteMenuItem";
+            this.ccmDeleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ccmDeleteMenuItem.Text = "Delete";
+            this.ccmDeleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
+            //
+            // palcmDeleteMenuItem
+            //
+            this.palcmDeleteMenuItem.Name = "palcmDeleteMenuItem";
+            this.palcmDeleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.palcmDeleteMenuItem.Text = "Delete";
+            this.palcmDeleteMenuItem.Click += new System.EventHandler(this.PalcmDeleteMenuItem_Click);
             // 
             // AppointmentForm
             // 
@@ -1060,6 +1102,8 @@
             this.detailPanel.ResumeLayout(false);
             this.detailPanel.PerformLayout();
             this.calGroup.ResumeLayout(false);
+            this.calendarContextMenu.ResumeLayout(false);
+            this.patientAppointLsContextMenu.ResumeLayout(false);
             this.calGroup.PerformLayout();
             this.ResumeLayout(false);
 
@@ -1150,5 +1194,9 @@
         private System.Windows.Forms.Button dayBtn;
         private System.Windows.Forms.NotifyIcon notify;
         private System.Windows.Forms.Timer appointRefreshTimer;
+        private System.Windows.Forms.ContextMenuStrip calendarContextMenu;
+        private System.Windows.Forms.ContextMenuStrip patientAppointLsContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem ccmDeleteMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem palcmDeleteMenuItem;
     }
 }
