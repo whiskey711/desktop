@@ -42,6 +42,8 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo OngoingTest = new ErrorInfo("Sorry, the test is in progress, you cannot hoopkup now");
         public static readonly ErrorInfo PinTooShort = new ErrorInfo("Sorry, your password has to be longer than 10 digits");
         public static readonly ErrorInfo ConnectionProblem = new ErrorInfo("There are some internet connection problem, please try it later");
+        public static readonly ErrorInfo Deleted = new ErrorInfo("Appointment is deleted successfully");
+        public static readonly ErrorInfo DeleteWarn = new ErrorInfo("Are your sure to delete the appointment ?");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

@@ -52,5 +52,10 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             appointRestMod = await appointRequest.GetAll("appointment-records/" + patientId, client);
             return appointRestMod;
         }
+        public async Task<string> DeleteAppointment(Appointment deleteAppoint, Client client)
+        {
+            appointRestMod = await appointRequest.Delete("appointment-record/" + deleteAppoint.AppointmentRecordId, client);
+            return appointRestMod.ErrorMessage;
+        }
     }
 }
