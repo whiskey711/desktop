@@ -28,18 +28,15 @@ namespace Uvic_Ecg_ArbutusHolter
                     if (password.Text.Length >= minLen)
                     {
                         if (password.Text == confirmPass.Text) {
-                            newNurse = new Nurse(lastN.Text,
-                                                     null,
-                                                     firstN.Text,
-                                                     null,
-                                                     email.Text,
-                                                     1,
-                                                     password.Text,
-                                                     false);
-                            string errorMsg = await publicResources.Registration(email.Text, registrationClient);
+                            newNurse = new Nurse(email.Text);
+                            string errorMsg = await publicResources.Registration(newNurse, registrationClient);                           
                             if (ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                             {
                                 finishPanel.Visible = true;
+                                newNurse.NurseLastName = lastN.Text;
+                                newNurse.NurseFirstName = firstN.Text;
+                                newNurse.ClinicId = Config.ClinicId;
+                                newNurse.Password = password.Text;
                             }
                             else
                             {
