@@ -32,6 +32,10 @@ namespace Uvic_Ecg_Model
             password = pass;
             deleted = delete;
         }
+        public Nurse(string mail)
+        {
+            nurseEmail = mail;
+        }
         public int NurseId { get => nurseId; set => nurseId = value; }
         public string NurseLastName { get => nurseLastName; set => nurseLastName = value; }
         public string NurseMidName { get => nurseMidName; set => nurseMidName = value; }

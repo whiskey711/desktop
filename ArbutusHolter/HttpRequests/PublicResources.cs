@@ -15,26 +15,27 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         public async Task<string> ForgetPassword(string email, Client client)
         {
             StringContent emailContent = new StringContent(email);
-            restModel = await requests.Post("public/forgetPassword", emailContent, client);
+            restModel = await requests.PublicPost("forgetPassword", emailContent, client);
             return restModel.ErrorMessage;
         }
         public async Task<RestModel<Nurse>> VeriFycode(string code, Client client)
         {
             StringContent Verificationcode = new StringContent(code);
-            nurseModel = await nurseRequests.Post("public/verify", Verificationcode, client);
+            nurseModel = await nurseRequests.PublicPost("verify", Verificationcode, client);
             return nurseModel;
         }
         public async Task<string> ResetPassword(Nurse updatednurse, Client client)
         {
             string json = JsonConvert.SerializeObject(updatednurse);
             HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = await requests.Post("public/password-management", content, client);
+            restModel = await requests.PublicPost("password-management", content, client);
             return restModel.ErrorMessage;
         }
-        public async Task<string> Registration(string email, Client client)
+        public async Task<string> Registration(Nurse nurse, Client client)
         {
-            StringContent emailContent = new StringContent(email);
-            restModel = await requests.Post("public/registerEmail", emailContent, client);
+            string json = JsonConvert.SerializeObject(nurse);
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            restModel = await requests.PublicPost("registerEmail", content, client);
             return restModel.ErrorMessage;
         }
     }

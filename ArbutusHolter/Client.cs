@@ -12,7 +12,8 @@ namespace Uvic_Ecg_ArbutusHolter
         private HttpClient httpClient = new HttpClient();
         private HttpResponseMessage result;
         private HttpContent content;
-        private string url = "http://ecg.uvic.ca:8080/v1/";
+        private string url = "http://ecg.uvic.ca:8080/v1/test/";
+        private string publicUrl = "http://ecg.uvic.ca:8080/v1/";
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;
@@ -22,6 +23,7 @@ namespace Uvic_Ecg_ArbutusHolter
         public HttpContent Content { get => content; set => content = value; }
         public string Token { get => token; set => token = value; }
         public int NurseId { get => nurseId; }
+        public string PublicUrl { get => publicUrl; set => publicUrl = value; }
 
         public string getUrl()
         {
@@ -40,7 +42,7 @@ namespace Uvic_Ecg_ArbutusHolter
             };
             string json = JsonConvert.SerializeObject(user);
             Content = new StringContent(json, Encoding.UTF8, "application/json");
-            Result = await HttpClient.PostAsync(getUrl() + "test/login", Content);
+            Result = await HttpClient.PostAsync(getUrl() + "login", Content);
             string fullerrorMsg = Result.Content.ReadAsStringAsync().Result;
             if (Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -69,7 +71,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             string json = JsonConvert.SerializeObject(newNurse);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            result = await httpClient.PostAsync("public/registerEmail", content);
+            result = await httpClient.PostAsync(getUrl() + "nurses", content);
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return true;
