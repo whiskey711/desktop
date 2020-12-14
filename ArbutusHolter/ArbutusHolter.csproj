@@ -86,6 +86,7 @@
     <Compile Include="CreatePatientForm.Designer.cs">
       <DependentUpon>CreatePatientForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DownloadRawData.cs" />
     <Compile Include="ECG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +142,7 @@
     <Compile Include="TestMonitorForm.Designer.cs">
       <DependentUpon>TestMonitorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageFile.cs" />
     <Compile Include="NoteForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,6 +243,10 @@
     <ProjectReference Include="..\DayView\DayView.csproj">
       <Project>{D17A4D6A-4CAA-4470-8A19-F42463C021FD}</Project>
       <Name>DayView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ECG_ISHNE\ECG_ISHNE.csproj">
+      <Project>{6cf64cb7-e181-4a85-8ccf-f3362dae1a3b}</Project>
+      <Name>ECG_ISHNE</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{c8f16397-b52f-43a9-ac85-239d684c0028}</Project>

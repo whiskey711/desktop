@@ -115,6 +115,8 @@
             this.patientAppointLsContextMenu = new System.Windows.Forms.ContextMenuStrip();
             this.ccmDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palcmDeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runningTestRefreshTimer = new System.Windows.Forms.Timer();
+            this.rawDataRefreshTimer = new System.Windows.Forms.Timer();
             this.calendarContextMenu.SuspendLayout();
             this.patientAppointLsContextMenu.SuspendLayout();
             this.appointTabletPanel.SuspendLayout();
@@ -1081,6 +1083,15 @@
             this.palcmDeleteMenuItem.Size = new System.Drawing.Size(180, 22);
             this.palcmDeleteMenuItem.Text = "Delete";
             this.palcmDeleteMenuItem.Click += new System.EventHandler(this.PalcmDeleteMenuItem_Click);
+            // runningTestRefreshTimer
+            //
+            this.runningTestRefreshTimer.Interval = 60000;
+            this.runningTestRefreshTimer.Tick += new System.EventHandler(this.RunningTestRefreshTimer_Tick);
+            //
+            // rawDataRefreshTimer
+            //
+            this.rawDataRefreshTimer.Interval = 600000;
+            this.rawDataRefreshTimer.Tick += new System.EventHandler(this.RawDataRefreshTimer_Tick);
             // 
             // AppointmentForm
             // 
@@ -1198,5 +1209,7 @@
         private System.Windows.Forms.ContextMenuStrip patientAppointLsContextMenu;
         private System.Windows.Forms.ToolStripMenuItem ccmDeleteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem palcmDeleteMenuItem;
+        private System.Windows.Forms.Timer runningTestRefreshTimer;
+        private System.Windows.Forms.Timer rawDataRefreshTimer;
     }
 }

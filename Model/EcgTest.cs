@@ -14,7 +14,6 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private int nurseId;
         [JsonProperty] private int deviceId;
         [JsonProperty] private string comment;
-        [JsonProperty] private int? appointmentId = null;
 
         public DateTime StartTime { get => startTime; set => startTime = value; }
         public DateTime ScheduledEndTime { get => scheduledEndTime; set => scheduledEndTime = value; }
@@ -23,7 +22,6 @@ namespace Uvic_Ecg_Model
         public int NurseId { get => nurseId; set => nurseId = value; }
         public int DeviceId { get => deviceId; set => deviceId = value; }
         public string Comment { get => comment; set => comment = value; }
-        public int? AppointmentId { get => appointmentId; set => appointmentId = value; }
         public int EcgTestId { get => ecgTestId; set => ecgTestId = value; }
         public int ClinicId { get => clinicId; set => clinicId = value; }
 
@@ -34,7 +32,6 @@ namespace Uvic_Ecg_Model
                        int nurseIdi,
                        int deviceIdi,
                        string commenti,
-                       int? appointId,
                        int clinici)
         {
             StartTime = startTimei;
@@ -44,7 +41,6 @@ namespace Uvic_Ecg_Model
             NurseId = nurseIdi;
             DeviceId = deviceIdi;
             Comment = commenti;
-            AppointmentId = appointId;
             ClinicId = clinici;
         }
 

@@ -28,6 +28,7 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientResource patientResource = new PatientResource();
         DeviceResource dResource = new DeviceResource();
         EcgDataResources eResource = new EcgDataResources();
+        DownloadRawData download = new DownloadRawData();
         Client appointFormClient;
         Dictionary<int, EcgTest> runningTestDict = new Dictionary<int, EcgTest>();
         string errorMsg;
@@ -69,6 +70,9 @@ namespace Uvic_Ecg_ArbutusHolter
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
             appointRefreshTimer.Start();
+            runningTestRefreshTimer.Start();
+            rawDataRefreshTimer.Start();
+            Task.Run(async () => await download.MainProcess(client));
         }
         private async void SrhBtn_Click(object sender, EventArgs e)
         {
@@ -988,6 +992,24 @@ namespace Uvic_Ecg_ArbutusHolter
             if (patientAppointLs.SelectedItems[0] != null)
             {
                 await DeleteAppointment((Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag);
+            }
+        }
+        private async void RunningTestRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            await RefreshRunningTest();
+        }
+        private async void RawDataRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                await download.MainProcess(appointFormClient);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
         }
         private async Task DeleteAppointment(Uvic_Ecg_Model.Appointment deleteAppointment)
