@@ -61,7 +61,9 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task<bool> CreateEcgTest()
         {
-            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.PatientId, theAppoint.NurseId, theAppoint.DeviceId, null, theAppoint.AppointmentRecordId, Config.ClinicId);
+            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, 
+                                     theAppoint.Patient.PatientId, theAppoint.Nurse.NurseId, theAppoint.Device.DeviceId, 
+                                     null, theAppoint.AppointmentRecordId, Config.ClinicId);
             try
             {
                 eRestMod = await ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
@@ -79,7 +81,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 return false;
             }
             theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
-            theAppoint.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
+            theAppoint.EcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
             if (DateTime.Compare(theEcgTest.StartTime.AddHours(aDay), theAppoint.AppointmentEndTime) < 0)
             {
                 endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString("hh:mm:ss tt");
@@ -94,7 +96,8 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                restmodel = await patientResource.GetPatient(theAppoint.LastName, theAppoint.FirstName, null, null, mainFormClient);
+                restmodel = await patientResource.GetPatient(theAppoint.Patient.PatientLastName, theAppoint.Patient.PatientFirstName, 
+                                                             null, null, mainFormClient);
                 if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     foreach (var ent in restmodel.Feed.Entities)
@@ -103,7 +106,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     foreach (PatientInfo p in returnPls)
                     {
-                        if (p.PatientId == theAppoint.PatientId)
+                        if (p.PatientId == theAppoint.Patient.PatientId)
                         {
                             firstNameTB.Text = p.PatientFirstName;
                             midNameTB.Text = p.PatientMidName;
@@ -320,7 +323,8 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task<bool> TryToGetData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, 
+                                                                                      theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
             if (ecgRawDataModel.Entity == null)
             {
                 return false;
@@ -377,7 +381,8 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task UpdateData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, theAppoint.PatientId, theAppoint.EcgTestId.Value);
+            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, 
+                                                    theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
             //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
             //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
             if (date.Year == 1996)
@@ -440,7 +445,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                if (theAppoint.EcgTestId.HasValue)
+                if (theAppoint.EcgTest != null)
                 {
                     MessageBox.Show(ErrorInfo.OngoingTest.ErrorMessage);
                     return;
@@ -455,7 +460,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     recordBtn.Enabled = true;
                     ecgStartBtn.Enabled = true;
                 }
-                RestModel<ResultJson> result = await ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTestId.Value, theAppoint.DeviceId);
+                RestModel<ResultJson> result = await ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTest.EcgTestId, theAppoint.Device.DeviceId);
                 var test = result.ErrorMessage;
                 //indicatorLed stop blink
                 if (status.Equals("record"))
@@ -599,7 +604,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                updatedPatient = new PatientInfo(theAppoint.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, birthDateTB.Text, address1TB.Text,
+                updatedPatient = new PatientInfo(theAppoint.Patient.PatientId, lastNameTB.Text, midNameTB.Text, firstNameTB.Text, birthDateTB.Text, address1TB.Text,
                                                  address2TB.Text, provinceTB.Text, cityTB.Text, mailTB.Text, phnTB.Text, phoneNumTB.Text, null, homeNumTB.Text,
                                                  genderTB.Text, postCodeTB.Text, false, 1, pacemakerTB.Text, superPhyTB.Text,
                                                  null, null, null, null, null, remarkRichTextBox.Text, ageTB.Text);

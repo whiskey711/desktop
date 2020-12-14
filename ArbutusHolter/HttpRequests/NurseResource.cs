@@ -35,14 +35,18 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         }
         public async Task<string> CreateAppointment(Appointment newAppoint, Client client)
         {
-            string json = JsonConvert.SerializeObject(newAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(newAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                                                                                               NullValueHandling = NullValueHandling.Ignore,
+                                                                                               DefaultValueHandling = DefaultValueHandling.Ignore});
             content = new StringContent(json, Encoding.UTF8, "application/json");
             appointRestMod = await appointRequest.Post("appointment-records", content, client);
             return appointRestMod.ErrorMessage;
         }
         public async Task<string> UpdateAppointment(Appointment updateAppoint, Client client)
         {
-            string json = JsonConvert.SerializeObject(updateAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(updateAppoint, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                                                                                                  NullValueHandling = NullValueHandling.Ignore,
+                                                                                                  DefaultValueHandling = DefaultValueHandling.Ignore});
             content = new StringContent(json, Encoding.UTF8, "application/json");
             appointRestMod = await appointRequest.Put("appointment-record/" + updateAppoint.AppointmentRecordId, content, client);
             return appointRestMod.ErrorMessage;

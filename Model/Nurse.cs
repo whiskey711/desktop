@@ -32,9 +32,26 @@ namespace Uvic_Ecg_Model
             password = pass;
             deleted = delete;
         }
-        public Nurse(string mail)
+        
+        public Nurse(int nid,
+                     string nLastname,
+                     string nMidname,
+                     string nFirstName,
+                     string nPhoneNum,
+                     string nEmail
+                     )
         {
-            nurseEmail = mail;
+            NurseId = nid;
+            nurseLastName = nLastname;
+            nurseMidName = nMidname;
+            nurseFirstName = nFirstName;
+            nursePhoneNumber = nPhoneNum;
+            nurseEmail = nEmail;
+        }
+        [JsonConstructor]
+        public Nurse(int nid)
+        {
+            NurseId = nid;
         }
         public int NurseId { get => nurseId; set => nurseId = value; }
         public string NurseLastName { get => nurseLastName; set => nurseLastName = value; }

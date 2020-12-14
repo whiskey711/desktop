@@ -27,14 +27,24 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         }
         public async Task<string> CreatePatient(PatientInfo newPatient, Client client)
         {
-            string json = JsonConvert.SerializeObject(newPatient);
+            string json = JsonConvert.SerializeObject(newPatient, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel = await requests.Post("test/patient/information", content, client);
             return restModel.ErrorMessage;
         }
         public async Task<string> UpdatePatient(PatientInfo updatedPatient, Client client)
         {
-            string json = JsonConvert.SerializeObject(updatedPatient);
+            string json = JsonConvert.SerializeObject(updatedPatient, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel = await requests.Put("patient/information/" + updatedPatient.PatientId, content, client);
             return restModel.ErrorMessage;

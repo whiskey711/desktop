@@ -35,8 +35,8 @@ namespace Uvic_Ecg_ArbutusHolter
             theTest = runningTest;
             thePat = patient;
             continueBtn.Visible = false;
-            Task.Run(async () => await ClassifyDeviceLocation());
             Task.Run(async () => await PrepareForm());
+            Task.Run(async () => await ClassifyDeviceLocation());
         }
         private async Task PrepareForm()
         {
@@ -49,16 +49,15 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointEndTimePick.Value = theAppoint.AppointmentEndTime;
                     devPickTimePick.Value = theAppoint.PickupDate.Value;
                     devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
-                    deviceLocCB.Text = theAppoint.DeviceLocation;
-                    firstNameLabel.Text = theAppoint.FirstName;
-                    lastNameLabel.Text = theAppoint.LastName;
+                    firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
+                    lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     restModel = await dResource.GetAllDevice(inClient);
                     if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                     {
                         returnDls = CreateDevLs(restModel.Feed.Entities);
                         foreach (var returnD in returnDls)
                         {
-                            if (returnD.DeviceId == theAppoint.DeviceId)
+                            if (returnD.DeviceId == theAppoint.Device.DeviceId)
                             {
                                 selectDev = returnD;
                                 deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnD.DeviceName; }));
@@ -75,7 +74,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
                     }
-                    if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theAppoint.EcgTestId.HasValue)
+                    if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theAppoint.EcgTest != null)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
@@ -160,10 +159,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 // Ok means user only click save btn which ecgtest is not created
                 if (theAppoint == null)
                 {
-                    Appointment newApp = new Appointment(inClient.NurseId, thePat.PatientId, selectDev.DeviceId,
+                    Appointment newApp = new Appointment(new Nurse(inClient.NurseId), thePat, selectDev,
                                                          startTime, endTime, DateTime.Now, pickTime,
-                                                         returnTime, deviceLoc, null, false, Config.ClinicId,
-                                                         thePat.PatientFirstName, thePat.PatientLastName, null);
+                                                         returnTime, deviceLoc, null, null);
                     errorMsg = await nResource.CreateAppointment(newApp, inClient);
                     if (ErrorInfo.OK.ErrorMessage == errorMsg)
                     {
@@ -177,14 +175,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     return;
                 }
-                Appointment updatedApp = new Appointment((int)theAppoint.AppointmentRecordId, inClient.NurseId, 
-                                                        (int)theAppoint.PatientId, selectDev.DeviceId, 
+                Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId), 
+                                                        theAppoint.Patient, selectDev, 
                                                         startTime, endTime,
                                                         (DateTime)theAppoint.ReservationTime, pickTime,
                                                         returnTime, theAppoint.DeviceActualReturnTime, deviceLoc, 
-                                                        (string)theAppoint.Instruction, 
-                                                        false, Config.ClinicId, (string)theAppoint.FirstName,
-                                                        (string)theAppoint.LastName, (int?)theAppoint.EcgTestId);
+                                                        (string)theAppoint.Instruction, theAppoint.EcgTest);
                 errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
                 if (ErrorInfo.OK.ErrorMessage == errorMsg)
                 {
@@ -307,12 +303,27 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 restModel = await dResource.GetAllDevice(inClient);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-                {
-                    List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
-                    foreach (var returnDevLoc in returnDevLocLs)
+                { 
+                    if (theAppoint != null)
                     {
-                        deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
+                        List<Device> returnDevLs = CreateDevLs(restModel.Feed.Entities);
+                        foreach (var returnDev in returnDevLs)
+                        {
+                            if (theAppoint.Device.DeviceId == returnDev.DeviceId)
+                            {
+                                deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Text = returnDev.DeviceLocation; }));
+                                break;
+                            }
+                        }
                     }
+                    else
+                    {
+                        List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
+                        foreach (var returnDevLoc in returnDevLocLs)
+                        {
+                            deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
+                        }
+                    } 
                 }
             }
             catch (Exception ex)
@@ -333,7 +344,7 @@ namespace Uvic_Ecg_ArbutusHolter
             UseWaitCursor = true;
             try
             {
-                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.DeviceId);
+                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.Device.DeviceId);
                 if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
                 {
                     MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
