@@ -51,6 +51,7 @@
     <Compile Include="ErrorInfo.cs" />
     <Compile Include="Feed.cs" />
     <Compile Include="FileName.cs" />
+    <Compile Include="FileRelatedException.cs" />
     <Compile Include="Nurse.cs" />
     <Compile Include="PatientInfo.cs" />
     <Compile Include="Phone.cs" />

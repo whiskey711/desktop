@@ -36,6 +36,7 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo EarlyThanNow = new ErrorInfo("Device pick-up time is earlier than now");
         public static readonly ErrorInfo TerminateWarn = new ErrorInfo("Are you sure to terminate ongoing test ?");
         public static readonly ErrorInfo Caption = new ErrorInfo("?");
+        public static readonly ErrorInfo DownloadExTooMuch = new ErrorInfo("Background downloading process had unknown exception and stopped, please contact support");
         public static readonly ErrorInfo ClosingWarn = new ErrorInfo("Are youy sure to close the form ?");
         public static readonly ErrorInfo ReordingStart = new ErrorInfo("The ECG test has begun");
         public static readonly ErrorInfo TestTerminated = new ErrorInfo("The ECG test has been terminated");
@@ -44,6 +45,7 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo ConnectionProblem = new ErrorInfo("There are some internet connection problem, please try it later");
         public static readonly ErrorInfo Deleted = new ErrorInfo("Appointment is deleted successfully");
         public static readonly ErrorInfo DeleteWarn = new ErrorInfo("Are your sure to delete the appointment ?");
+        public static readonly ErrorInfo DownloadAllData = new ErrorInfo("This is the first time you use the software, do you want to sync all data locally from the server ?");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

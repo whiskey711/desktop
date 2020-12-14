@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
     {
         private RestModel<T> restModel;
         private ErrorInfo errorInfo;
+        private readonly string rootUrl = "http://ecg.uvic.ca:8080/v1/test/";
+        private int maxHttpExCount = 3;
         public async Task<RestModel<T>> Put(string url, HttpContent content, Client client)
         {
             client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
@@ -22,35 +25,87 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         }
         public async Task<RestModel<T>> Post(string url, HttpContent content, Client client)
         {
-            client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-            client.Result = await client.HttpClient.PostAsync(client.getUrl() + url, content);
-            restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
-            if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            bool httpFailure;
+            int exCount = 0;
+            do
             {
-                restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
-            }
-            return restModel;
-        }
-        public async Task<RestModel<T>> PublicPost(string url, HttpContent content, Client client)
-        {
-            client.Result = await client.HttpClient.PostAsync(client.PublicUrl + url, content);
-            restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
-            if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                try
+                {
+                    client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
+                    client.Result = await client.HttpClient.PostAsync(rootUrl + url, content);
+                    httpFailure = false;
+                }
+                catch (HttpRequestException hrex)
+                {
+                    exCount++;
+                    if (exCount > maxHttpExCount)
+                    {
+                        throw hrex;
+                    }
+                    httpFailure = true;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            } while (httpFailure);
+            try
             {
-                restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+                restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
+                if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+                }
+                return restModel;
             }
-            return restModel;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public async Task<RestModel<T>> GetAll(string url, Client client)
         {
-            client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-            client.Result = await client.HttpClient.GetAsync(client.getUrl() + url);
-            restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
-            if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            bool httpFailure;
+            int exCount = 0;
+            do
             {
-                restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+                try
+                {
+                    client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
+                    client.Result = await client.HttpClient.GetAsync(rootUrl + url);
+                    httpFailure = false;
+                }
+                catch (InvalidOperationException invoex)
+                {
+                    throw invoex;
+                }
+                catch (HttpRequestException hrex)
+                {
+                    exCount++;
+                    if (exCount > maxHttpExCount)
+                    {
+                        throw hrex;
+                    }
+                    httpFailure = true;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            } while (httpFailure);
+            try
+            {
+                restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
+                if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+                }
+                return restModel;
             }
-            return restModel;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public async Task<RestModel<T>> Delete(string url, Client client)
         {
