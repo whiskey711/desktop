@@ -5,7 +5,7 @@ namespace Uvic_Ecg_Model
 {
     public class PatientInfo
     {
-        [JsonProperty] private int patientId;//
+        [JsonProperty] private int patientId;
         [JsonProperty] private string patientLastName;
         [JsonProperty] private string patientMidName;
         [JsonProperty] private string patientFirstName;
@@ -169,6 +169,10 @@ namespace Uvic_Ecg_Model
             referPhysician = referPhysi;
             remark = Remark;
             age = Age;
+        }
+        public PatientInfo(int pid)
+        {
+            PatientId = pid;
         }
     }
 }

@@ -61,9 +61,11 @@ namespace Uvic_Ecg_ArbutusHolter
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
             appointFormClient = client;
+            Cursor.Current = Cursors.WaitCursor;
             Task.Run(async () => await ClassifyDeviceLocation(appointFormClient));
             Task.Run(async () => await LoadAllAppointments());
             Task.Run(async () => await RefreshRunningTest());
+            Cursor.Current = Cursors.Default;
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
             appointRefreshTimer.Start();
@@ -362,6 +364,64 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 restModel = await nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd, devLoc);
+                if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+                {
+                    returnAls = CreateAppointLs(restModel.Feed.Entities);
+                    appointLs.Clear();
+                    if (pNameCheckBox.Checked)
+                    {
+                        foreach (var returnA in returnAls)
+                        {
+                            appointStart = new Calendar.Appointment();
+                            appointStart.StartDate = returnA.AppointmentStartTime;
+                            appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
+                            appointStart.Color = Color.DeepSkyBlue;
+                            appointStart.Appoint = returnA;
+                            appointStart.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                            appointEnd = new Calendar.Appointment();
+                            appointEnd.StartDate = returnA.AppointmentEndTime;
+                            appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
+                            appointEnd.Color = Color.Crimson;
+                            appointEnd.Appoint = returnA;
+                            appointEnd.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                            if (returnA.Patient.PatientId == selectedP.PatientId)
+                            {
+                                appointLs.Add(appointStart);
+                                appointLs.Add(appointEnd);
+                            }    
+                        }
+                    }
+                    else
+                    {
+                        foreach (var returnA in returnAls)
+                        {
+                            appointStart = new Calendar.Appointment();
+                            appointStart.StartDate = returnA.AppointmentStartTime;
+                            appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
+                            appointStart.Color = Color.DeepSkyBlue;
+                            appointStart.Appoint = returnA;
+                            appointStart.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                            appointEnd = new Calendar.Appointment();
+                            appointEnd.StartDate = returnA.AppointmentEndTime;
+                            appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
+                            appointEnd.Color = Color.Crimson;
+                            appointEnd.Appoint = returnA;
+                            appointEnd.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                            appointLs.Add(appointStart);
+                            appointLs.Add(appointEnd);
+                        }
+                    }
+                    weeklyCal.StartDate = DateTime.Today;
+                    weeklyCal.NewAppointment += new NewAppointmentEventHandler(DayView_NewAppointment);
+                    weeklyCal.ResolveAppointments += new Calendar.ResolveAppointmentsEventHandler(this.DayView_ResolveAppointments);
+                    TimeFilt_Changed();
+                }
+                else
+                {
+                    MessageBox.Show(restModel.ErrorMessage);
+                }
+                weeklyCal.DaysToShow = 7;
+                weeklyCal.Invalidate();
             }
             catch (Exception ex)
             {
@@ -370,64 +430,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-            if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-            {
-                returnAls = CreateAppointLs(restModel.Feed.Entities);
-                appointLs.Clear();
-                if (pNameCheckBox.Checked)
-                {
-                    foreach (var returnA in returnAls)
-                    {
-                        appointStart = new Calendar.Appointment();
-                        appointStart.StartDate = returnA.AppointmentStartTime;
-                        appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
-                        appointStart.Color = Color.DeepSkyBlue;
-                        appointStart.Appoint = returnA;
-                        appointStart.Title = returnA.FirstName + " " + returnA.LastName;
-                        appointEnd = new Calendar.Appointment();
-                        appointEnd.StartDate = returnA.AppointmentEndTime;
-                        appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
-                        appointEnd.Color = Color.Crimson;
-                        appointEnd.Appoint = returnA;
-                        appointEnd.Title = returnA.FirstName + " " + returnA.LastName;
-                        if (returnA.PatientId == selectedP.PatientId)
-                        {
-                            appointLs.Add(appointStart);
-                            appointLs.Add(appointEnd);
-                        }    
-                    }
-                }
-                else
-                {
-                    foreach (var returnA in returnAls)
-                    {
-                        appointStart = new Calendar.Appointment();
-                        appointStart.StartDate = returnA.AppointmentStartTime;
-                        appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
-                        appointStart.Color = Color.DeepSkyBlue;
-                        appointStart.Appoint = returnA;
-                        appointStart.Title = returnA.FirstName + " " + returnA.LastName;
-                        appointEnd = new Calendar.Appointment();
-                        appointEnd.StartDate = returnA.AppointmentEndTime;
-                        appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
-                        appointEnd.Color = Color.Crimson;
-                        appointEnd.Appoint = returnA;
-                        appointEnd.Title = returnA.FirstName + " " + returnA.LastName;
-                        appointLs.Add(appointStart);
-                        appointLs.Add(appointEnd);
-                    }
-                }
-                weeklyCal.StartDate = DateTime.Today;
-                weeklyCal.NewAppointment += new NewAppointmentEventHandler(DayView_NewAppointment);
-                weeklyCal.ResolveAppointments += new Calendar.ResolveAppointmentsEventHandler(this.DayView_ResolveAppointments);
-                TimeFilt_Changed();
-            }
-            else
-            {
-                MessageBox.Show(restModel.ErrorMessage);
-            }
-            weeklyCal.DaysToShow = 7;
-            weeklyCal.Invalidate();
         }
         private async Task ClassifyDeviceLocation(Client client)
         {
@@ -631,7 +633,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     var row = new string[]
                         {
-                        returnA.FirstName + " " + returnA.LastName,
+                        returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName,
                         returnA.AppointmentStartTime.ToString(dateAndTime),
                         returnA.AppointmentEndTime.ToString(dateAndTime)
                         };
@@ -668,9 +670,9 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 selectedA = weeklyCal.SelectedAppointment.Appoint;
                 weeklyCal.Enabled = false;
-                if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
+                if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
                 {
-                    await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
+                    await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
                 }
                 else
                 {
@@ -712,11 +714,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 return;
             }
             selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
-            if (selectedA.EcgTestId.HasValue && runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out EcgTest test))
+            if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
             {
-                await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTestId.Value);
+                await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
             }
-            else if (selectedA.EcgTestId.HasValue && !runningTestDict.TryGetValue(selectedA.EcgTestId.Value, out test))
+            else if (selectedA.EcgTest != null && !runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out test))
             {
                 await ShowAppointDetailFormForFinishedAppoint(selectedA);
             }
@@ -765,14 +767,14 @@ namespace Uvic_Ecg_ArbutusHolter
                     selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
                     weeklyCal.StartDate = selectedA.AppointmentStartTime;
                     string[] name = patientAppointLs.SelectedItems[0].Text.Split(' ');
-                    await SrhPatient(name[1], name[0], null, null, selectedA.PatientId);
+                    await SrhPatient(name[1], name[0], null, null, selectedA.Patient.PatientId);
                     yearIndicateLab.Text = selectedA.AppointmentStartTime.ToString(monthYear);
                 }
                 catch (Exception ex)
                 {
                     using (StreamWriter w = File.AppendText(FileName.Log.Name))
                     {
-                        LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                        LogHandle.Log(ex.ToString(), ex.StackTrace, w);   
                     }
                 }
             }
@@ -851,8 +853,8 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 UseWaitCursor = true;
-                ecgTestMod = await eResource.GetTestById(theApp.EcgTestId.Value, theApp.PatientId, appointFormClient);
-                pRestMod = await patientResource.GetPatientById(theApp.PatientId, appointFormClient);
+                ecgTestMod = await eResource.GetTestById(theApp.EcgTest.EcgTestId, theApp.Patient.PatientId, appointFormClient);
+                pRestMod = await patientResource.GetPatientById(theApp.Patient.PatientId, appointFormClient);
                 UseWaitCursor = false;
                 if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage && ErrorInfo.OK.ErrorMessage == pRestMod.ErrorMessage)
                 {
@@ -901,7 +903,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
                 foreach (var returnA in returnAls)
                 {
-                    if (theTestId == returnA.EcgTestId)
+                    if (theTestId == returnA.EcgTest.EcgTestId)
                     {
                         using (TestMonitorForm mainForm = new TestMonitorForm(appointFormClient, returnA, runningTestDict[theTestId]))
                         {

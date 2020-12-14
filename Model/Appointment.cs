@@ -6,9 +6,9 @@ namespace Uvic_Ecg_Model
     public class Appointment
     {
         [JsonProperty] private int appointmentRecordId;
-        [JsonProperty] private int nurseId;
-        [JsonProperty] private int patientId;
-        [JsonProperty] private int deviceId;
+        [JsonProperty] private Nurse nurse;
+        [JsonProperty] private PatientInfo patient;
+        [JsonProperty] private Device device;
         [JsonProperty] private DateTime appointmentStartTime;
         [JsonProperty] private DateTime appointmentEndTime;
         [JsonProperty] private DateTime? reservationTime = null;
@@ -17,14 +17,10 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private DateTime? deviceActualReturnTime = null;
         [JsonProperty] private string deviceLocation;
         [JsonProperty] private string instruction;
-        [JsonProperty] private bool deleted;
-        [JsonProperty] private int clinicId;
-        [JsonProperty] private string firstName;
-        [JsonProperty] private string lastName;
-        [JsonProperty] private int? ecgTestId = null; 
-        public Appointment(int nId,
-                           int pId,
-                           int dId,
+        [JsonProperty] private EcgTest ecgTest; 
+        public Appointment(Nurse n,
+                           PatientInfo p,
+                           Device d,
                            DateTime startTime,
                            DateTime endTime,
                            DateTime reserveTime,
@@ -32,15 +28,11 @@ namespace Uvic_Ecg_Model
                            DateTime returnTime,
                            string devLocation,
                            string instruct,
-                           bool delete,
-                           int cId,
-                           string pFirstName,
-                           string pLastName,
-                           int? ecgTestid)
+                           EcgTest ecgTest)
         {
-            NurseId = nId;
-            PatientId = pId;
-            DeviceId = dId;
+            Nurse = n;
+            Patient = p;
+            Device = d;
             AppointmentStartTime = startTime;
             AppointmentEndTime = endTime;
             ReservationTime = reserveTime;
@@ -48,16 +40,12 @@ namespace Uvic_Ecg_Model
             DeviceReturnDate = returnTime;
             DeviceLocation = devLocation;
             Instruction = instruct;
-            Deleted = delete;
-            ClinicId = cId;
-            FirstName = pFirstName;
-            LastName = pLastName;
-            EcgTestId = ecgTestid;
+            EcgTest = ecgTest;
         }
         [JsonConstructor] public Appointment(int appRecId,
-                                             int nId,
-                                             int pId,
-                                             int dId,
+                                             Nurse n,
+                                             PatientInfo p,
+                                             Device d,
                                              DateTime startTime,
                                              DateTime endTime,
                                              DateTime reserveTime,
@@ -66,16 +54,12 @@ namespace Uvic_Ecg_Model
                                              DateTime? devActualReturnTime,
                                              string devLocation,
                                              string instruct,
-                                             bool delete,
-                                             int cId,
-                                             string pFirstName,
-                                             string pLastName,
-                                             int? ecgTestid)
+                                             EcgTest ecgTest)
         {
             AppointmentRecordId = appRecId;
-            NurseId = nId;
-            PatientId = pId;
-            DeviceId = dId;
+            Nurse = n;
+            Patient = p;
+            Device = d;
             AppointmentStartTime = startTime;
             AppointmentEndTime = endTime;
             ReservationTime = reserveTime;
@@ -84,16 +68,12 @@ namespace Uvic_Ecg_Model
             DeviceActualReturnTime = devActualReturnTime;
             DeviceLocation = devLocation;
             Instruction = instruct;
-            Deleted = delete;
-            ClinicId = cId;
-            FirstName = pFirstName;
-            LastName = pLastName;
-            EcgTestId = ecgTestid;
+            EcgTest = ecgTest;
         }
         public int AppointmentRecordId { get => appointmentRecordId; set => appointmentRecordId = value; }
-        public int NurseId { get => nurseId; set => nurseId = value; }
-        public int PatientId { get => patientId; set => patientId = value; }
-        public int DeviceId { get => deviceId; set => deviceId = value; }
+        public Nurse Nurse { get => nurse; set => nurse = value; }
+        public PatientInfo Patient { get => patient; set => patient = value; }
+        public Device Device { get => device; set => device = value; }
         public DateTime AppointmentStartTime { get => appointmentStartTime; set => appointmentStartTime = value; }
         public DateTime AppointmentEndTime { get => appointmentEndTime; set => appointmentEndTime = value; }
         public DateTime? ReservationTime { get => reservationTime; set => reservationTime = value; }
@@ -101,11 +81,7 @@ namespace Uvic_Ecg_Model
         public DateTime? DeviceReturnDate { get => deviceReturnDate; set => deviceReturnDate = value; }
         public string DeviceLocation { get => deviceLocation; set => deviceLocation = value; }
         public string Instruction { get => instruction; set => instruction = value; }
-        public bool Deleted { get => deleted; set => deleted = value; }
-        public int ClinicId { get => clinicId; set => clinicId = value; }
-        public string FirstName { get => firstName; set => firstName = value; }
-        public string LastName { get => lastName; set => lastName = value; }
-        public int? EcgTestId { get => ecgTestId; set => ecgTestId = value; }
+        public EcgTest EcgTest { get => ecgTest; set => ecgTest = value; }
         public DateTime? DeviceActualReturnTime { get => deviceActualReturnTime; set => deviceActualReturnTime = value; }
     }
 }

@@ -49,6 +49,28 @@ namespace Uvic_Ecg_Model
         }
 
         public EcgTest() { }
+
+        [JsonConstructor]
+        public EcgTest(int eid)
+        {
+            EcgTestId = eid;
+        }
+        public EcgTest(int ecgtestid,
+                       DateTime startTimei,
+                       DateTime scheduledEndTimei,
+                       DateTime? actualEndTimei,
+                       string commenti,
+                       int? appointId,
+                       int clinici)
+        {
+            EcgTestId = ecgtestid;
+            StartTime = startTimei;
+            ScheduledEndTime = scheduledEndTimei;
+            ActualEndTime = actualEndTimei;
+            Comment = commenti;
+            AppointmentId = appointId;
+            ClinicId = clinici;
+        }
         public EcgTest(int testId,
                        DateTime start,
                        DateTime scheduledEnd,

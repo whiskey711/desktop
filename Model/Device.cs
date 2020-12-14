@@ -13,6 +13,7 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private bool deleted;
         [JsonProperty] private int clinicId;
         [JsonProperty] private string deviceLocation;
+        [JsonConstructor]
         public Device(int deviceIdi,
                       int phoneIdi,
                       string deviceNamei,
@@ -26,6 +27,10 @@ namespace Uvic_Ecg_Model
             Occupied = occupiedi;
             Deleted = deletedi;
             ClinicId = clinicIdi;
+        }
+        public Device(int did)
+        {
+            DeviceId = did;
         }
         public int DeviceId { get => deviceId; set => deviceId = value; }
         public int PhoneId { get => phoneId; set => phoneId = value; }

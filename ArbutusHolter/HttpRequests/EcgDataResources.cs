@@ -26,7 +26,12 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         public async Task<RestModel<ResultJson>> SetHookup(Client client, int tId, int dId)
         {
             EcgTest dummyTest = new EcgTest();
-            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel2 = await requests2.Put("patient/ecg-test/"+tId+"/start-hookup/"+dId, content, client);
             return restModel2;
@@ -34,7 +39,12 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         public async Task<RestModel<ResultJson>> Terminated(Client client, int tId, int dId)
         {
             EcgTest dummyTest = new EcgTest();
-            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             restModel2 = await requests2.Put("patient/ecg-test/" + tId + "/stop/" + dId, content, client);
             return restModel2;
@@ -42,7 +52,12 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         public async Task<RestModel<ResultJson>> SetRecord(Client client, int tId, int dId)
         {
             EcgTest dummyTest = new EcgTest();
-            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(dummyTest, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             StringContent dummy = new StringContent("");
             restModel2 = await requests2.Put("patient/ecg-test/" + tId + "/start-record/" + dId, content, client);
@@ -50,14 +65,24 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         }
         public async Task<RestModel<ResultJson>> CreateEcgtest(Client client, EcgTest test)
         {
-            string json = JsonConvert.SerializeObject(test, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local});
+            string json = JsonConvert.SerializeObject(test, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             testRestMod = await testReq.Post("patient/ecg-tests", content, client);
             return testRestMod;
         }
         public async Task<RestModel<ResultJson>> UpdateEcgTest(Client client, EcgTest upEcgTest)
         {
-            string json = JsonConvert.SerializeObject(upEcgTest, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
+            string json = JsonConvert.SerializeObject(upEcgTest, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
             content = new StringContent(json, Encoding.UTF8, "application/json");
             testRestMod = await testReq.Put("patient/ecg-tests", content, client);
             return testRestMod;
