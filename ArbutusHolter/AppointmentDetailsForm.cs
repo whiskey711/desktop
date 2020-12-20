@@ -89,6 +89,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     startBtn.Visible = false;
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -193,6 +198,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     DialogResult = DialogResult.Cancel;
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -234,6 +244,11 @@ namespace Uvic_Ecg_ArbutusHolter
                         deviceCombo.Items.Add(returnD.DeviceName);
                     }
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
             }
             catch (Exception ex)
             {
@@ -326,6 +341,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     } 
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -354,6 +374,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(jsonRestMod.ErrorMessage);
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
             }
             catch (Exception ex)
             {

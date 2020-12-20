@@ -38,6 +38,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     mailContentRichTB.Text = restmodel.Entity.Model.Message;
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -71,6 +76,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(restmodel.ErrorMessage);
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
             }
             catch (Exception ex)
             {

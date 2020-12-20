@@ -10,16 +10,19 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
     {
         private RestModel<T> restModel;
         private ErrorInfo errorInfo;
-        private readonly string rootUrl = "http://ecg.uvic.ca:8080/v1/test/";
         private int maxHttpExCount = 3;
         public async Task<RestModel<T>> Put(string url, HttpContent content, Client client)
         {
             client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-            client.Result = await client.HttpClient.PutAsync(client.getUrl() + url, content);
+            client.Result = await client.HttpClient.PutAsync(client.Url + url, content);
             restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
             if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+            }
+            else if (client.Result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new TokenExpiredException(ErrorInfo.TokenExpired.ErrorMessage);
             }
             return restModel;
         }
@@ -32,7 +35,50 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
                 try
                 {
                     client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-                    client.Result = await client.HttpClient.PostAsync(rootUrl + url, content);
+                    client.Result = await client.HttpClient.PostAsync(client.Url + url, content);
+                    httpFailure = false;
+                }
+                catch (HttpRequestException hrex)
+                {
+                    exCount++;
+                    if (exCount > maxHttpExCount)
+                    {
+                        throw hrex;
+                    }
+                    httpFailure = true;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            } while (httpFailure);
+            try
+            {
+                restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
+                if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+                }
+                else if (client.Result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new TokenExpiredException(ErrorInfo.TokenExpired.ErrorMessage);
+                }
+                return restModel;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<RestModel<T>> PublicPost(string url, HttpContent content, Client client)
+        {
+            bool httpFailure;
+            int exCount = 0;
+            do
+            {
+                try
+                {
+                    client.Result = await client.HttpClient.PostAsync(client.PublicUrl + url, content);
                     httpFailure = false;
                 }
                 catch (HttpRequestException hrex)
@@ -72,7 +118,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
                 try
                 {
                     client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-                    client.Result = await client.HttpClient.GetAsync(rootUrl + url);
+                    client.Result = await client.HttpClient.GetAsync(client.Url + url);
                     httpFailure = false;
                 }
                 catch (InvalidOperationException invoex)
@@ -100,6 +146,10 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
                 {
                     restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
                 }
+                else if (client.Result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new TokenExpiredException(ErrorInfo.TokenExpired.ErrorMessage);
+                }
                 return restModel;
             }
             catch (Exception ex)
@@ -110,11 +160,15 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         public async Task<RestModel<T>> Delete(string url, Client client)
         {
             client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-            client.Result = await client.HttpClient.DeleteAsync(client.getUrl() + url);
+            client.Result = await client.HttpClient.DeleteAsync(client.Url + url);
             restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
             if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+            }
+            else if (client.Result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new TokenExpiredException(ErrorInfo.TokenExpired.ErrorMessage);
             }
             return restModel;
         }

@@ -49,6 +49,7 @@ namespace Uvic_Ecg_ArbutusHolter
         string allLocation = "All locations";
         string devLoc;
         string allLoc = "All locations";
+        bool programClosing = false;
         public AppointmentForm(Client client)
         {
             InitializeComponent();
@@ -95,6 +96,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 await SrhPatient(pLastNameTextBox.Text, pFirstNameTextBox.Text, birthText.Text, phnTextBox.Text, invalidPid);
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -110,14 +117,6 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 pRestMod = await patientResource.GetPatient(lastName, firstName, birth, phn, appointFormClient);
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
             if (pRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
@@ -160,6 +159,20 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 MessageBox.Show(ErrorInfo.NoResult.ErrorMessage);
             }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
         }
         private void CreateBtn_Click(object sender, EventArgs e)
         {
@@ -178,6 +191,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 selectedP = (PatientInfo)patientListView.SelectedItems[0].Tag;
                 LoadPatientInfo(selectedP);
                 await LoadPatientAppointment(selectedP);
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -217,14 +236,7 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 restModel = await nResource.GetPatientAppoint(theOne.PatientId, appointFormClient);
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
+            
             patientAppointLs.Items.Clear();
             if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
@@ -240,6 +252,20 @@ namespace Uvic_Ecg_ArbutusHolter
             else
             {
                 MessageBox.Show(restModel.ErrorMessage);
+            }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
         }
         private async void SaveBtn_Click(object sender, EventArgs e)
@@ -298,6 +324,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.FillAll.ErrorMessage);
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -334,6 +366,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 Appointment.Group = "2";
                 appointLs.Add(Appointment);
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -354,6 +392,12 @@ namespace Uvic_Ecg_ArbutusHolter
                         Apps.Add(App);
                 }
                 args.Appointments = Apps;
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -427,6 +471,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 weeklyCal.DaysToShow = 7;
                 weeklyCal.Invalidate();
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -437,15 +487,31 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task ClassifyDeviceLocation(Client client)
         {
-            dRestMod = await dResource.GetAllDevice(client);
-            if (dRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+            try
             {
-                returnDevLocLs = CreateDeviceLocLs(dRestMod.Feed.Entities);
-                foreach (var returnDevLoc in returnDevLocLs)
+                dRestMod = await dResource.GetAllDevice(client);
+                if (dRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
-                    regionComboBox.Items.Add(returnDevLoc);
+                    returnDevLocLs = CreateDeviceLocLs(dRestMod.Feed.Entities);
+                    foreach (var returnDevLoc in returnDevLocLs)
+                    {
+                        regionComboBox.Items.Add(returnDevLoc);
+                    }
+                    regionComboBox.Items.Add(allLocation);
                 }
-                regionComboBox.Items.Add(allLocation);
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
         }
         private void PatientDetailsGroup_Leave(object sender, EventArgs e)
@@ -559,6 +625,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 await AddNewAppoinment();
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -647,6 +719,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 weeklyCal.StartDate = startTimeFilt.Value;
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -703,6 +781,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 await LoadAllAppointments();
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -749,6 +833,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     await LoadAllAppointments();
                 }               
                 weeklyCal.Invalidate();
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -806,6 +896,12 @@ namespace Uvic_Ecg_ArbutusHolter
                         await LoadAllAppointments();
                     }
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -872,6 +968,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.ConnectionProblem.ErrorMessage);
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -893,6 +995,36 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 UseWaitCursor = true;
                 restModel = await nResource.GetPatientAppoint(runningTestDict[theTestId].PatientId, appointFormClient);
+                if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+                {
+                    returnAls = CreateAppointLs(restModel.Feed.Entities);
+                    foreach (var returnA in returnAls)
+                    {
+                        if (theTestId == returnA.EcgTest.EcgTestId)
+                        {
+                            using (TestMonitorForm mainForm = new TestMonitorForm(appointFormClient, returnA, runningTestDict[theTestId]))
+                            {
+                                // Abort means user click the terminate btn
+                                if (mainForm.ShowDialog() == DialogResult.Abort)
+                                {
+                                    await RefreshRunningTest();
+                                    runningTestDict.Remove(theTestId);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(restModel.ErrorMessage);
+                }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -902,34 +1034,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
             UseWaitCursor = false;
-            if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-            {
-                returnAls = CreateAppointLs(restModel.Feed.Entities);
-                foreach (var returnA in returnAls)
-                {
-                    if (theTestId == returnA.EcgTest.EcgTestId)
-                    {
-                        using (TestMonitorForm mainForm = new TestMonitorForm(appointFormClient, returnA, runningTestDict[theTestId]))
-                        {
-                            // Abort means user click the terminate btn
-                            if (mainForm.ShowDialog() == DialogResult.Abort)
-                            {
-                                await RefreshRunningTest();
-                                runningTestDict.Remove(theTestId);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show(restModel.ErrorMessage);
-            }
         }
         private void AppointmentForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            if (e.CloseReason == CloseReason.UserClosing && !programClosing)
             {
                 e.Cancel = true;
                 WindowState = FormWindowState.Minimized;
@@ -972,6 +1080,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -1004,6 +1118,12 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 await download.MainProcess(appointFormClient);
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -1031,6 +1151,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(errorMsg);
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {

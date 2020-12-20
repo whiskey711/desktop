@@ -46,6 +46,7 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo Deleted = new ErrorInfo("Appointment is deleted successfully");
         public static readonly ErrorInfo DeleteWarn = new ErrorInfo("Are your sure to delete the appointment ?");
         public static readonly ErrorInfo DownloadAllData = new ErrorInfo("This is the first time you use the software, do you want to sync all data locally from the server ?");
+        public static readonly ErrorInfo TokenExpired = new ErrorInfo("Your token has expired, please login again");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

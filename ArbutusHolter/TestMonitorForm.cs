@@ -33,6 +33,7 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientInfo updatedPatient;
         bool isFirstTime = true;
         bool recordingStarted = false;
+        bool programClosing = false;
         int aDay = 24;
         public EcgTest theEcgTest { get; set; }
         public Appointment theAppoint { get; set; }
@@ -61,12 +62,34 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task<bool> CreateEcgTest()
         {
-            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, 
-                                     theAppoint.Patient.PatientId, theAppoint.Nurse.NurseId, theAppoint.Device.DeviceId, 
-                                     null, theAppoint.AppointmentRecordId, Config.ClinicId);
+            theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.AppointmentRecordId,
+                                     theAppoint.Patient.PatientId, theAppoint.Nurse.NurseId, theAppoint.Device.DeviceId,
+                                     null, Config.ClinicId);
             try
             {
                 eRestMod = await ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
+                if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
+                {
+                    MessageBox.Show(eRestMod.ErrorMessage);
+                    return false;
+                }
+                theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
+                theAppoint.EcgTest = theEcgTest;
+                if (DateTime.Compare(theEcgTest.StartTime.AddHours(aDay), theAppoint.AppointmentEndTime) < 0)
+                {
+                    endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString("hh:mm:ss tt");
+                }
+                else
+                {
+                    endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString("hh:mm:ss tt");
+                }
+                return true;
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -75,28 +98,13 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-            if (ErrorInfo.OK.ErrorMessage != eRestMod.ErrorMessage)
-            {
-                MessageBox.Show(eRestMod.ErrorMessage);
-                return false;
-            }
-            theEcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
-            theAppoint.EcgTest.EcgTestId = int.Parse(eRestMod.Entity.Model.Message);
-            if (DateTime.Compare(theEcgTest.StartTime.AddHours(aDay), theAppoint.AppointmentEndTime) < 0)
-            {
-                endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString("hh:mm:ss tt");
-            }
-            else
-            {
-                endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString("hh:mm:ss tt");
-            }
-            return true;
+            return false;
         }
         private async Task PatientInfo_Load()
         {
             try
             {
-                restmodel = await patientResource.GetPatient(theAppoint.Patient.PatientLastName, theAppoint.Patient.PatientFirstName, 
+                restmodel = await patientResource.GetPatient(theAppoint.Patient.PatientLastName, theAppoint.Patient.PatientFirstName,
                                                              null, null, mainFormClient);
                 if (restmodel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
@@ -155,6 +163,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(restmodel.ErrorMessage);
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -206,6 +220,12 @@ namespace Uvic_Ecg_ArbutusHolter
                         //done in somewhere else
                     }
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -292,6 +312,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 isFirstTime = false;
                 waitingTimer.Start();
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -323,7 +349,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task<bool> TryToGetData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, 
+            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status,
                                                                                       theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
             if (ecgRawDataModel.Entity == null)
             {
@@ -381,38 +407,47 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task UpdateData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status, 
-                                                    theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
-            //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
-            //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
-            if (date.Year == 1996)
+            try
             {
-                //if it's first data, update the date to be the first data's date.
-                date = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
-                DoUpdate(ecgRawDataModel);
-            }
-            else
-            {
-                //if it's not the first data, record the date of data in tempDate for future comparision.
-                tempDate = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
-                if (status.Equals("rehookup"))
+                RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status,
+                                                            theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
+
+                //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
+                //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
+                if (date.Year == 1996)
                 {
-                    date = tempDate;
-                    status = "hookup";
+                    //if it's first data, update the date to be the first data's date.
+                    date = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
                     DoUpdate(ecgRawDataModel);
                 }
                 else
                 {
-                    if (!tempDate.Equals(date) && status.Equals("hookup"))
+                    //if it's not the first data, record the date of data in tempDate for future comparision.
+                    tempDate = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
+                    if (status.Equals("rehookup"))
                     {
-                        if ((tempDate - date).TotalSeconds > 10)
+                        date = tempDate;
+                        status = "hookup";
+                        DoUpdate(ecgRawDataModel);
+                    }
+                    else
+                    {
+                        if (!tempDate.Equals(date) && status.Equals("hookup"))
                         {
-                            //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
-                            var test = channel1.values;
-                            CleanChannel();
-                            test = channel1.values;
-                            date = tempDate;
-                            DoUpdate(ecgRawDataModel);
+                            if ((tempDate - date).TotalSeconds > 10)
+                            {
+                                //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
+                                var test = channel1.values;
+                                CleanChannel();
+                                test = channel1.values;
+                                date = tempDate;
+                                DoUpdate(ecgRawDataModel);
+                            }
+                            else
+                            {
+                                date = tempDate;
+                                DoUpdate(ecgRawDataModel);
+                            }
                         }
                         else
                         {
@@ -420,11 +455,19 @@ namespace Uvic_Ecg_ArbutusHolter
                             DoUpdate(ecgRawDataModel);
                         }
                     }
-                    else
-                    {
-                        date = tempDate;
-                        DoUpdate(ecgRawDataModel);
-                    }
+                }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
@@ -475,6 +518,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 statusChanges = true;
                 statusFlag.Text = status;
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -501,6 +550,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     await StartDisplay();
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -564,6 +619,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 terminateBtn.Enabled = true;
                 recordingStarted = true;
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -592,6 +653,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 terminateBtn.Enabled = false;
                 DialogResult = DialogResult.Abort;
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -618,6 +685,12 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(errorMsg);
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -628,7 +701,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void MainInterface_FormClosing(object sender, FormClosingEventArgs e)
         {  
-            if (e.CloseReason == CloseReason.UserClosing)
+            if (e.CloseReason == CloseReason.UserClosing && !programClosing)
             {
                 DialogResult res = MessageBox.Show(ErrorInfo.ClosingWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.OKCancel);
                 if (res == DialogResult.Cancel)
