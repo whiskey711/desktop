@@ -33,6 +33,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     finishPanel.Visible = true;
                 }
             }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
+            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -67,6 +72,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(ErrorInfo.Incorrect.ErrorMessage);
                 }
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                Close();
             }
             catch (Exception ex)
             {

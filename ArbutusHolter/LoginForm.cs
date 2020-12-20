@@ -63,7 +63,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     Hide();
                     AppointmentForm appForm = new AppointmentForm(client);
-                    appForm.FormClosed += (s, args) => Close();
+                    appForm.FormClosed += (s, args) => Show();
                     appForm.Show();
                 }
                 else

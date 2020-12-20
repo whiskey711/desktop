@@ -100,6 +100,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 await GetFailedData();
                 testDirs = ManageFile.GetDirectoryInfos();
             }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
+            }
             catch (HttpRequestException hrex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -136,6 +140,10 @@ namespace Uvic_Ecg_ArbutusHolter
                         ConverToIsne(testDir);
                         Console.WriteLine("In");
                     }
+                }
+                catch (TokenExpiredException teex)
+                {
+                    throw teex;
                 }
                 catch (HttpRequestException hrex)
                 {

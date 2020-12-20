@@ -32,6 +32,10 @@ namespace Uvic_Ecg_Model
             password = pass;
             deleted = delete;
         }
+        public Nurse(string mail)
+        {
+            nurseEmail = mail;
+        }
         
         public Nurse(int nid,
                      string nLastname,

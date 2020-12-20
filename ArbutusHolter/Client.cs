@@ -24,15 +24,7 @@ namespace Uvic_Ecg_ArbutusHolter
         public string Token { get => token; set => token = value; }
         public int NurseId { get => nurseId; }
         public string PublicUrl { get => publicUrl; set => publicUrl = value; }
-
-        public string getUrl()
-        {
-            return this.url;
-        }
-        public void seturl(string newUrl)
-        {
-            this.url = newUrl;
-        }
+        public string Url { get => url; set => url = value; }
         public async Task<ErrorInfo> Login(string inputUserName, string inputPassword)
         {
             User user = new User
@@ -42,7 +34,7 @@ namespace Uvic_Ecg_ArbutusHolter
             };
             string json = JsonConvert.SerializeObject(user);
             Content = new StringContent(json, Encoding.UTF8, "application/json");
-            Result = await HttpClient.PostAsync(getUrl() + "login", Content);
+            Result = await HttpClient.PostAsync(Url + "login", Content);
             string fullerrorMsg = Result.Content.ReadAsStringAsync().Result;
             if (Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -71,7 +63,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             string json = JsonConvert.SerializeObject(newNurse);
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            result = await httpClient.PostAsync(getUrl() + "nurses", content);
+            result = await httpClient.PostAsync(Url + "nurses", content);
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return true;
