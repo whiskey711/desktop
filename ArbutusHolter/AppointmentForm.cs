@@ -20,6 +20,7 @@ namespace Uvic_Ecg_ArbutusHolter
         List<String> returnDevLocLs = new List<String>();
         Uvic_Ecg_Model.Appointment app;
         DateTime startTime = DateTime.Now;
+        DownloadRawData download = new DownloadRawData();
         RestModel<Uvic_Ecg_Model.Appointment> restModel;
         RestModel<PatientInfo> pRestMod;
         RestModel<Device> dRestMod;
@@ -28,7 +29,6 @@ namespace Uvic_Ecg_ArbutusHolter
         PatientResource patientResource = new PatientResource();
         DeviceResource dResource = new DeviceResource();
         EcgDataResources eResource = new EcgDataResources();
-        DownloadRawData download = new DownloadRawData();
         Client appointFormClient;
         Dictionary<int, EcgTest> runningTestDict = new Dictionary<int, EcgTest>();
         string errorMsg;
@@ -73,7 +73,7 @@ namespace Uvic_Ecg_ArbutusHolter
             appointRefreshTimer.Start();
             runningTestRefreshTimer.Start();
             rawDataRefreshTimer.Start();
-            Task.Run(async () => await download.MainProcess(client));
+            Task.Run(async () => await download.MainProcess(appointFormClient));
         }
         private async void SrhBtn_Click(object sender, EventArgs e)
         {
@@ -950,18 +950,19 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
+            UseWaitCursor = true;
             try
             {
-                UseWaitCursor = true;
                 ecgTestMod = await eResource.GetTestById(theApp.EcgTest.EcgTestId, theApp.Patient.PatientId, appointFormClient);
                 pRestMod = await patientResource.GetPatientById(theApp.Patient.PatientId, appointFormClient);
-                UseWaitCursor = false;
                 if (ErrorInfo.OK.ErrorMessage == ecgTestMod.ErrorMessage && ErrorInfo.OK.ErrorMessage == pRestMod.ErrorMessage)
                 {
                     EcgTest test = ecgTestMod.Entity.Model;
                     PatientInfo patient = pRestMod.Entity.Model;
                     AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
+                    await Task.Delay(3000);
                     appDForm.Show();
+                    appDForm.FormClosed += (s, args) => UseWaitCursor = false;
                 }
                 else
                 {

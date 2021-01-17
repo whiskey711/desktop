@@ -14,20 +14,23 @@ namespace Uvic_Ecg_ArbutusHolter
 {
     class ManageFile
     {
-        private static readonly string folderName = Directory.GetParent(Directory.GetCurrentDirectory())
+        public static readonly string folderName = Directory.GetParent(Directory.GetCurrentDirectory())
                                                     .Parent.Parent.FullName + @"\Data";
-        private static readonly string lastRequestPath = folderName + @"\lastrequesttime.txt";
-        private static readonly string failedTestPath = folderName + @"\failedtestls.json";
-        private static readonly string failedDataPath = folderName + @"\faileddatals.json";
-        private static readonly string testFolderName = "ecgTest";
-        private static readonly string dataFolderName = "rawData";
-        private static readonly string testInfoName = "test.json";
-        private static readonly string dataInfoName = "rawData.json";
-        private static readonly string patientInfoName = @"\patient.json";
-        private static readonly string dataName = @"\data";
-        private static readonly string dataPattern = "data*";
-        private static readonly string ishneName = @"\ishne";
-        private static readonly string rootMsg = "An exception occurred during the program downloading ecg data in the background ";
+        public static readonly string importKey = "-i ";
+        static readonly string lastRequestPath = folderName + @"\lastrequesttime.txt";
+        static readonly string failedTestPath = folderName + @"\failedtestls.json";
+        static readonly string failedDataPath = folderName + @"\faileddatals.json";
+        public static readonly string testFolderName = @"\ecgTest";
+        public static readonly string dataFolderName = @"\rawData";
+        public static readonly string testInfoName = @"\test.json";
+        public static readonly string dataInfoName = @"\rawData.json";
+        static readonly string dataInfoPattern = "rawData.json";
+        public static readonly string patientInfoName = @"\patient.json";
+        public static readonly string dataName = @"\data";
+        static readonly string dataPattern = "data*";
+        public static readonly string ishneName = @"\ishne.ecg";
+        public static readonly string rootMsg = "An exception occurred during the program downloading ecg data in the background ";
+        public static readonly string wrongRawDataMsg = " the problemed ecg raw data is ecgRawData ";
         public static void CheckFolder(string subPath)
         {
             try
@@ -173,106 +176,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 string msg = rootMsg + sex.Message;
                 throw new FileRelatedException(msg, sex);
 
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public static void UpdateFailedTest(EcgTest test)
-        {
-            try
-            {
-                using (StreamWriter file = new StreamWriter(failedTestPath, true))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, test);
-                }
-            }
-            catch (IOException iex)
-            {
-                // iex message will be “cannot create directory at <path>, because same name file exists”
-                string msg = rootMsg + iex.Message;
-                throw new FileRelatedException(msg, iex);
-            }
-            catch (UnauthorizedAccessException uaex)
-            {
-                // uaex message will be “Access to path <path> is denied”
-                string msg = rootMsg + uaex.Message;
-                throw new FileRelatedException(msg, uaex);
-
-            }
-            catch (ArgumentException aex)
-            {
-                // aex message will be “path is not of a legal form”
-                string msg = rootMsg + failedTestPath + "\n" + aex.Message;
-                throw new FileRelatedException(msg, aex);
-            }
-            catch (NotSupportedException nsex)
-            {
-                string msg = rootMsg + failedTestPath + "\n" + nsex.Message;
-
-            }
-            catch (SecurityException sex)
-            {
-                string msg = rootMsg + sex.Message;
-                throw new FileRelatedException(msg, sex);
-
-            }
-            catch (JsonException jex)
-            {
-                string msg = rootMsg + jex.Message;
-                throw new FileRelatedException(msg, jex);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public static void UpdateFailedData(EcgRawData data)
-        {
-            try
-            {
-                using (StreamWriter file = new StreamWriter(failedDataPath, true))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, data);
-                }
-            }
-            catch (IOException iex)
-            {
-                // iex message will be “cannot create directory at <path>, because same name file exists”
-                string msg = rootMsg + iex.Message;
-                throw new FileRelatedException(msg, iex);
-            }
-            catch (UnauthorizedAccessException uaex)
-            {
-                // uaex message will be “Access to path <path> is denied”
-                string msg = rootMsg + uaex.Message;
-                throw new FileRelatedException(msg, uaex);
-
-            }
-            catch (ArgumentException aex)
-            {
-                // aex message will be “path is not of a legal form”
-                string msg = rootMsg + failedDataPath + "\n" + aex.Message;
-                throw new FileRelatedException(msg, aex);
-            }
-            catch (NotSupportedException nsex)
-            {
-                string msg = rootMsg + failedDataPath + "\n" + nsex.Message;
-
-            }
-            catch (SecurityException sex)
-            {
-                string msg = rootMsg + sex.Message;
-                throw new FileRelatedException(msg, sex);
-
-            }
-            catch (JsonException jex)
-            {
-                string msg = rootMsg + jex.Message;
-                throw new FileRelatedException(msg, jex);
             }
             catch (Exception ex)
             {
@@ -827,7 +730,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 try
                 {
-                    rawDataJsons = rawDataDir.GetFiles(dataInfoName);
+                    rawDataJsons = rawDataDir.GetFiles(dataInfoPattern);
                     datas = rawDataDir.GetFiles(dataPattern);
                     if (rawDataJsons != null && datas != null)
                     {

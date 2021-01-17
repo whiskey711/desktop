@@ -45,10 +45,11 @@ namespace Uvic_Ecg_ArbutusHolter
             this.deviceCombo = new System.Windows.Forms.ComboBox();
             this.startBtn = new System.Windows.Forms.Button();
             this.continueBtn = new System.Windows.Forms.Button();
-            this.editMailBtn = new System.Windows.Forms.Button();
             this.generateReportBtn = new System.Windows.Forms.Button();
             this.viewNoteBtn = new System.Windows.Forms.Button();
             this.returnDevBtn = new System.Windows.Forms.Button();
+            this.mailBtn = new System.Windows.Forms.Button();
+            this.backgroundPanel = new System.Windows.Forms.Panel();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -232,19 +233,6 @@ namespace Uvic_Ecg_ArbutusHolter
             this.continueBtn.Text = "Continue";
             this.continueBtn.UseVisualStyleBackColor = true;
             this.continueBtn.Click += new System.EventHandler(this.ContinueBtn_Click);
-            // 
-            // editMailBtn
-            // 
-            this.editMailBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.editMailBtn.AutoSize = true;
-            this.editMailBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.editMailBtn.Location = new System.Drawing.Point(12, 465);
-            this.editMailBtn.Name = "editMailBtn";
-            this.editMailBtn.Size = new System.Drawing.Size(154, 23);
-            this.editMailBtn.TabIndex = 21;
-            this.editMailBtn.Text = "Appoinment notification email";
-            this.editMailBtn.UseVisualStyleBackColor = true;
-            this.editMailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
             //
             // generateReportBtn
             //
@@ -255,6 +243,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.generateReportBtn.Text = "Generate Report";
             this.generateReportBtn.UseVisualStyleBackColor = true;
             this.generateReportBtn.Enabled = false;
+            this.generateReportBtn.Click += new System.EventHandler(this.GenerateBtn_Click);
             //
             // viewNoteBtn
             //
@@ -274,6 +263,34 @@ namespace Uvic_Ecg_ArbutusHolter
             this.returnDevBtn.Text = "Return Device";
             this.returnDevBtn.UseVisualStyleBackColor = true;
             this.returnDevBtn.Click += new System.EventHandler(this.ReturnDevBtn_Click);
+            //
+            // mailBtn
+            //
+            this.mailBtn.AutoSize = true;
+            this.mailBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mailBtn.Location = new System.Drawing.Point(12, 465);
+            this.mailBtn.Name = "editMailBtn";
+            this.mailBtn.Size = new System.Drawing.Size(154, 23);
+            this.mailBtn.TabIndex = 21;
+            this.mailBtn.Text = "Appoinment notification email";
+            this.mailBtn.UseVisualStyleBackColor = true;
+            this.mailBtn.Click += new System.EventHandler(this.EditMailBtn_Click);
+            //
+            // backgroundPanel
+            //
+            this.backgroundPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.backgroundPanel.Controls.Add(this.startBtn);
+            this.backgroundPanel.Controls.Add(this.continueBtn);
+            this.backgroundPanel.Controls.Add(this.mailBtn);
+            this.backgroundPanel.Controls.Add(this.appointGroup);
+            this.backgroundPanel.Controls.Add(this.generateReportBtn);
+            this.backgroundPanel.Controls.Add(this.viewNoteBtn);
+            this.backgroundPanel.Controls.Add(this.returnDevBtn);
+            this.backgroundPanel.Location = new System.Drawing.Point(0, 0);
+            this.backgroundPanel.Name = "backgroundPanel";
+            this.backgroundPanel.Size = new System.Drawing.Size(436, 520);
+            this.appointGroup.ResumeLayout(false);
+            this.appointGroup.PerformLayout();
             // 
             // AppointmentDetailsForm
             // 
@@ -281,20 +298,14 @@ namespace Uvic_Ecg_ArbutusHolter
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(436, 520);
-            this.Controls.Add(this.startBtn);
-            this.Controls.Add(this.continueBtn);
-            this.Controls.Add(this.appointGroup);
-            this.Controls.Add(this.editMailBtn);
-            this.Controls.Add(this.generateReportBtn);
-            this.Controls.Add(this.viewNoteBtn);
-            this.Controls.Add(this.returnDevBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.Controls.Add(backgroundPanel);
             this.Name = "AppointmentDetailsForm";
             this.Text = "Appointment details";
-            this.appointGroup.ResumeLayout(false);
-            this.appointGroup.PerformLayout();
+            this.backgroundPanel.ResumeLayout(false);
+            this.backgroundPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -317,9 +328,10 @@ namespace Uvic_Ecg_ArbutusHolter
         private System.Windows.Forms.Button continueBtn;
         private System.Windows.Forms.Label deviceNameLab;
         private System.Windows.Forms.ComboBox deviceLocCB;
-        private System.Windows.Forms.Button editMailBtn;
         private System.Windows.Forms.Button generateReportBtn;
         private System.Windows.Forms.Button viewNoteBtn;
         private System.Windows.Forms.Button returnDevBtn;
+        private System.Windows.Forms.Button mailBtn;
+        private System.Windows.Forms.Panel backgroundPanel;
     }
 }

@@ -2,16 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
+using Uvic_Ecg_ArbutusHolter.DownloadData;
 namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class AppointmentDetailsForm : Form
     {
         RestModel<Device> restModel;
         RestModel<ResultJson> jsonRestMod;
+        RestModel<EcgRawData> rawDataMod;
+        RestModel<PatientInfo> pMod;
+        private PatientResource pResource = new PatientResource();
+        private EcgDataResources eResource = new EcgDataResources();
         private DeviceResource dResource = new DeviceResource();
         private NurseResource nResource = new NurseResource();
         private Client inClient;
@@ -35,14 +42,16 @@ namespace Uvic_Ecg_ArbutusHolter
             theTest = runningTest;
             thePat = patient;
             continueBtn.Visible = false;
-            Task.Run(async () => await PrepareForm());
-            Task.Run(async () => await ClassifyDeviceLocation());
+            //Task.Run(async () => await PrepareForm());
+            PrepareForm();
+            Task.Run(async () => await ClassifyDeviceLocationAndName());
         }
-        private async Task PrepareForm()
+        private void PrepareForm()
         {
-            appointGroup.UseWaitCursor = true;
+            UseWaitCursor = true;
             try
             {
+                // upcoming, inprogress, finsished
                 if (theAppoint != null)
                 {
                     appointStartTimePick.Value = theAppoint.AppointmentStartTime;
@@ -51,37 +60,25 @@ namespace Uvic_Ecg_ArbutusHolter
                     devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
                     firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
-                    restModel = await dResource.GetAllDevice(inClient);
-                    if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-                    {
-                        returnDls = CreateDevLs(restModel.Feed.Entities);
-                        foreach (var returnD in returnDls)
-                        {
-                            if (returnD.DeviceId == theAppoint.Device.DeviceId)
-                            {
-                                selectDev = returnD;
-                                deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnD.DeviceName; }));
-                                break;
-                            }
-                        }
-                    }
                     if (theAppoint.DeviceActualReturnTime.HasValue)
                     {
                         returnDevBtn.Enabled = false;
                     }
+                    // inprogress or finished
                     if (theTest != null)
                     {
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
                     }
-                    if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theAppoint.EcgTest != null)
+                    if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theTest != null)
                     {
                         appointGroup.Enabled = false;
                         startBtn.Visible = false;
-                        editMailBtn.Enabled = false;
+                        mailBtn.Enabled = false;
                         generateReportBtn.Enabled = true;
                     }
                 }
+                // appointment is creating
                 else
                 {
                     firstNameLabel.Text = thePat.PatientFirstName;
@@ -101,7 +98,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-            appointGroup.UseWaitCursor = false;
+            finally
+            {
+                UseWaitCursor = false;
+            }
         }
         private void EditMailBtn_Click(object sender, EventArgs e)
         {
@@ -270,12 +270,12 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private List<string> CreateDeviceLocLs(List<Entity<Device>> entls)
         {
-            List<String> devLocLs = new List<String>();
+            List<string> devLocLs = new List<string>();
             foreach (var ent in entls)
             {
                 devLocLs.Add(ent.Model.DeviceLocation);
             }
-            List<String> devLocDistinctLs = devLocLs.Distinct().ToList();
+            List<string> devLocDistinctLs = devLocLs.Distinct().ToList();
             return devLocDistinctLs;
         }
         private void StartBtn_Click(object sender, EventArgs e)
@@ -312,33 +312,31 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private async Task ClassifyDeviceLocation()
+        private async Task ClassifyDeviceLocationAndName()
         {
             try
             {
                 restModel = await dResource.GetAllDevice(inClient);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-                { 
-                    if (theAppoint != null)
+                {
+                    List<Device> returnDevLs = CreateDevLs(restModel.Feed.Entities);
+                    List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
+                    foreach (var returnDevLoc in returnDevLocLs)
                     {
-                        List<Device> returnDevLs = CreateDevLs(restModel.Feed.Entities);
+                        deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
+                    }
+                    if (theAppoint != null)
+                    { 
                         foreach (var returnDev in returnDevLs)
                         {
                             if (theAppoint.Device.DeviceId == returnDev.DeviceId)
                             {
-                                deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Text = returnDev.DeviceLocation; }));
-                                break;
+                                deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.SelectedItem = returnDev.DeviceLocation; }));
+                                deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnDev.DeviceName; }));
                             }
                         }
+                        
                     }
-                    else
-                    {
-                        List<string> returnDevLocLs = CreateDeviceLocLs(restModel.Feed.Entities);
-                        foreach (var returnDevLoc in returnDevLocLs)
-                        {
-                            deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
-                        }
-                    } 
                 }
             }
             catch (TokenExpiredException teex)
@@ -389,6 +387,79 @@ namespace Uvic_Ecg_ArbutusHolter
                 MessageBox.Show(ex.ToString());
             }
             UseWaitCursor = false;
+        }
+        private async void GenerateBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MessageBox.Show(ErrorInfo.Downloading.ErrorMessage);
+                Application.UseWaitCursor = true;
+                backgroundPanel.Enabled = false;
+                bool b;
+                DownloadMethod method = new DownloadMethod(inClient);
+                DirectoryInfo dir = new DirectoryInfo(ManageFile.folderName + ManageFile.testFolderName + theTest.EcgTestId);
+                if (!dir.Exists || !ManageFile.CheckPatient(dir))
+                {
+                    b = await method.GetOneTestAndPatient(theTest);
+                    if (!b)
+                    {
+                        MessageBox.Show(ErrorInfo.DownloadProblem.ErrorMessage);
+                        return;
+                    }
+                }
+                b = await method.CheckIntegrity(dir);
+                if (!b)
+                {
+                    b = await method.GetData(theTest);
+                    if (!b)
+                    {
+                        MessageBox.Show(ErrorInfo.DownloadProblem.ErrorMessage);
+                        return;
+                    }
+                }
+                if (!ManageFile.CheckIsne(dir))
+                {
+                    DownloadMethod.ConverToIsne(dir);
+                }
+                GenerateReport(dir);
+                Close();
+            }
+            catch (HttpRequestException hrex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(hrex.ToString(), hrex.StackTrace, w);
+                }
+                MessageBox.Show(ErrorInfo.ConnectionProblem.ErrorMessage);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+                MessageBox.Show(ErrorInfo.GenerateProblem.ErrorMessage + "\n" + ex.ToString());
+            }
+            finally
+            {
+                Application.UseWaitCursor = false;
+            }
+        }
+        private void GenerateReport(DirectoryInfo dir)
+        {
+            try
+            {
+                string cmd = ManageFile.importKey + dir.FullName + ManageFile.ishneName;
+                Process proc = new Process();
+                proc.StartInfo.FileName = "CER-S.exe";
+                proc.StartInfo.Arguments = cmd;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                proc.Start();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
