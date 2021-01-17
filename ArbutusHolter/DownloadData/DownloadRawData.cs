@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Uvic_Ecg_ArbutusHolter.HttpRequests;
 using Uvic_Ecg_Model;
+using Uvic_Ecg_ArbutusHolter.DownloadData;
 using ECG_ISHNE;
 using System.Dynamic;
 using Newtonsoft.Json;
@@ -28,21 +29,13 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime start, end;
         string lastReqTime;
         bool b;
-        readonly string testFolderName = @"\ecgTest";
-        readonly string dataFolderName = @"\rawData";
-        readonly string testInfoName = @"\test.json";
-        readonly string dataInfoName = @"\rawData.json";
-        readonly string patientInfoName = @"\patient.json";
-        readonly string dataName = @"\data";
-        readonly string ishneFileName = @"\ishne";
-        readonly string rootMsg = "An exception occurred during the program downloading ecg data in the background ";
-        readonly string wrongRawDataMsg = " the problemed ecg raw data is ecgRawData ";
         readonly DateTime earliestTime = DateTime.Parse("2000/01/01");
         public async Task MainProcess(Client client)
         {
-            List<Exception> exls = new List<Exception>();
             drwClient = client;
+            List<Exception> exls = new List<Exception>();           
             List<DirectoryInfo> testDirs = new List<DirectoryInfo>();
+            DownloadMethod method = new DownloadMethod(drwClient);
             // Check root folder, failedtest and faileddata files. If no such folder and files, create new one 
             try
             {
@@ -67,7 +60,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         start = earliestTime;
                         end = DateTime.Now;
-                        b = await GetTestAndPatient(start, end);
+                        b = await GetTestAndPatient(start, end, method);
                         if (b)
                         {
                             ManageFile.UpdateRequestTime(DateTime.Now);
@@ -89,7 +82,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     else if (DateTime.TryParse(lastReqTime, out start))
                     {
                         end = DateTime.Now;
-                        b = await GetTestAndPatient(start, end);
+                        b = await GetTestAndPatient(start, end, method);
                         if (b)
                         {
                             ManageFile.UpdateRequestTime(DateTime.Now);
@@ -133,11 +126,11 @@ namespace Uvic_Ecg_ArbutusHolter
                         continue;
                     }
                 
-                    b = await CheckIntegrity(testDir);
+                    b = await method.CheckIntegrity(testDir);
                     if (b)
                     {
                         // convertIshne once have data
-                        ConverToIsne(testDir);
+                        DownloadMethod.ConverToIsne(testDir);
                         Console.WriteLine("In");
                     }
                 }
@@ -182,7 +175,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
 
         }
-        private async Task<bool> GetTestAndPatient(DateTime start, DateTime end)
+        private async Task<bool> GetTestAndPatient(DateTime start, DateTime end, DownloadMethod method)
         {
             List<Exception> exls = new List<Exception>();
             try
@@ -212,25 +205,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 goto Failed;
                 
             }
-            List<EcgTest> finishTestLs = CreateTestLs(ecgTestMod.Feed.Entities);
+            List<EcgTest> finishTestLs = DownloadMethod.CreateTestLs(ecgTestMod.Feed.Entities);
             foreach (EcgTest t in finishTestLs)
             {
                 try
                 {
-                    ManageFile.CheckFolder(testFolderName + t.EcgTestId);
-                    ManageFile.SaveTestInfo(t, testFolderName + t.EcgTestId + testInfoName);
-                    b = await GetData(t);
-                    if (!b)
-                    {
-                        failedTestLs.Add(t);
-                    }
-                    pMod = await pResource.GetPatientById(t.PatientId, drwClient);
-                    if (ErrorInfo.OK.ErrorMessage != pMod.ErrorMessage)
-                    {
-                        continue;
-                    }
-                    PatientInfo p = pMod.Entity.Model;
-                    ManageFile.SavePatientInfo(p, testFolderName + t.EcgTestId + patientInfoName);
+                    await method.GetOneTestAndPatient(t);
                 }
                 catch (HttpRequestException hrex)
                 {
@@ -257,75 +237,6 @@ namespace Uvic_Ecg_ArbutusHolter
         Failed:
             return false;
         }
-        private async Task<bool> GetData(EcgTest t)
-        {
-            List<Exception> exls = new List<Exception>();
-            try
-            {
-                // rawDataMod stores ecgRawData objects without actual ecg data
-                rawDataMod = await eResource.GetRawDataLs(drwClient, t.EcgTestId);
-                if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage)
-                {
-                    goto Failed;
-                }
-            }
-            catch (HttpRequestException hrex)
-            {
-                throw hrex;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-                goto Failed;
-            }
-            List<EcgRawData> dataLs = CreateDataLs(rawDataMod.Feed.Entities);
-
-            foreach (EcgRawData d in dataLs)
-            {
-                // rawDataMod stores ecgRawData objects with only actual ecg data
-                try
-                {
-                    rawDataMod = await eResource.GetData(drwClient, d.EcgRawDataId);
-                    if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage || !CompareSize(d))
-                    {
-                        failedRawDataLs.Add(d);
-                        continue;
-                    }
-                    ManageFile.CheckFolder(testFolderName + t.EcgTestId + dataFolderName + d.EcgRawDataId);
-                    ManageFile.SaveData(rawDataMod.Entity.Model, testFolderName + t.EcgTestId +
-                                        dataFolderName + d.EcgRawDataId + dataName);
-                    ManageFile.SaveDataInfo(d, testFolderName + t.EcgTestId +
-                                            dataFolderName + d.EcgRawDataId + dataInfoName);
-                }
-                catch (HttpRequestException hrex)
-                {
-                    throw hrex;
-                }
-                catch (Exception ex)
-                {
-                    exls.Add(ex);
-                }
-            }
-            if (exls.Count > 0)
-            {
-                AggregateException agex = new AggregateException(exls);
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(agex.ToString(), agex.StackTrace, w);
-                }
-                MessageBox.Show(agex.Message);
-                goto Failed;
-            }
-            goto Success;   
-        Success:
-            return true;
-        Failed:
-            return false;
-        }
         private async Task GetFailedTest()
         {
             List<int> index = new List<int>();
@@ -335,13 +246,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 try
                 {
                     // serv has api to get ecg test by ecgtest id
-                    ManageFile.SaveTestInfo(t, testFolderName + t.EcgTestId + testInfoName);
+                    ManageFile.SaveTestInfo(t, ManageFile.testFolderName + t.EcgTestId + ManageFile.testInfoName);
                     rawDataMod = await eResource.GetRawDataLs(drwClient, t.EcgTestId);
                     if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage)
                     {
                         continue;
                     }
-                    List<EcgRawData> dataLs = CreateDataLs(rawDataMod.Feed.Entities);
+                    List<EcgRawData> dataLs = DownloadMethod.CreateDataLs(rawDataMod.Feed.Entities);
                     foreach (EcgRawData d in dataLs)
                     {
                         failedRawDataLs.Add(d);
@@ -380,14 +291,14 @@ namespace Uvic_Ecg_ArbutusHolter
                 try
                 {
                     rawDataMod = await eResource.GetData(drwClient, d.EcgRawDataId);
-                    if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage || !CompareSize(d))
+                    if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage || !DownloadMethod.CompareSize(d, rawDataMod.Entity.Model))
                     {
                         continue;
                     }
-                    string subPath = testFolderName + d.EcgTestId + dataFolderName + d.EcgRawDataId;
+                    string subPath = ManageFile.testFolderName + d.EcgTestId + ManageFile.dataFolderName + d.EcgRawDataId;
                     ManageFile.CheckFolder(subPath);
-                    ManageFile.SaveDataInfo(d, subPath + dataInfoName);
-                    ManageFile.SaveData(rawDataMod.Entity.Model, subPath + dataName);
+                    ManageFile.SaveDataInfo(d, subPath + ManageFile.dataInfoName);
+                    ManageFile.SaveData(rawDataMod.Entity.Model, subPath + ManageFile.dataName);
                     index.Add(failedRawDataLs.IndexOf(d));
                 }
                 catch (HttpRequestException hrex)
@@ -421,14 +332,14 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     return;
                 }
-                EcgTest t = ManageFile.ReadTestJson(testDir.FullName + testInfoName);
+                EcgTest t = ManageFile.ReadTestJson(testDir.FullName + ManageFile.testInfoName);
                 pMod = await pResource.GetPatientById(t.PatientId, drwClient);
                 if (ErrorInfo.OK.ErrorMessage != pMod.ErrorMessage)
                 {
                     return;
                 }
                 PatientInfo p = pMod.Entity.Model;
-                ManageFile.SavePatientInfo(p, @"\" + testDir.Name + patientInfoName);
+                ManageFile.SavePatientInfo(p, @"\" + testDir.Name + ManageFile.patientInfoName);
             }
             catch (HttpRequestException hrex)
             {
@@ -443,154 +354,5 @@ namespace Uvic_Ecg_ArbutusHolter
                 MessageBox.Show(ex.Message);
             }
         }
-        private async Task<bool> CheckIntegrity(DirectoryInfo dir)
-        {
-            bool integrity = true;
-            Dictionary<int, FileInfo> localDataDict = new Dictionary<int, FileInfo>();
-            List<EcgRawData> CompleteDataLs = new List<EcgRawData>();
-            FileInfo result;
-            List<Exception> exls = new List<Exception>();
-            try
-            { 
-                EcgTest testJson = ManageFile.ReadTestJson(dir.FullName + testInfoName);
-                PatientInfo patient = ManageFile.ReadPatientInfo(dir.FullName + patientInfoName);
-                rawDataMod = await eResource.GetRawDataLs(drwClient, testJson.EcgTestId);
-                if (ErrorInfo.OK.ErrorMessage != rawDataMod.ErrorMessage)
-                {
-                    goto NotReady;
-                }
-                CompleteDataLs = CreateDataLs(rawDataMod.Feed.Entities);
-                localDataDict = ManageFile.GetLocalDataDict(dir);    
-            }
-            catch (HttpRequestException hrex)
-            {
-                throw hrex;
-            }
-            catch (FileRelatedException frex)
-            {
-                MessageBox.Show(frex.Message);
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(frex.ToString(), frex.StackTrace, w);
-                }
-                goto NotReady;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-                goto NotReady;
-            }
-            foreach (EcgRawData d in CompleteDataLs)
-            {
-                try
-                {
-                    if (!localDataDict.TryGetValue(d.EcgRawDataId, out result))
-                    {
-                        failedRawDataLs.Add(d);
-                        integrity = false;
-                        continue;
-                    }
-                    else if (d.Size != result.Length)
-                    {
-                        failedRawDataLs.Add(d);
-                        integrity = false;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    exls.Add(ex);
-                }
-            }
-            if (exls.Count > 0)
-            {
-                AggregateException agex = new AggregateException(exls);
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(agex.ToString(), agex.StackTrace, w);
-                }
-                MessageBox.Show(agex.Message);
-                goto NotReady;
-            }
-            return integrity;
-            
-        NotReady:
-            return false;
-        }
-        private void ConverToIsne(DirectoryInfo dir)
-        {
-            try
-            {
-                List<string> rawDataPathLs = ManageFile.GetLocalDataPathLs(dir);
-                PatientInfo patient = ManageFile.ReadPatientInfo(dir.FullName + patientInfoName);
-                EcgTest test = ManageFile.ReadTestJson(dir.FullName + testInfoName);
-                ISHNEUtility.ConvertToISHNE(rawDataPathLs, patient, test, dir.FullName + ishneFileName);
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-                MessageBox.Show(ex.Message);
-            }
-        }
-        private List<EcgTest> CreateTestLs(List<Entity<EcgTest>> entls)
-        {
-            List<EcgTest> els = new List<EcgTest>();
-            foreach (var ent in entls)
-            {
-                els.Add(ent.Model);
-            }
-            return els;
-        }
-        private List<EcgRawData> CreateDataLs(List<Entity<EcgRawData>> entls)
-        {
-            List<EcgRawData> dls = new List<EcgRawData>();
-            foreach (var ent in entls)
-            {
-                dls.Add(ent.Model);
-            }
-            return dls;
-        }
-        private bool CompareSize(EcgRawData thedata)
-        {
-            if (rawDataMod.Entity.Model == null)
-            {
-                return false;
-            }
-            EcgRawData actualData = rawDataMod.Entity.Model;
-            string stringOfData = actualData.RawData;
-            try
-            {
-                byte[] data = Convert.FromBase64String(stringOfData);
-                if (data.Length == thedata.Size)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (FormatException fex)
-            {
-                string msg = rootMsg + fex.Message + wrongRawDataMsg + actualData.EcgRawDataId;
-                throw new FileRelatedException(msg, fex);
-            }
-            catch (ArgumentException aex)
-            {
-                string msg = rootMsg + aex.Message + wrongRawDataMsg + actualData.EcgRawDataId;
-                throw new FileRelatedException(msg, aex);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-    
     }
 }

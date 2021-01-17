@@ -86,7 +86,8 @@
     <Compile Include="CreatePatientForm.Designer.cs">
       <DependentUpon>CreatePatientForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DownloadRawData.cs" />
+    <Compile Include="DownloadData\DownloadMethod.cs" />
+    <Compile Include="DownloadData\DownloadRawData.cs" />
     <Compile Include="ECG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,7 +143,7 @@
     <Compile Include="TestMonitorForm.Designer.cs">
       <DependentUpon>TestMonitorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManageFile.cs" />
+    <Compile Include="DownloadData\ManageFile.cs" />
     <Compile Include="NoteForm.cs">
       <SubType>Form</SubType>
     </Compile>
