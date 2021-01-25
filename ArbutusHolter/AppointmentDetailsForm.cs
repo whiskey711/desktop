@@ -42,7 +42,6 @@ namespace Uvic_Ecg_ArbutusHolter
             theTest = runningTest;
             thePat = patient;
             continueBtn.Visible = false;
-            //Task.Run(async () => await PrepareForm());
             PrepareForm();
             Task.Run(async () => await ClassifyDeviceLocationAndName());
         }
@@ -55,9 +54,18 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (theAppoint != null)
                 {
                     appointStartTimePick.Value = theAppoint.AppointmentStartTime;
+                    appointStartTimePick.Enabled = appointStartTimePick.Value < DateTime.Now ? false : true;
                     appointEndTimePick.Value = theAppoint.AppointmentEndTime;
+                    appointEndTimePick.Enabled = appointEndTimePick.Value < DateTime.Now ? false : true;
                     devPickTimePick.Value = theAppoint.PickupDate.Value;
+                    if (devPickTimePick.Value < DateTime.Now)
+                    {
+                        devPickTimePick.Enabled = false;
+                        deviceLocCB.Enabled = false;
+                        deviceCombo.Enabled = false;
+                    }
                     devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
+                    devReturnTimePick.Enabled = devReturnTimePick.Value < DateTime.Now ? false : true;
                     firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     if (theAppoint.DeviceActualReturnTime.HasValue)
