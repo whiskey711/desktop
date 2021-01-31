@@ -32,11 +32,15 @@ namespace Uvic_Ecg_ArbutusHolter
             this.devPickLabel = new System.Windows.Forms.Label();
             this.devReturnLabel = new System.Windows.Forms.Label();
             this.devLocLabel = new System.Windows.Forms.Label();
+            this.deferLabel = new System.Windows.Forms.Label();
+            this.nextAppointLabel = new System.Windows.Forms.Label();
             this.appointEndTimePick = new System.Windows.Forms.DateTimePicker();
             this.okBtn = new System.Windows.Forms.Button();
             this.appointStartTimePick = new System.Windows.Forms.DateTimePicker();
             this.devPickTimePick = new System.Windows.Forms.DateTimePicker();
             this.devReturnTimePick = new System.Windows.Forms.DateTimePicker();
+            this.deferTimePick = new System.Windows.Forms.DateTimePicker();
+            this.nextAppointTimePick = new System.Windows.Forms.DateTimePicker();
             this.appointGroup = new System.Windows.Forms.GroupBox();
             this.deviceLocCB = new System.Windows.Forms.ComboBox();
             this.deviceNameLab = new System.Windows.Forms.Label();
@@ -49,6 +53,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.viewNoteBtn = new System.Windows.Forms.Button();
             this.returnDevBtn = new System.Windows.Forms.Button();
             this.mailBtn = new System.Windows.Forms.Button();
+            this.deferBtn = new System.Windows.Forms.Button();
             this.backgroundPanel = new System.Windows.Forms.Panel();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
@@ -56,7 +61,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // startTimeLabel
             // 
             this.startTimeLabel.AutoSize = true;
-            this.startTimeLabel.Location = new System.Drawing.Point(56, 113);
+            this.startTimeLabel.Location = new System.Drawing.Point(55, 90);
             this.startTimeLabel.Name = "startTimeLabel";
             this.startTimeLabel.Size = new System.Drawing.Size(51, 13);
             this.startTimeLabel.TabIndex = 0;
@@ -65,7 +70,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // endTimeLabel
             // 
             this.endTimeLabel.AutoSize = true;
-            this.endTimeLabel.Location = new System.Drawing.Point(56, 165);
+            this.endTimeLabel.Location = new System.Drawing.Point(55, 130);
             this.endTimeLabel.Name = "endTimeLabel";
             this.endTimeLabel.Size = new System.Drawing.Size(48, 13);
             this.endTimeLabel.TabIndex = 1;
@@ -74,7 +79,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // devPickLabel
             // 
             this.devPickLabel.AutoSize = true;
-            this.devPickLabel.Location = new System.Drawing.Point(56, 212);
+            this.devPickLabel.Location = new System.Drawing.Point(55, 170);
             this.devPickLabel.Name = "devPickLabel";
             this.devPickLabel.Size = new System.Drawing.Size(98, 13);
             this.devPickLabel.TabIndex = 2;
@@ -83,7 +88,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // devReturnLabel
             // 
             this.devReturnLabel.AutoSize = true;
-            this.devReturnLabel.Location = new System.Drawing.Point(56, 274);
+            this.devReturnLabel.Location = new System.Drawing.Point(55, 210);
             this.devReturnLabel.Name = "devReturnLabel";
             this.devReturnLabel.Size = new System.Drawing.Size(93, 13);
             this.devReturnLabel.TabIndex = 3;
@@ -92,17 +97,43 @@ namespace Uvic_Ecg_ArbutusHolter
             // devLocLabel
             // 
             this.devLocLabel.AutoSize = true;
-            this.devLocLabel.Location = new System.Drawing.Point(56, 327);
+            this.devLocLabel.Location = new System.Drawing.Point(55, 250);
             this.devLocLabel.Name = "devLocLabel";
             this.devLocLabel.Size = new System.Drawing.Size(81, 13);
             this.devLocLabel.TabIndex = 4;
             this.devLocLabel.Text = "Device location";
+            //
+            // deferLabel
+            //
+            this.deferLabel.AutoSize = true;
+            this.deferLabel.Location = new System.Drawing.Point(55, 330);
+            this.deferLabel.Name = "deferLabel";
+            this.deferLabel.Text = "Defer return time";
+            this.deferLabel.Visible = false;
+            //
+            // nextAppointLabel
+            //
+            this.nextAppointLabel.AutoSize = true;
+            this.nextAppointLabel.Location = new System.Drawing.Point(55, 360);
+            this.nextAppointLabel.Name = "nextAppointLabel";
+            this.nextAppointLabel.Text = "The next appointment that current device assigned start at";
+            this.nextAppointLabel.Visible = false;
+            //
+            // nextAppointTimePick
+            //
+            this.nextAppointTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.nextAppointTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.nextAppointTimePick.Location = new System.Drawing.Point(55, 380);
+            this.nextAppointTimePick.Name = "nextAppointTimePick";
+            this.nextAppointTimePick.Size = new System.Drawing.Size(200, 20);
+            this.nextAppointTimePick.Visible = false;
+            this.nextAppointTimePick.Enabled = false;
             // 
             // appointEndTimePick
             // 
             this.appointEndTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
             this.appointEndTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.appointEndTimePick.Location = new System.Drawing.Point(174, 159);
+            this.appointEndTimePick.Location = new System.Drawing.Point(175, 130);
             this.appointEndTimePick.Name = "appointEndTimePick";
             this.appointEndTimePick.Size = new System.Drawing.Size(200, 20);
             this.appointEndTimePick.TabIndex = 10;
@@ -121,7 +152,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // 
             this.appointStartTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
             this.appointStartTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.appointStartTimePick.Location = new System.Drawing.Point(175, 107);
+            this.appointStartTimePick.Location = new System.Drawing.Point(175, 90);
             this.appointStartTimePick.Name = "appointStartTimePick";
             this.appointStartTimePick.Size = new System.Drawing.Size(200, 20);
             this.appointStartTimePick.TabIndex = 12;
@@ -130,7 +161,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // 
             this.devPickTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
             this.devPickTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.devPickTimePick.Location = new System.Drawing.Point(174, 206);
+            this.devPickTimePick.Location = new System.Drawing.Point(175, 170);
             this.devPickTimePick.Name = "devPickTimePick";
             this.devPickTimePick.Size = new System.Drawing.Size(200, 20);
             this.devPickTimePick.TabIndex = 13;
@@ -139,10 +170,19 @@ namespace Uvic_Ecg_ArbutusHolter
             // 
             this.devReturnTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
             this.devReturnTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.devReturnTimePick.Location = new System.Drawing.Point(175, 268);
+            this.devReturnTimePick.Location = new System.Drawing.Point(175, 210);
             this.devReturnTimePick.Name = "devReturnTimePick";
             this.devReturnTimePick.Size = new System.Drawing.Size(200, 20);
             this.devReturnTimePick.TabIndex = 14;
+            //
+            // deferTimePick
+            //
+            this.deferTimePick.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.deferTimePick.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.deferTimePick.Location = new System.Drawing.Point(175, 330);
+            this.deferTimePick.Name = "deferTimePick";
+            this.deferTimePick.Size = new System.Drawing.Size(200, 20);
+            this.deferTimePick.Visible = false;
             // 
             // appointGroup
             // 
@@ -154,8 +194,12 @@ namespace Uvic_Ecg_ArbutusHolter
             this.appointGroup.Controls.Add(this.deviceCombo);
             this.appointGroup.Controls.Add(this.startTimeLabel);
             this.appointGroup.Controls.Add(this.devReturnTimePick);
+            this.appointGroup.Controls.Add(this.deferTimePick);
             this.appointGroup.Controls.Add(this.appointStartTimePick);
+            this.appointGroup.Controls.Add(this.nextAppointTimePick);
             this.appointGroup.Controls.Add(this.devLocLabel);
+            this.appointGroup.Controls.Add(this.nextAppointLabel);
+            this.appointGroup.Controls.Add(this.deferLabel);
             this.appointGroup.Controls.Add(this.devPickTimePick);
             this.appointGroup.Controls.Add(this.endTimeLabel);
             this.appointGroup.Controls.Add(this.appointEndTimePick);
@@ -171,7 +215,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // deviceLocCB
             // 
             this.deviceLocCB.FormattingEnabled = true;
-            this.deviceLocCB.Location = new System.Drawing.Point(175, 324);
+            this.deviceLocCB.Location = new System.Drawing.Point(175, 250);
             this.deviceLocCB.Name = "deviceLocCB";
             this.deviceLocCB.Size = new System.Drawing.Size(200, 21);
             this.deviceLocCB.TabIndex = 20;
@@ -179,7 +223,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // deviceNameLab
             // 
             this.deviceNameLab.AutoSize = true;
-            this.deviceNameLab.Location = new System.Drawing.Point(56, 372);
+            this.deviceNameLab.Location = new System.Drawing.Point(55, 290);
             this.deviceNameLab.Name = "deviceNameLab";
             this.deviceNameLab.Size = new System.Drawing.Size(70, 13);
             this.deviceNameLab.TabIndex = 19;
@@ -206,7 +250,7 @@ namespace Uvic_Ecg_ArbutusHolter
             // deviceCombo
             // 
             this.deviceCombo.FormattingEnabled = true;
-            this.deviceCombo.Location = new System.Drawing.Point(174, 369);
+            this.deviceCombo.Location = new System.Drawing.Point(175, 290);
             this.deviceCombo.Name = "deviceCombo";
             this.deviceCombo.Size = new System.Drawing.Size(201, 21);
             this.deviceCombo.TabIndex = 16;
@@ -264,6 +308,15 @@ namespace Uvic_Ecg_ArbutusHolter
             this.returnDevBtn.UseVisualStyleBackColor = true;
             this.returnDevBtn.Click += new System.EventHandler(this.ReturnDevBtn_Click);
             //
+            // deferBtn
+            //
+            this.deferBtn.Location = new System.Drawing.Point(120, 490);
+            this.deferBtn.Name = "deferBtn";
+            this.deferBtn.AutoSize = true;
+            this.deferBtn.Text = "Defer return time";
+            this.deferBtn.UseVisualStyleBackColor = true;
+            this.deferBtn.Click += new System.EventHandler(this.DeferBtn_Click);
+            //
             // mailBtn
             //
             this.mailBtn.AutoSize = true;
@@ -286,6 +339,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.backgroundPanel.Controls.Add(this.generateReportBtn);
             this.backgroundPanel.Controls.Add(this.viewNoteBtn);
             this.backgroundPanel.Controls.Add(this.returnDevBtn);
+            this.backgroundPanel.Controls.Add(this.deferBtn);
             this.backgroundPanel.Location = new System.Drawing.Point(0, 0);
             this.backgroundPanel.Name = "backgroundPanel";
             this.backgroundPanel.Size = new System.Drawing.Size(436, 520);
@@ -304,6 +358,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.Controls.Add(backgroundPanel);
             this.Name = "AppointmentDetailsForm";
             this.Text = "Appointment details";
+            this.Load += new System.EventHandler(this.Form_Loaded);
             this.backgroundPanel.ResumeLayout(false);
             this.backgroundPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -315,11 +370,15 @@ namespace Uvic_Ecg_ArbutusHolter
         private System.Windows.Forms.Label devPickLabel;
         private System.Windows.Forms.Label devReturnLabel;
         private System.Windows.Forms.Label devLocLabel;
+        private System.Windows.Forms.Label deferLabel;
+        private System.Windows.Forms.Label nextAppointLabel;
         private System.Windows.Forms.DateTimePicker appointEndTimePick;
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.DateTimePicker appointStartTimePick;
         private System.Windows.Forms.DateTimePicker devPickTimePick;
         private System.Windows.Forms.DateTimePicker devReturnTimePick;
+        private System.Windows.Forms.DateTimePicker deferTimePick;
+        private System.Windows.Forms.DateTimePicker nextAppointTimePick;
         private System.Windows.Forms.GroupBox appointGroup;
         private System.Windows.Forms.ComboBox deviceCombo;
         private System.Windows.Forms.Label lastNameLabel;
@@ -332,6 +391,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private System.Windows.Forms.Button viewNoteBtn;
         private System.Windows.Forms.Button returnDevBtn;
         private System.Windows.Forms.Button mailBtn;
+        private System.Windows.Forms.Button deferBtn;
         private System.Windows.Forms.Panel backgroundPanel;
     }
 }
