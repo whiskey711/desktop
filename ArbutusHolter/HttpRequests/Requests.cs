@@ -141,6 +141,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             } while (httpFailure);
             try
             {
+                Task<string> str = client.Result.Content.ReadAsStringAsync();
                 restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
                 if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {

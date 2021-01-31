@@ -44,6 +44,8 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime thisYeaarEnd = DateTime.Today.AddDays(halfYear);
         int appointBlockMinLength = 15;
         int invalidPid = -1;
+        int oneMin = 60000;
+        int tenMin = 600000;
         string monthYear = "MMMM yyyy";
         string dateAndTime = "MM/dd/yyyy HH:mm";
         string allLocation = "All locations";
@@ -70,8 +72,11 @@ namespace Uvic_Ecg_ArbutusHolter
             Cursor.Current = Cursors.Default;
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
+            appointRefreshTimer.Interval = oneMin;
             appointRefreshTimer.Start();
+            runningTestRefreshTimer.Interval = oneMin;
             runningTestRefreshTimer.Start();
+            rawDataRefreshTimer.Interval = tenMin;
             rawDataRefreshTimer.Start();
             Task.Run(async () => await download.MainProcess(appointFormClient));
         }
@@ -137,27 +142,59 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else
                 {
-                    foreach (var returnP in returnPls)
+                    List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
+                    List<PatientInfo> returnPls = CreatePatientLs(returnEls);
+                    if (pid == invalidPid)
                     {
-                        if (returnP.PatientId == pid)
+                        foreach (var returnP in returnPls)
                         {
                             var row = new string[] {returnP.PatientLastName,
-                                                    returnP.PatientMidName,
-                                                    returnP.PatientFirstName,
-                                                    returnP.Birthdate.ToString(),
-                                                    returnP.Phn};
+                                                        returnP.PatientMidName,
+                                                        returnP.PatientFirstName,
+                                                        ChangeFormat(returnP.Birthdate.ToString()),
+                                                        returnP.Phn};
                             var lsitem = new ListViewItem(row);
                             lsitem.Tag = returnP;
-                            selectedP = returnP;
                             patientListView.Items.Add(lsitem);
-                            LoadPatientInfo(returnP);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var returnP in returnPls)
+                        {
+                            if (returnP.PatientId == pid)
+                            {
+                                var row = new string[] {returnP.PatientLastName,
+                                                        returnP.PatientMidName,
+                                                        returnP.PatientFirstName,
+                                                        returnP.Birthdate.ToString(),
+                                                        returnP.Phn};
+                                var lsitem = new ListViewItem(row);
+                                lsitem.Tag = returnP;
+                                selectedP = returnP;
+                                patientListView.Items.Add(lsitem);
+                                LoadPatientInfo(returnP);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    MessageBox.Show(ErrorInfo.NoResult.ErrorMessage);
+                }
             }
-            else
+            catch (TokenExpiredException teex)
             {
-                MessageBox.Show(ErrorInfo.NoResult.ErrorMessage);
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
             }
             catch (TokenExpiredException teex)
@@ -243,7 +280,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 returnAls = CreateAppointLs(restModel.Feed.Entities);
                 startTimeFilt.Value = returnAls.First().AppointmentStartTime.Date;
                 endTimeFilt.Value = returnAls.Last().AppointmentEndTime.Date;
-                TimeFilt_Changed();
             }
             else if (restModel.ErrorMessage == "Others")
             {
@@ -410,7 +446,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private async Task LoadAllAppointments()
         {
             try
-            {
+            { 
                 restModel = await nResource.GetAppointments(appointFormClient, thisYearStart, thisYeaarEnd, devLoc);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
@@ -495,9 +531,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     returnDevLocLs = CreateDeviceLocLs(dRestMod.Feed.Entities);
                     foreach (var returnDevLoc in returnDevLocLs)
                     {
-                        regionComboBox.Items.Add(returnDevLoc);
+                        regionComboBox.Invoke(new MethodInvoker(delegate { regionComboBox.Items.Add(returnDevLoc); }));
                     }
-                    regionComboBox.Items.Add(allLocation);
+                    regionComboBox.Invoke(new MethodInvoker(delegate { regionComboBox.Items.Add(allLocation); }));
                 }
             }
             catch (TokenExpiredException teex)
@@ -653,7 +689,6 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             yearIndicateLab.Text = weeklyCal.StartDate.ToString(monthYear);
             startTimeFilt.Value = weeklyCal.StartDate;
-            TimeFilt_Changed();
         }
         private void GorightBtn_Click(object sender, EventArgs e)
         {
@@ -670,7 +705,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 endTimeFilt.Value = startTimeFilt.Value.AddDays(7);
             }
             yearIndicateLab.Text = weeklyCal.StartDate.ToString(monthYear);
-            TimeFilt_Changed();
         }
         private void StartTimeFilt_ValueChanged(object sender, EventArgs e)
         {
@@ -763,11 +797,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 weeklyCal.Enabled = true;
                 weeklyCal.Invalidate();
             }
+
         }
         private async void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
+                // uncheck
                 if (!pNameCheckBox.Checked)
                 {
                     patientAppointLs.Items.Clear();
@@ -778,8 +814,14 @@ namespace Uvic_Ecg_ArbutusHolter
                     pNameCheckBox.Enabled = false;
                     startTimeFilt.Value = DateTime.Today;
                     endTimeFilt.Value = DateTime.Today.AddDays(7);
-                }
-                await LoadAllAppointments();
+                    await LoadAllAppointments();
+                } 
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
             catch (TokenExpiredException teex)
             {
@@ -814,6 +856,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 await ShowAppointDetailFormForUpcomingAppoint(selectedA);
             }
+
         }
         private async void RegionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -937,7 +980,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async Task ShowAppointDetailFormForInProgressAppoint(Uvic_Ecg_Model.Appointment theApp, int testid)
         {
-            using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, 
+            using (AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp,
                                                                                 runningTestDict[testid], null))
             {
                 if (appDForm.ShowDialog() == DialogResult.Abort)
@@ -947,6 +990,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     MessageBox.Show(ErrorInfo.TestTerminated.ErrorMessage);
                 }
             }
+
         }
         private async Task ShowAppointDetailFormForFinishedAppoint(Uvic_Ecg_Model.Appointment theApp)
         {
@@ -995,26 +1039,36 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 UseWaitCursor = true;
+                bool matched = false;
                 restModel = await nResource.GetPatientAppoint(runningTestDict[theTestId].PatientId, appointFormClient);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     returnAls = CreateAppointLs(restModel.Feed.Entities);
                     foreach (var returnA in returnAls)
                     {
-                        if (theTestId == returnA.EcgTest.EcgTestId)
+                        if (returnA.EcgTest != null && theTestId == returnA.EcgTest.EcgTestId)
                         {
+                            matched = true;
                             using (TestMonitorForm mainForm = new TestMonitorForm(appointFormClient, returnA, runningTestDict[theTestId]))
                             {
                                 // Abort means user click the terminate btn
                                 if (mainForm.ShowDialog() == DialogResult.Abort)
                                 {
-                                    await RefreshRunningTest();
                                     runningTestDict.Remove(theTestId);
                                     break;
                                 }
                             }
                         }
                     }
+                    await RefreshRunningTest();
+                    if (!matched)
+                    {
+                        MessageBox.Show(ErrorInfo.NoMatched.ErrorMessage);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(restModel.ErrorMessage);
                 }
                 else
                 {
@@ -1077,7 +1131,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         var row = new string[] { p.PatientFirstName + "\t" + p.PatientLastName, returnE.ScheduledEndTime.ToString() };
                         var lisitem = new ListViewItem(row);
                         lisitem.Tag = returnE.EcgTestId;
-                        inProgressTestLs.Items.Add(lisitem);
+                        inProgressTestLs.Invoke(new MethodInvoker(delegate { inProgressTestLs.Items.Add(lisitem); }));
                     }
                 }
             }

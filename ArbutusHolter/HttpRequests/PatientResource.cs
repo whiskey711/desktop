@@ -34,7 +34,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
             content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = await requests.Post("test/patient/information", content, client);
+            restModel = await requests.Post("patient/information", content, client);
             return restModel.ErrorMessage;
         }
         public async Task<string> UpdatePatient(PatientInfo updatedPatient, Client client)
