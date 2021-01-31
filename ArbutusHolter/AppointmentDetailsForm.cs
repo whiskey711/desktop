@@ -539,7 +539,8 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             Appointment nextEarliestAppoint = appointLs.OrderBy(app => app.AppointmentStartTime)
                                                        .Where(app => app.Device.DeviceId == theAppoint.Device.DeviceId &&
-                                                                     app.AppointmentRecordId != theAppoint.AppointmentRecordId)
+                                                                     app.AppointmentRecordId != theAppoint.AppointmentRecordId &&
+                                                                     app.AppointmentStartTime > DateTime.Now)
                                                        .FirstOrDefault();
             if (nextEarliestAppoint != null)
             {
