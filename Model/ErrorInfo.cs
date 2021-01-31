@@ -47,11 +47,10 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo DeleteWarn = new ErrorInfo("Are your sure to delete the appointment ?");
         public static readonly ErrorInfo DownloadAllData = new ErrorInfo("This is the first time you use the software, do you want to sync all data locally from the server ?");
         public static readonly ErrorInfo TokenExpired = new ErrorInfo("Your token has expired, please login again");
-        public static readonly ErrorInfo NullCersPath = new ErrorInfo("You haven't set CER-S application path yet");
-        public static readonly ErrorInfo PathNotFound = new ErrorInfo("Cannot find CER-S application, please check path");
-        public static readonly ErrorInfo DownloadProblem = new ErrorInfo("Unable to download data now, try again later");
-        public static readonly ErrorInfo GenerateProblem = new ErrorInfo("Unable to gernerate report for this appointment, please contact support");
-        public static readonly ErrorInfo Downloading = new ErrorInfo("System is downloading data and generate report, please wait");
+        public static readonly ErrorInfo NoMatched = new ErrorInfo("No matched appointemnt");
+        public static readonly ErrorInfo Transmitting = new ErrorInfo("Data is transmitting. Please wait");
+        public static readonly ErrorInfo NoHookupOrRecord = new ErrorInfo("Please start hook up or record first");
+        public static readonly ErrorInfo ChangesDone = new ErrorInfo("The changes on the current patient has successfully saved");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

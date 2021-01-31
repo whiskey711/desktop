@@ -70,13 +70,19 @@ namespace Uvic_Ecg_ArbutusHolter
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     if (theAppoint.DeviceActualReturnTime.HasValue)
                     {
-                        returnDevBtn.Enabled = false;
+                        returnDevBtn.Invoke(new MethodInvoker(delegate { returnDevBtn.Enabled = false; }));
                     }
                     // inprogress or finished
                     if (theTest != null)
                     {
-                        startBtn.Visible = false;
-                        continueBtn.Visible = true;
+                        startBtn.Invoke(new MethodInvoker(delegate
+                        {
+                            startBtn.Visible = false;
+                        }));
+                        continueBtn.Invoke(new MethodInvoker(delegate
+                        {
+                            continueBtn.Visible = true;
+                        }));
                     }
                     if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theTest != null)
                     {
@@ -89,9 +95,18 @@ namespace Uvic_Ecg_ArbutusHolter
                 // appointment is creating
                 else
                 {
-                    firstNameLabel.Text = thePat.PatientFirstName;
-                    lastNameLabel.Text = thePat.PatientLastName;
-                    startBtn.Visible = false;
+                    firstNameLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        firstNameLabel.Text = thePat.PatientFirstName;
+                    }));
+                    lastNameLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        lastNameLabel.Text = thePat.PatientLastName;
+                    }));
+                    startBtn.Invoke(new MethodInvoker(delegate
+                    {
+                        startBtn.Visible = false;
+                    }));
                 }
             }
             catch (TokenExpiredException teex)
@@ -178,7 +193,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     errorMsg = await nResource.CreateAppointment(newApp, inClient);
                     if (ErrorInfo.OK.ErrorMessage == errorMsg)
                     {
-                        MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                        MessageBox.Show(ErrorInfo.Created.ErrorMessage);
                         DialogResult = DialogResult.OK;
                     }
                     else
