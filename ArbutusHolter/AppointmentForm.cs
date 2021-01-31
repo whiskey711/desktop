@@ -943,6 +943,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (appDForm.ShowDialog() == DialogResult.Abort)
                 {
                     runningTestDict.Remove(testid);
+                    await LoadAllAppointments();
                     await RefreshRunningTest();
                     MessageBox.Show(ErrorInfo.TestTerminated.ErrorMessage);
                 }
@@ -960,9 +961,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     EcgTest test = ecgTestMod.Entity.Model;
                     PatientInfo patient = pRestMod.Entity.Model;
                     AppointmentDetailsForm appDForm = new AppointmentDetailsForm(appointFormClient, theApp, test, patient);
-                    await Task.Delay(3000);
-                    appDForm.Show();
+                    appDForm.ShowDialog();
                     appDForm.FormClosed += (s, args) => UseWaitCursor = false;
+                    await LoadAllAppointments();
                 }
                 else
                 {

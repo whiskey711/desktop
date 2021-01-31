@@ -380,7 +380,6 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                await Task.Delay(2000);
                 restModel = await dResource.GetAllDevice(inClient);
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
@@ -398,6 +397,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             {
                                 deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.SelectedItem = returnDev.DeviceLocation; }));
                                 deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnDev.DeviceName; }));
+                                selectDev = returnDev;
                             }
                         }
                         
