@@ -18,6 +18,7 @@ namespace Uvic_Ecg_ArbutusHolter
         Calendar.Appointment appointStart, appointEnd;
         List<Uvic_Ecg_Model.Appointment> returnAls = new List<Uvic_Ecg_Model.Appointment>();
         List<String> returnDevLocLs = new List<String>();
+        List<int> notReturnedAppointmentIdLs = new List<int>();
         Uvic_Ecg_Model.Appointment app;
         DateTime startTime = DateTime.Now;
         DownloadRawData download = new DownloadRawData();
@@ -48,7 +49,6 @@ namespace Uvic_Ecg_ArbutusHolter
         string dateAndTime = "MM/dd/yyyy HH:mm";
         string allLocation = "All locations";
         string devLoc;
-        string allLoc = "All locations";
         bool programClosing = false;
         public AppointmentForm(Client client)
         {
@@ -63,17 +63,11 @@ namespace Uvic_Ecg_ArbutusHolter
             startTimeFilt.Value = DateTime.Today;
             endTimeFilt.Value = DateTime.Today.AddDays(7);
             appointFormClient = client;
-            Cursor.Current = Cursors.WaitCursor;
-            Task.Run(async () => await ClassifyDeviceLocation(appointFormClient));
-            Task.Run(async () => await LoadAllAppointments());
-            Task.Run(async () => await RefreshRunningTest());
-            Cursor.Current = Cursors.Default;
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
             appointRefreshTimer.Start();
             runningTestRefreshTimer.Start();
             rawDataRefreshTimer.Start();
-            Task.Run(async () => await download.MainProcess(appointFormClient));
         }
         private async void SrhBtn_Click(object sender, EventArgs e)
         {
@@ -415,53 +409,40 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (restModel.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     returnAls = CreateAppointLs(restModel.Feed.Entities);
+                    notReturnedAppointmentIdLs = DeviceNotReturnedAppointments(returnAls);
                     appointLs.Clear();
-                    if (pNameCheckBox.Checked)
+                    foreach (var returnA in returnAls)
                     {
-                        foreach (var returnA in returnAls)
+                        appointStart = new Calendar.Appointment();
+                        appointStart.StartDate = returnA.AppointmentStartTime;
+                        appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength); 
+                        appointStart.Appoint = returnA;
+                        appointStart.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                        appointEnd = new Calendar.Appointment();
+                        appointEnd.StartDate = returnA.AppointmentEndTime;
+                        appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
+                        appointEnd.Appoint = returnA;
+                        appointEnd.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
+                        if (notReturnedAppointmentIdLs.Contains(returnA.AppointmentRecordId))
                         {
-                            appointStart = new Calendar.Appointment();
-                            appointStart.StartDate = returnA.AppointmentStartTime;
-                            appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
-                            appointStart.Color = Color.DeepSkyBlue;
-                            appointStart.Appoint = returnA;
-                            appointStart.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
-                            appointEnd = new Calendar.Appointment();
-                            appointEnd.StartDate = returnA.AppointmentEndTime;
-                            appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
-                            appointEnd.Color = Color.Crimson;
-                            appointEnd.Appoint = returnA;
-                            appointEnd.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
-                            if (returnA.Patient.PatientId == selectedP.PatientId)
-                            {
-                                appointLs.Add(appointStart);
-                                appointLs.Add(appointEnd);
-                            }    
+                            appointStart.Color = Color.Red;
+                            appointEnd.Color = Color.Red;
                         }
-                    }
-                    else
-                    {
-                        foreach (var returnA in returnAls)
+                        else
                         {
-                            appointStart = new Calendar.Appointment();
-                            appointStart.StartDate = returnA.AppointmentStartTime;
-                            appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength);
                             appointStart.Color = Color.DeepSkyBlue;
-                            appointStart.Appoint = returnA;
-                            appointStart.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
-                            appointEnd = new Calendar.Appointment();
-                            appointEnd.StartDate = returnA.AppointmentEndTime;
-                            appointEnd.EndDate = appointEnd.StartDate.AddMinutes(appointBlockMinLength);
-                            appointEnd.Color = Color.Crimson;
-                            appointEnd.Appoint = returnA;
-                            appointEnd.Title = returnA.Patient.PatientFirstName + " " + returnA.Patient.PatientLastName;
-                            appointLs.Add(appointStart);
-                            appointLs.Add(appointEnd);
+                            appointEnd.Color = Color.Black;
                         }
+                        if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
+                        {
+                            continue;
+                        }
+                        appointLs.Add(appointStart);
+                        appointLs.Add(appointEnd);
                     }
                     weeklyCal.StartDate = DateTime.Today;
                     weeklyCal.NewAppointment += new NewAppointmentEventHandler(DayView_NewAppointment);
-                    weeklyCal.ResolveAppointments += new Calendar.ResolveAppointmentsEventHandler(this.DayView_ResolveAppointments);
+                    weeklyCal.ResolveAppointments += new ResolveAppointmentsEventHandler(DayView_ResolveAppointments);
                     TimeFilt_Changed();
                 }
                 else
@@ -495,9 +476,9 @@ namespace Uvic_Ecg_ArbutusHolter
                     returnDevLocLs = CreateDeviceLocLs(dRestMod.Feed.Entities);
                     foreach (var returnDevLoc in returnDevLocLs)
                     {
-                        regionComboBox.Items.Add(returnDevLoc);
+                        regionComboBox.Invoke(new MethodInvoker(delegate { regionComboBox.Items.Add(returnDevLoc); }));
                     }
-                    regionComboBox.Items.Add(allLocation);
+                    regionComboBox.Invoke(new MethodInvoker(delegate { regionComboBox.Items.Add(allLocation); }));
                 }
             }
             catch (TokenExpiredException teex)
@@ -639,7 +620,15 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
-        private void AppointmentF_Load(object sender, EventArgs e) { }
+        private async void AppointmentF_Load(object sender, EventArgs e) 
+        {
+            Application.UseWaitCursor = true;
+            await LoadAllAppointments();
+            await ClassifyDeviceLocation(appointFormClient);
+            await RefreshRunningTest();
+            await download.MainProcess(appointFormClient);
+            Application.UseWaitCursor = false;
+        }
         private void GoleftBtn_Click(object sender, EventArgs e)
         {
             endTimeFilt.Value = weeklyCal.StartDate;
@@ -715,6 +704,14 @@ namespace Uvic_Ecg_ArbutusHolter
                         };
                     var lsitem = new ListViewItem(row);
                     lsitem.Tag = returnA;
+                    if (notReturnedAppointmentIdLs.Contains(returnA.AppointmentRecordId))
+                    {
+                        lsitem.ForeColor = Color.Red;
+                    }
+                    if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
+                    {
+                        continue;
+                    }
                     patientAppointLs.Invoke(new MethodInvoker(delegate { patientAppointLs.Items.Add(lsitem); }));
                 }
                 weeklyCal.StartDate = startTimeFilt.Value;
@@ -820,7 +817,7 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 devLoc = regionComboBox.SelectedItem.ToString();
-                if (allLoc.Equals(devLoc))
+                if (allLocation.Equals(devLoc))
                 {
                     devLoc = null;
                 }
@@ -1175,6 +1172,28 @@ namespace Uvic_Ecg_ArbutusHolter
         private void PatientAppointLsContextMenu_Open(object sender, CancelEventArgs e)
         {
             e.Cancel = patientAppointLs.SelectedItems.Count <= 0;
+        }
+        private List<int> DeviceNotReturnedAppointments(IEnumerable<Uvic_Ecg_Model.Appointment> appointments)
+        {
+            var nullActualReturnAppointLs = appointments.Where(appoint => appoint.DeviceActualReturnTime == null);
+            DateTime returnTime;
+            List<int> notReturnedAppointIdLs = new List<int>();
+            foreach(var nullActualReturnAppoint in nullActualReturnAppointLs)
+            {
+                if (nullActualReturnAppoint.DeferReturnTime != null)
+                {
+                    returnTime = nullActualReturnAppoint.DeferReturnTime.Value;
+                }
+                else
+                {
+                    returnTime = nullActualReturnAppoint.DeviceReturnDate.Value;
+                }
+                if (returnTime < DateTime.Now)
+                {
+                    notReturnedAppointIdLs.Add(nullActualReturnAppoint.AppointmentRecordId);
+                }
+            }
+            return notReturnedAppointIdLs;
         }
     }
 }
