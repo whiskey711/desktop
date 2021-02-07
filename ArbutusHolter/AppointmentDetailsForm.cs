@@ -518,7 +518,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 Process proc = new Process();
                 proc.StartInfo.FileName = "CER-S.exe";
                 proc.StartInfo.Arguments = cmd;
-                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                //proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 proc.Start();
             }
             catch (Exception ex)
