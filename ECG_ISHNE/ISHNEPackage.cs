@@ -94,7 +94,7 @@ namespace ECG_ISHNE
                 }
             }
 
-            Header.SampleSizeECG = length;
+            Header.SampleSizeECG = length * 2;
         }
 
         public PatientInfo PatientInfo { set => Header.PatientInfo = value; }
@@ -104,7 +104,7 @@ namespace ECG_ISHNE
         public string VarLengthBlockContent { set => Header.VarLengthBlockContent = value; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="outputPath"></param>
         public void WriteToFile(string outputPath)
@@ -133,15 +133,15 @@ namespace ECG_ISHNE
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public byte[] Serialize()
         {
-            int len = (int)(Header.FixLengthBlock.SampleSizeECG * 4);
+            int len = (int)(Header.FixLengthBlock.SampleSizeECG * 2);
             byte[] PackageBlcok = new byte[MAGICNUM_CRC_LEN + (int) Header.Length + len];
             int desIdx = 0;
-            
+
             desIdx = Utility.Copy(MagicNumber, PackageBlcok, desIdx);
             desIdx = Utility.Copy(CheckSum,PackageBlcok, desIdx);
             desIdx = Utility.Copy(Header.Serialize(), PackageBlcok, desIdx);
@@ -156,7 +156,7 @@ namespace ECG_ISHNE
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         private byte[] CalculateCheckSum()
