@@ -122,25 +122,7 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 pRestMod = await patientResource.GetPatient(lastName, firstName, birth, phn, appointFormClient);
-            if (pRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
-            {
-                List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
-                List<PatientInfo> returnPls = CreatePatientLs(returnEls);
-                if (pid == invalidPid)
-                {
-                    foreach (var returnP in returnPls)
-                    {
-                        var row = new string[] {returnP.PatientLastName,
-                                                    returnP.PatientMidName,
-                                                    returnP.PatientFirstName,
-                                                    ChangeFormat(returnP.Birthdate.ToString()),
-                                                    returnP.Phn};
-                        var lsitem = new ListViewItem(row);
-                        lsitem.Tag = returnP;
-                        patientListView.Items.Add(lsitem);
-                    }
-                }
-                else
+                if (pRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
                 {
                     List<Entity<PatientInfo>> returnEls = pRestMod.Feed.Entities;
                     List<PatientInfo> returnPls = CreatePatientLs(returnEls);
@@ -149,10 +131,10 @@ namespace Uvic_Ecg_ArbutusHolter
                         foreach (var returnP in returnPls)
                         {
                             var row = new string[] {returnP.PatientLastName,
-                                                        returnP.PatientMidName,
-                                                        returnP.PatientFirstName,
-                                                        ChangeFormat(returnP.Birthdate.ToString()),
-                                                        returnP.Phn};
+                                                    returnP.PatientMidName,
+                                                    returnP.PatientFirstName,
+                                                    ChangeFormat(returnP.Birthdate.ToString()),
+                                                    returnP.Phn};
                             var lsitem = new ListViewItem(row);
                             lsitem.Tag = returnP;
                             patientListView.Items.Add(lsitem);
@@ -165,10 +147,10 @@ namespace Uvic_Ecg_ArbutusHolter
                             if (returnP.PatientId == pid)
                             {
                                 var row = new string[] {returnP.PatientLastName,
-                                                        returnP.PatientMidName,
-                                                        returnP.PatientFirstName,
-                                                        returnP.Birthdate.ToString(),
-                                                        returnP.Phn};
+                                                    returnP.PatientMidName,
+                                                    returnP.PatientFirstName,
+                                                    returnP.Birthdate.ToString(),
+                                                    returnP.Phn};
                                 var lsitem = new ListViewItem(row);
                                 lsitem.Tag = returnP;
                                 selectedP = returnP;
@@ -182,20 +164,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     MessageBox.Show(ErrorInfo.NoResult.ErrorMessage);
                 }
-            }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
             }
             catch (TokenExpiredException teex)
             {
@@ -823,12 +791,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 programClosing = true;
                 Close();
             }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
-            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -1065,10 +1027,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         MessageBox.Show(ErrorInfo.NoMatched.ErrorMessage);
                     }
-                }
-                else
-                {
-                    MessageBox.Show(restModel.ErrorMessage);
                 }
                 else
                 {

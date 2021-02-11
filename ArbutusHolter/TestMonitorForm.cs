@@ -329,12 +329,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 programClosing = true;
                 Close();
             }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
-            }
             catch (Exception ex)
             {
                 using (StreamWriter w = File.AppendText(FileName.Log.Name))
@@ -597,19 +591,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
         }
         private void NowTimer_Tick(object sender, EventArgs e)
         {
@@ -689,12 +670,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     ecgStartBtn.Enabled = true;
                 }));
-            }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
             }
             catch (TokenExpiredException teex)
             {
@@ -824,12 +799,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 }));
                 recordingStarted = true;
 
-            }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
             }
             catch (TokenExpiredException teex)
             {

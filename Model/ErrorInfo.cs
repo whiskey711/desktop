@@ -51,6 +51,11 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo Transmitting = new ErrorInfo("Data is transmitting. Please wait");
         public static readonly ErrorInfo NoHookupOrRecord = new ErrorInfo("Please start hook up or record first");
         public static readonly ErrorInfo ChangesDone = new ErrorInfo("The changes on the current patient has successfully saved");
+        public static readonly ErrorInfo PathNotFound = new ErrorInfo("Cannot find CER-S application, please check path");
+        public static readonly ErrorInfo DownloadProblem = new ErrorInfo("Unable to download data now, try again later");
+        public static readonly ErrorInfo GenerateProblem = new ErrorInfo("Unable to gernerate report for this appointment, please contact support");
+        public static readonly ErrorInfo Downloading = new ErrorInfo("System is downloading data and generate report, please wait");
+
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }
