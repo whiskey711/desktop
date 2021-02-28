@@ -555,26 +555,23 @@ namespace Uvic_Ecg_ArbutusHolter
                         // tempDate is time of 5s new data; date is time of 1m old data
                         if ((tempDate - date).TotalSeconds > 10)
                         {
-                            if ((tempDate - date).TotalSeconds > 10)
-                            {
-                                //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
-                                var test = channel1.values;
-                                CleanChannel();
-                                test = channel1.values;
-                                date = tempDate;
-                                DoUpdate(ecgRawDataModel);
-                            }
-                            else
-                            {
-                                date = tempDate;
-                                DoUpdate(ecgRawDataModel);
-                            }
+                            //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
+                            var test = channel1.values;
+                            CleanChannel();
+                            test = channel1.values;
+                            date = tempDate;
+                            DoUpdate(ecgRawDataModel);
                         }
                         else
                         {
                             date = tempDate;
                             DoUpdate(ecgRawDataModel);
                         }
+                    }
+                    else
+                    {
+                        date = tempDate;
+                        DoUpdate(ecgRawDataModel);
                     }
                 }
             }
