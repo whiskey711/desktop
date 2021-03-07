@@ -83,6 +83,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         deferBtn.Enabled = true;
                     }
+                    if (theAppoint.DeviceActualReturnTime.HasValue)
+                    {
+                        deferBtn.Enabled = false;
+                    }
                     firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     // inprogress or finished
