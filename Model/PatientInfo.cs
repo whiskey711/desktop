@@ -170,9 +170,13 @@ namespace Uvic_Ecg_Model
             remark = Remark;
             age = Age;
         }
-        public PatientInfo(int pid)
+        public PatientInfo(int pid,
+                           string fname,
+                           string lname)
         {
             PatientId = pid;
+            PatientFirstName = fname;
+            PatientLastName = lname;
         }
     }
 }

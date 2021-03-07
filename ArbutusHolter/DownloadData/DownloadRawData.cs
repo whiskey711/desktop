@@ -161,7 +161,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 MessageBox.Show(agex.Message);
             }
             try
-            {
+            { 
                 ManageFile.ReplaceFailedTest(failedTestLs);
                 ManageFile.ReplaceFailedData(failedRawDataLs);
             }

@@ -109,9 +109,18 @@ namespace Uvic_Ecg_ArbutusHolter
                 // appointment is creating
                 else
                 {
-                    firstNameLabel.Text = thePat.PatientFirstName;
-                    lastNameLabel.Text = thePat.PatientLastName;
-                    startBtn.Visible = false;
+                    firstNameLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        firstNameLabel.Text = thePat.PatientFirstName;
+                    }));
+                    lastNameLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        lastNameLabel.Text = thePat.PatientLastName;
+                    }));
+                    startBtn.Invoke(new MethodInvoker(delegate
+                    {
+                        startBtn.Visible = false;
+                    }));
                 }
             }
             catch (TokenExpiredException teex)

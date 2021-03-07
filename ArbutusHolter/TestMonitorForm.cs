@@ -10,8 +10,14 @@ namespace Uvic_Ecg_ArbutusHolter
 {
     public partial class TestMonitorForm : Form
     {
-        bool displayBtnclicked;
-        int h, m, s, nextCallTimer, timeToWait;
+        bool displayBtnclicked = false;
+        int h, m, s, timeToWait;
+        int fiftySec = 50000;
+        int fiveSec = 5000;
+        int halfSec = 500;
+        int oneSec = 1000;
+        int five = 5;
+        int seventy = 70;
         Client mainFormClient;
         PatientResource patientResource = new PatientResource();
         EcgDataResources ecgDataResources = new EcgDataResources();
@@ -21,9 +27,19 @@ namespace Uvic_Ecg_ArbutusHolter
         RestModel<PatientInfo> restmodel;
         RestModel<ResultJson> eRestMod;
         List<PatientInfo> returnPls = new List<PatientInfo>();
+        RestModel<EcgRawData> ecgRawDataModel;
         bool statusChanges = false;
         string errorMsg;
         string status;
+        string dot = ".";
+        string triplets = "...";
+        string display = "DISPLAY";
+        string pause = "PAUSE";
+        string timeFormat = "HH:mm:ss";
+        string hookup = "hookup";
+        string record = "record";
+        string hookupStatus = "Hookup";
+        string recordingStatus = "Recording";
         float[] dataInfloat1;
         float[] dataInfloat2;
         int[] dataofChannelOne;
@@ -40,18 +56,58 @@ namespace Uvic_Ecg_ArbutusHolter
         public TestMonitorForm(Client client, Appointment app, EcgTest test)
         {
             InitializeComponent();
-            displayBtnclicked = false;
             date = Convert.ToDateTime("1996/11/10");
             mainFormClient = client;
             theEcgTest = test;
             status = "";
             theAppoint = app;
+            loadingTimer.Interval = oneSec;
+            nowTimer.Interval = oneSec;
+            nextCalltimer.Interval = oneSec;
+            nowTimer.Interval = oneSec;
+            countTimer.Interval = oneSec;
+            waitingTimer.Interval = oneSec;
+            RestoreStatus();
             Task.Run(async () => await PatientInfo_Load());
-            if (test != null)
+        }
+        /// <summary>
+        /// Restore ecg test status
+        /// </summary>
+        private void RestoreStatus()
+        {
+            if (theEcgTest != null)
             {
-                indicatorLed.Blink(500);
-                recordBtn.Enabled = false;
-                // ToDo: Duration and start time should be restored
+                isFirstTime = false;
+                if (theEcgTest.HookupStatus)
+                {
+                    date = date.AddYears(2);
+                    ecgStartBtn.Enabled = true;
+                    terminateBtn.Enabled = false;
+                    recordBtn.Enabled = true;
+                    hookupBtn.Enabled = false;
+                    status = hookup;
+                    statusChanges = true;
+                    statusFlag.Text = hookupStatus;
+                }
+                else if (theEcgTest.RecordingStatus)
+                {
+                    indicatorLed.Blink(halfSec);
+                    recordBtn.Enabled = false;
+                    hookupBtn.Enabled = true;
+                    status = record;
+                    statusChanges = true;
+                    statusFlag.Text = recordingStatus;
+                }
+                timeLabel.Text = theEcgTest.StartTime.ToString(timeFormat);
+                if (theEcgTest.ScheduledEndTime != null)
+                {
+                    endTimeLabel.Text = theEcgTest.ScheduledEndTime.ToString(timeFormat);
+                }
+                h = (DateTime.Now - theEcgTest.StartTime).Hours;
+                m = (DateTime.Now - theEcgTest.StartTime).Minutes;
+                s = (DateTime.Now - theEcgTest.StartTime).Seconds;
+                countTimer.Start();
+                nowTimer.Stop();
             }
             else
             {
@@ -60,6 +116,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 recordBtn.Enabled = false;
             }
         }
+        /// <summary>
+        /// Create ecgtest and assign it to theEcgTest and theAppoint
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> CreateEcgTest()
         {
             theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.AppointmentRecordId,
@@ -77,11 +137,17 @@ namespace Uvic_Ecg_ArbutusHolter
                 theAppoint.EcgTest = theEcgTest;
                 if (DateTime.Compare(theEcgTest.StartTime.AddHours(aDay), theAppoint.AppointmentEndTime) < 0)
                 {
-                    endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString("hh:mm:ss tt");
+                    endTimeLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        endTimeLabel.Text = theEcgTest.StartTime.AddHours(aDay).ToString(timeFormat);
+                    }));
                 }
                 else
                 {
-                    endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString("hh:mm:ss tt");
+                    endTimeLabel.Invoke(new MethodInvoker(delegate
+                    {
+                        endTimeLabel.Text = theAppoint.AppointmentEndTime.ToString(timeFormat);
+                    }));
                 }
                 return true;
             }
@@ -100,6 +166,10 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             return false;
         }
+        /// <summary>
+        /// Load patient information of corresponding appointment
+        /// </summary>
+        /// <returns></returns>
         private async Task PatientInfo_Load()
         {
             try
@@ -116,47 +186,137 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         if (p.PatientId == theAppoint.Patient.PatientId)
                         {
-                            firstNameTB.Text = p.PatientFirstName;
-                            midNameTB.Text = p.PatientMidName;
-                            lastNameTB.Text = p.PatientLastName;
-                            birthDateTB.Text = p.Birthdate;
-                            phnTB.Text = p.Phn;
-                            genderTB.Text = p.Gender;
-                            ageTB.Text = p.Age;
-                            address1TB.Text = p.Address1;
-                            address2TB.Text = p.Address2;
-                            cityTB.Text = p.City;
-                            provinceTB.Text = p.Province;
-                            postCodeTB.Text = p.PostCode;
-                            phoneNumTB.Text = p.PhoneNumber;
-                            homeNumTB.Text = p.HomeNumber;
-                            mailTB.Text = p.Email;
-                            pacemakerTB.Text = p.Pacemaker;
-                            superPhyTB.Text = p.SuperPhysician;
-                            medTB.Text = p.Medications;
-                            remarkRichTextBox.Text = p.Remark;
+                            firstNameTB.Invoke(new MethodInvoker(delegate { firstNameTB.Text = p.PatientFirstName; }));
+                            midNameTB.Invoke(new MethodInvoker(delegate { midNameTB.Text = p.PatientMidName; }));
+                            lastNameTB.Invoke(new MethodInvoker(delegate { lastNameTB.Text = p.PatientLastName; }));
+                            birthDateTB.Invoke(new MethodInvoker(delegate { birthDateTB.Text = p.Birthdate; }));
+                            phnTB.Invoke(new MethodInvoker(delegate { phnTB.Text = p.Phn; }));
+                            genderTB.Invoke(new MethodInvoker(delegate { genderTB.Text = p.Gender; }));
+                            ageTB.Invoke(new MethodInvoker(delegate { ageTB.Text = p.Age; }));
+                            address1TB.Invoke(new MethodInvoker(delegate
+                            {
+                                address1TB.Text = p.Address1;
+                            }));
+                            address2TB.Invoke(new MethodInvoker(delegate
+                            {
+                                address2TB.Text = p.Address2;
+                            }));
+                            cityTB.Invoke(new MethodInvoker(delegate
+                            {
+                                cityTB.Text = p.City;
+                            }));
+                            provinceTB.Invoke(new MethodInvoker(delegate
+                            {
+                                provinceTB.Text = p.Province;
+                            }));
+                            postCodeTB.Invoke(new MethodInvoker(delegate
+                            {
+                                postCodeTB.Text = p.PostCode;
+                            }));
+                            phoneNumTB.Invoke(new MethodInvoker(delegate
+                            {
+                                phoneNumTB.Text = p.PhoneNumber;
+                            }));
+                            homeNumTB.Invoke(new MethodInvoker(delegate
+                            {
+                                homeNumTB.Text = p.HomeNumber;
+                            }));
+                            mailTB.Invoke(new MethodInvoker(delegate
+                            {
+                                mailTB.Text = p.Email;
+                            }));
+                            pacemakerTB.Invoke(new MethodInvoker(delegate
+                            {
+                                pacemakerTB.Text = p.Pacemaker;
+                            }));
+                            superPhyTB.Invoke(new MethodInvoker(delegate
+                            {
+                                superPhyTB.Text = p.SuperPhysician;
+                            }));
+                            medTB.Invoke(new MethodInvoker(delegate
+                            {
+                                medTB.Text = p.Medications;
+                            }));
+                            remarkRichTextBox.Invoke(new MethodInvoker(delegate
+                            {
+                                remarkRichTextBox.Text = p.Remark;
+                            }));
                             break;
                         }
                     }
-                    firstNameTB.ReadOnly = true;
-                    midNameTB.ReadOnly = true;
-                    lastNameTB.ReadOnly = true;
-                    birthDateTB.ReadOnly = true;
-                    phnTB.ReadOnly = true;
-                    genderTB.ReadOnly = true;
-                    ageTB.ReadOnly = true;
-                    address1TB.ReadOnly = true;
-                    address2TB.ReadOnly = true;
-                    cityTB.ReadOnly = true;
-                    provinceTB.ReadOnly = true;
-                    postCodeTB.ReadOnly = true;
-                    phoneNumTB.ReadOnly = true;
-                    homeNumTB.ReadOnly = true;
-                    mailTB.ReadOnly = true;
-                    pacemakerTB.ReadOnly = true;
-                    superPhyTB.ReadOnly = true;
-                    medTB.ReadOnly = true;
-                    remarkRichTextBox.ReadOnly = true;
+                    firstNameTB.Invoke(new MethodInvoker(delegate { firstNameTB.ReadOnly = true; }));
+                    midNameTB.Invoke(new MethodInvoker(delegate
+                    {
+                        midNameTB.ReadOnly = true;
+                    }));
+                    lastNameTB.Invoke(new MethodInvoker(delegate
+                    {
+                        lastNameTB.ReadOnly = true;
+                    }));
+                    birthDateTB.Invoke(new MethodInvoker(delegate
+                    {
+                        birthDateTB.ReadOnly = true;
+                    }));
+                    phnTB.Invoke(new MethodInvoker(delegate
+                    {
+                        phnTB.ReadOnly = true;
+                    }));
+                    genderTB.Invoke(new MethodInvoker(delegate
+                    {
+                        genderTB.ReadOnly = true;
+                    }));
+                    ageTB.Invoke(new MethodInvoker(delegate
+                    {
+                        ageTB.ReadOnly = true;
+                    }));
+                    address1TB.Invoke(new MethodInvoker(delegate
+                    {
+                        address1TB.ReadOnly = true;
+                    }));
+                    address2TB.Invoke(new MethodInvoker(delegate
+                    {
+                        address2TB.ReadOnly = true;
+                    }));
+                    cityTB.Invoke(new MethodInvoker(delegate
+                    {
+                        cityTB.ReadOnly = true;
+                    }));
+                    provinceTB.Invoke(new MethodInvoker(delegate
+                    {
+                        provinceTB.ReadOnly = true;
+                    }));
+                    postCodeTB.Invoke(new MethodInvoker(delegate
+                    {
+                        postCodeTB.ReadOnly = true;
+                    }));
+                    phoneNumTB.Invoke(new MethodInvoker(delegate
+                    {
+                        phoneNumTB.ReadOnly = true;
+                    }));
+                    homeNumTB.Invoke(new MethodInvoker(delegate
+                    {
+                        homeNumTB.ReadOnly = true;
+                    }));
+                    mailTB.Invoke(new MethodInvoker(delegate
+                    {
+                        mailTB.ReadOnly = true;
+                    }));
+                    pacemakerTB.Invoke(new MethodInvoker(delegate
+                    {
+                        pacemakerTB.ReadOnly = true;
+                    }));
+                    superPhyTB.Invoke(new MethodInvoker(delegate
+                    {
+                        superPhyTB.ReadOnly = true;
+                    }));
+                    medTB.Invoke(new MethodInvoker(delegate
+                    {
+                        medTB.ReadOnly = true;
+                    }));
+                    remarkRichTextBox.Invoke(new MethodInvoker(delegate
+                    {
+                        remarkRichTextBox.ReadOnly = true;
+                    }));
                 }
                 else
                 {
@@ -178,65 +338,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
         }
         /// <summary>
-        /// make next Call for get EcgData
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async Task NextCall(object sender, EventArgs e)
-        {
-            try
-            {
-                if (true.Equals(displayBtnclicked))
-                {
-                    if (statusChanges)
-                    {
-                        statusChanges = false;
-                        nextCallTimer = 0;
-                    }
-                    nextCallTimer++;
-                    if (status.Equals("hookup"))
-                    {
-                        if (nextCallTimer == 5)
-                        {
-                            bool b = await TryToGetData();
-                            if (b)
-                            {
-                                await UpdateData();
-                            }
-                            nextCallTimer = 0;
-                        }
-                    }
-                    else if (status.Equals("record"))
-                    {
-                        if (nextCallTimer == 50)
-                        {
-                            await UpdateData();
-                            nextCallTimer = 0;
-                        }
-                    }
-                    else
-                    {
-                        //show please start hook up or record first
-                        //done in somewhere else
-                    }
-                }
-            }
-            catch (TokenExpiredException teex)
-            {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText(FileName.Log.Name))
-                {
-                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
-                }
-            }
-        }
-        /// <summary>
-        /// count the start recording time
+        /// count the recording duration time
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -255,6 +357,12 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             durationLabel.Text = string.Format("{0}:{1}:{2}", h.ToString().PadLeft(2, '0'), m.ToString().PadLeft(2, '0'), s.ToString().PadLeft(2, '0'));
         }
+        /// <summary>
+        /// Concatenate two data section
+        /// </summary>
+        /// <param name="highbits"></param>
+        /// <param name="lowbits"></param>
+        /// <returns></returns>
         private int Concate(byte highbits, byte lowbits)
         {
             byte convertionBits = Convert.ToByte(0b_0011_1111);
@@ -262,14 +370,15 @@ namespace Uvic_Ecg_ArbutusHolter
             return ((highbits << 8) | lowbits);
         }
         /// <summary>
-        /// display button clicked
+        /// Display button clicked, determine current status and call startDisplay()
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void EcgStartBtn_Click(object sender, EventArgs e)
+        private void EcgStartBtn_Click(object sender, EventArgs e)
         {
             try
             {
+                // 'pause' btn clicked, stop and clean ecg animation
                 if (displayBtnclicked)
                 {
                     StopTimers();
@@ -277,39 +386,22 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else if (status.Equals(""))
                 {
-                    MessageBox.Show("please start hook up or record first");
+                    MessageBox.Show(ErrorInfo.NoHookupOrRecord.ErrorMessage);
                     return;
                 }
-                else if (!isFirstTime)
+                ecgStartBtn.Invoke(new MethodInvoker(delegate
                 {
-                    await StartDisplay();
-                    return;
-                }
-                else if (status.Equals("record"))// && !TryToGetData()
+                    ecgStartBtn.Enabled = false;
+                }));
+                if (isFirstTime)
                 {
-                    timeToWait = 70;
-                }
-                else if (status.Equals("rehookup"))
-                {
-                    timeToWait = 70;
-                }
-                else if (status.Equals("hookup"))//&& !TryToGetData()
-                {
-                    //timeToWait = 10;
-                    await StartDisplay();
-                    return;
+                    isFirstTime = false;
+                    timeToWait = five;
                 }
                 else
                 {
-                    bool b = await TryToGetData();
-                    if (!b)
-                    {
-                        MessageBox.Show("No data is transmitting. Please check connection");
-                        return;
-                    }
+                    timeToWait = seventy;
                 }
-                ecgStartBtn.Enabled = false;
-                isFirstTime = false;
                 waitingTimer.Start();
             }
             catch (TokenExpiredException teex)
@@ -326,16 +418,38 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
+        /// <summary>
+        /// call updateData() and start nextCallTimer
+        /// </summary>
+        /// <returns></returns>
         private async Task StartDisplay()
         {
-            if (displayBtnclicked == false)
+            if (!displayBtnclicked)
             {
-                await UpdateData();
+                bool b = await TryToGetData();
+                loadingTimer.Stop();
+                if (!b)
+                {
+                    MessageBox.Show(ErrorInfo.Transmitting.ErrorMessage);
+                    return;
+                }
+                UpdateData();
+                if (status == record)
+                {
+                    nextCalltimer.Interval = fiftySec;
+                }
+                else if (status == hookup)
+                {
+                    nextCalltimer.Interval = fiveSec;
+                }
                 nextCalltimer.Start();
                 channel1.StartTick();
                 channel2.StartTick();
                 displayBtnclicked = true;
-                ecgStartBtn.Text = "PAUSE";
+                ecgStartBtn.Invoke(new MethodInvoker(delegate
+                {
+                    ecgStartBtn.Text = pause;
+                }));
             }
             else
             {
@@ -344,23 +458,31 @@ namespace Uvic_Ecg_ArbutusHolter
                 channel2.StopTick();
                 CleanChannel();
                 displayBtnclicked = false;
-                ecgStartBtn.Text = "DISPLAY";
+                ecgStartBtn.Invoke(new MethodInvoker(delegate
+                {
+                    ecgStartBtn.Text = display;
+                }));
             }
         }
         private async Task<bool> TryToGetData()
         {
-            RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status,
-                                                                                      theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
-            if (ecgRawDataModel.Entity == null)
+            for (int i=0; i<3; i++)
             {
-                return false;
+                ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status,
+                                                                theAppoint.Patient.PatientId,
+                                                                theAppoint.EcgTest.EcgTestId);
+                if (ecgRawDataModel.Entity.Model != null)
+                {
+                    return true;
+                }
+                await Task.Delay(5000);
             }
-            else if (ecgRawDataModel.Entity.Model == null)
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
+        /// <summary>
+        /// Drawing data to ecg animation
+        /// </summary>
+        /// <param name="ecgRawDataModel"></param>
         private void DoUpdate(RestModel<EcgRawData> ecgRawDataModel)
         {
             while (true)
@@ -369,7 +491,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     if (ecgRawDataModel.Entity.Model == null)
                     {
-                        //MessageBox.Show("No Data is transmitting now");
                         break;
                     }
                     EcgRawData ecgRawData = ecgRawDataModel.Entity.Model;
@@ -400,18 +521,22 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
+        /// <summary>
+        /// Clean ecg animation
+        /// </summary>
         private void CleanChannel()
         {
             channel1.CleanTheData();
             channel2.CleanTheData();
         }
-        private async Task UpdateData()
+        /// <summary>
+        /// Get data from serv and call DoUpdata()
+        /// </summary>
+        /// <returns></returns>
+        private void UpdateData()
         {
             try
             {
-                RestModel<EcgRawData> ecgRawDataModel = await ecgDataResources.GetEcgData(mainFormClient, status,
-                                                            theAppoint.Patient.PatientId, theAppoint.EcgTest.EcgTestId);
-
                 //Here, we are trying to update the newest data in reHookup peroid, so we have to determine which one is the newest data.
                 //determine it's the first data or not.PS, the date would be stored as Nov.10th 1996 before the first data arrive.
                 if (date.Year == 1996)
@@ -424,36 +549,29 @@ namespace Uvic_Ecg_ArbutusHolter
                 {
                     //if it's not the first data, record the date of data in tempDate for future comparision.
                     tempDate = Convert.ToDateTime(ecgRawDataModel.Entity.Model.StartTime);
-                    if (status.Equals("rehookup"))
+                    // which means status is recording and old and new data has different time
+                    if (!tempDate.Equals(date) && status.Equals(hookup))
                     {
-                        date = tempDate;
-                        status = "hookup";
-                        DoUpdate(ecgRawDataModel);
-                    }
-                    else
-                    {
-                        if (!tempDate.Equals(date) && status.Equals("hookup"))
+                        // tempDate is time of 5s new data; date is time of 1m old data
+                        if ((tempDate - date).TotalSeconds > 10)
                         {
-                            if ((tempDate - date).TotalSeconds > 10)
-                            {
-                                //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
-                                var test = channel1.values;
-                                CleanChannel();
-                                test = channel1.values;
-                                date = tempDate;
-                                DoUpdate(ecgRawDataModel);
-                            }
-                            else
-                            {
-                                date = tempDate;
-                                DoUpdate(ecgRawDataModel);
-                            }
+                            //if it's not duplicate with the last data and it's the faster frequence data, clean the view and update data and date.
+                            var test = channel1.values;
+                            CleanChannel();
+                            test = channel1.values;
+                            date = tempDate;
+                            DoUpdate(ecgRawDataModel);
                         }
                         else
                         {
                             date = tempDate;
                             DoUpdate(ecgRawDataModel);
                         }
+                    }
+                    else
+                    {
+                        date = tempDate;
+                        DoUpdate(ecgRawDataModel);
                     }
                 }
             }
@@ -473,50 +591,25 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void NowTimer_Tick(object sender, EventArgs e)
         {
-            timeLabel.Text = DateTime.Now.ToLongTimeString();
-        }
-        private async void Timer1_Tick(object sender, EventArgs e)
-        {
-            await NextCall(sender, e);
+            timeLabel.Text = DateTime.Now.ToString(timeFormat);
         }
         /// <summary>
-        /// hook up btn clicked
+        /// nextCallTimer tick function
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void HookupBtn_Click(object sender, EventArgs e)
+        private async void NextCalltimer_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (theAppoint.EcgTest != null)
+                if (displayBtnclicked)
                 {
-                    MessageBox.Show(ErrorInfo.OngoingTest.ErrorMessage);
-                    return;
-                }
-                else
-                {
-                    bool b = await CreateEcgTest();
-                    if (!b)
+                    bool b = await TryToGetData();
+                    if (b)
                     {
-                        return;
+                        UpdateData();
                     }
-                    recordBtn.Enabled = true;
-                    ecgStartBtn.Enabled = true;
                 }
-                RestModel<ResultJson> result = await ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTest.EcgTestId, theAppoint.Device.DeviceId);
-                var test = result.ErrorMessage;
-                //indicatorLed stop blink
-                if (status.Equals("record"))
-                {
-                    StopTimers();
-                    status = "rehookup";
-                }
-                else
-                {
-                    status = "hookup";
-                }
-                statusChanges = true;
-                statusFlag.Text = status;
             }
             catch (TokenExpiredException teex)
             {
@@ -532,6 +625,80 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
+        /// <summary>
+        /// hook up btn clicked, and change ecgtest to hookup status
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void HookupBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (theAppoint.EcgTest == null)
+                {
+                    bool b = await CreateEcgTest();
+                    if (!b)
+                    {
+                        return;
+                    }
+                    nowTimer.Stop();
+                    countTimer.Start();
+                }
+                RestModel<ResultJson> result = await ecgDataResources.SetHookup(mainFormClient, theAppoint.EcgTest.EcgTestId, theAppoint.Device.DeviceId);
+                var test = result.ErrorMessage;
+                //indicatorLed stop blink
+                indicatorLed.Blink(0);
+                StopTimers();
+                status = hookup;
+                statusChanges = true;
+                statusFlag.Invoke(new MethodInvoker(delegate
+                {
+                    statusFlag.Text = hookupStatus;
+                }));
+                hookupBtn.Invoke(new MethodInvoker(delegate
+                {
+                    hookupBtn.Enabled = false;
+                }));
+                recordBtn.Invoke(new MethodInvoker(delegate
+                {
+                    recordBtn.Enabled = true;
+                }));
+                ecgStartBtn.Invoke(new MethodInvoker(delegate
+                {
+                    ecgStartBtn.Enabled = true;
+                }));
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
+        }
+        private void LoadingTimer_Tick(object sender, EventArgs e)
+        {
+            if (waitTimeLabel.Text == triplets)
+            {
+                waitTimeLabel.Text = dot;
+            }
+            else
+            {
+                waitTimeLabel.Text += dot;
+            }
+        }
+        /// <summary>
+        /// interval = 1s, decrement int timeToWait, and change waitTimeLabel
+        /// Once timeToWait == 0, call StartDisplay()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void WaitingTimer_Tick(object sender, EventArgs e)
         {
             try
@@ -541,13 +708,9 @@ namespace Uvic_Ecg_ArbutusHolter
                 if (timeToWait == 0)
                 {
                     waitingTimer.Stop();
+                    waitTimeLabel.Text = dot;
+                    loadingTimer.Start();
                     ecgStartBtn.Enabled = true;
-                    bool b = await TryToGetData();
-                    if (!b)
-                    {
-                        MessageBox.Show("No data is transmitting check your connection");
-                        return;
-                    }
                     await StartDisplay();
                 }
             }
@@ -565,18 +728,21 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
         }
+        /// <summary>
+        /// stop and clean ecg animation
+        /// </summary>
         private void StopTimers()
         {
             try
             {
-                //stop and clean the data
                 channel1.StopTick();
                 channel2.StopTick();
                 channel1.CleanView();
                 channel2.CleanView();
                 CleanChannel();
                 displayBtnclicked = false;
-                ecgStartBtn.Text = "DISPLAY";
+                ecgStartBtn.Text = display;
+                nextCalltimer.Stop();
             }
             catch (Exception ex)
             {
@@ -591,13 +757,12 @@ namespace Uvic_Ecg_ArbutusHolter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void StartButton_Click(object sender, EventArgs e)
+        private async void RecordButton_Click(object sender, EventArgs e)
         {
             try
             {
                 theEcgTest.StartTime = DateTime.Now;
                 theEcgTest.ScheduledEndTime = DateTime.Now.AddHours(aDay);
-                //theEcgTest.EcgTestId = 28; //test only, remove later
                 eRestMod = await ecgDataResources.UpdateEcgTest(mainFormClient, theEcgTest);
                 if (!ErrorInfo.OK.ErrorMessage.Equals(eRestMod.ErrorMessage))
                 {
@@ -606,18 +771,31 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 RestModel<ResultJson> result = await ecgDataResources.SetRecord(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
-                indicatorLed.Blink(500);
-                countTImer.Start();
-                if (status.Equals("hookup") || status.Equals("rehookup"))
+                indicatorLed.Blink(halfSec);
+                if (status.Equals(hookup))
                 {
                     StopTimers();
                 }
-                status = "record";
+                status = record;
                 statusChanges = true;
-                statusFlag.Text = status;
-                nowTimer.Stop();
-                terminateBtn.Enabled = true;
+                statusFlag.Invoke(new MethodInvoker(delegate
+                {
+                    statusFlag.Text = recordingStatus;
+                }));
+                terminateBtn.Invoke(new MethodInvoker(delegate
+                {
+                    terminateBtn.Enabled = true;
+                }));
+                recordBtn.Invoke(new MethodInvoker(delegate
+                {
+                    recordBtn.Enabled = false;
+                }));
+                hookupBtn.Invoke(new MethodInvoker(delegate
+                {
+                    hookupBtn.Enabled = true;
+                }));
                 recordingStarted = true;
+
             }
             catch (TokenExpiredException teex)
             {
@@ -644,13 +822,6 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 RestModel<ResultJson> result = await ecgDataResources.Terminated(mainFormClient, theEcgTest.EcgTestId, theEcgTest.DeviceId);
                 var test = result.ErrorMessage;
-                StopTimers();
-                //indicatorLed stop blink
-                indicatorLed.Blink(0);
-                status = "terminated";
-                statusChanges = true;
-                statusFlag.Text = status;
-                terminateBtn.Enabled = false;
                 DialogResult = DialogResult.Abort;
             }
             catch (TokenExpiredException teex)
@@ -678,7 +849,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 errorMsg = await patientResource.UpdatePatient(updatedPatient, mainFormClient);
                 if (errorMsg == ErrorInfo.OK.ErrorMessage)
                 {
-                    MessageBox.Show("The changes on the current patient has successfully saved");
+                    MessageBox.Show(ErrorInfo.ChangesDone.ErrorMessage);
                 }
                 else
                 {

@@ -15,6 +15,10 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private int nurseId;
         [JsonProperty] private int deviceId;
         [JsonProperty] private string comment;
+        [JsonProperty] private bool hookupStatus;
+        [JsonProperty] private bool recordingStatus;
+        [JsonProperty] private bool terminatedStatus;
+
 
         public DateTime StartTime { get => startTime; set => startTime = value; }
         public DateTime ScheduledEndTime { get => scheduledEndTime; set => scheduledEndTime = value; }
@@ -25,6 +29,9 @@ namespace Uvic_Ecg_Model
         public string Comment { get => comment; set => comment = value; }
         public int EcgTestId { get => ecgTestId; set => ecgTestId = value; }
         public int ClinicId { get => clinicId; set => clinicId = value; }
+        public bool HookupStatus { get => hookupStatus; set => hookupStatus = value; }
+        public bool RecordingStatus { get => recordingStatus; set => recordingStatus = value; }
+        public bool TerminatedStatus { get => terminatedStatus; set => terminatedStatus = value; }
         public int? AppointmentId { get => appointmentId; set => appointmentId = value; }
 
         public EcgTest(DateTime startTimei,
@@ -49,8 +56,17 @@ namespace Uvic_Ecg_Model
         }
 
         public EcgTest() { }
-
         [JsonConstructor]
+        public EcgTest(int eid,
+                       bool hookup,
+                       bool record,
+                       bool terminate)
+        {
+            ecgTestId = eid;
+            hookupStatus = hookup;
+            recordingStatus = record;
+            terminatedStatus = terminate;
+        }
         public EcgTest(int eid)
         {
             EcgTestId = eid;
@@ -79,6 +95,32 @@ namespace Uvic_Ecg_Model
             StartTime = start;
             ScheduledEndTime = scheduledEnd;
             ClinicId = clinicI;
+        }
+        public EcgTest(DateTime startTimei,
+                       DateTime scheduledEndTimei,
+                       DateTime? actualEndTimei,
+                       int patientIdi,
+                       int nurseIdi,
+                       int deviceIdi,
+                       string commenti,
+                       int? appointId,
+                       int clinici,
+                       bool hookup,
+                       bool record,
+                       bool terminate)
+        {
+            StartTime = startTimei;
+            ScheduledEndTime = scheduledEndTimei;
+            ActualEndTime = actualEndTimei;
+            PatientId = patientIdi;
+            NurseId = nurseIdi;
+            DeviceId = deviceIdi;
+            Comment = commenti;
+            AppointmentId = appointId;
+            ClinicId = clinici;
+            HookupStatus = hookup;
+            RecordingStatus = record;
+            TerminatedStatus = terminate;
         }
     }
 }

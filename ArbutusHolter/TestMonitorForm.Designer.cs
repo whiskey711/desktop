@@ -78,7 +78,9 @@
             this.ecgPanel = new System.Windows.Forms.Panel();
             this.ecgGroup = new System.Windows.Forms.GroupBox();
             this.statusFlag = new System.Windows.Forms.Label();
+            this.statusTitle = new System.Windows.Forms.Label();
             this.waitTimeLabel = new System.Windows.Forms.Label();
+            this.waitTimeTitle = new System.Windows.Forms.Label();
             this.channel2 = new Uvic_Ecg_EcgAnimationView.ECGAnimationView();
             this.channel1 = new Uvic_Ecg_EcgAnimationView.ECGAnimationView();
             this.chanel2Label = new System.Windows.Forms.Label();
@@ -88,9 +90,10 @@
             this.saveRemarkBtn = new System.Windows.Forms.Button();
             this.remarkRichTextBox = new System.Windows.Forms.RichTextBox();
             this.nowTimer = new System.Windows.Forms.Timer(this.components);
-            this.countTImer = new System.Windows.Forms.Timer(this.components);
+            this.countTimer = new System.Windows.Forms.Timer(this.components);
             this.nextCalltimer = new System.Windows.Forms.Timer(this.components);
             this.waitingTimer = new System.Windows.Forms.Timer(this.components);
+            this.loadingTimer = new System.Windows.Forms.Timer(this.components);
             this.backWorker = new System.ComponentModel.BackgroundWorker();
             this.ecgLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ecgSidePanel = new System.Windows.Forms.Panel();
@@ -507,6 +510,8 @@
             this.indicatorGroup.Controls.Add(this.durationTitle);
             this.indicatorGroup.Controls.Add(this.indicatorLed);
             this.indicatorGroup.Controls.Add(this.recordBtn);
+            this.indicatorGroup.Controls.Add(this.statusFlag);
+            this.indicatorGroup.Controls.Add(this.statusTitle);
             this.indicatorGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.indicatorGroup.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.indicatorGroup.Location = new System.Drawing.Point(1335, 3);
@@ -550,7 +555,7 @@
             this.startTitle.Name = "startTitle";
             this.startTitle.Size = new System.Drawing.Size(75, 26);
             this.startTitle.TabIndex = 4;
-            this.startTitle.Text = "Start at";
+            this.startTitle.Text = "Start at:";
             // 
             // durationLabel
             // 
@@ -573,6 +578,25 @@
             this.endTimeLabel.Size = new System.Drawing.Size();
             this.endTimeLabel.Text = "endTime";
             // 
+            // statusFlag
+            // 
+            this.statusFlag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusFlag.AutoSize = true;
+            this.statusFlag.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusFlag.Location = new System.Drawing.Point(10, 140);
+            this.statusFlag.Name = "statusFlag";
+            this.statusFlag.TabIndex = 8;
+            this.statusFlag.Text = "ready";
+            //
+            // statusTitle
+            //
+            this.statusTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusTitle.AutoSize = true;
+            this.statusTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusTitle.Location = new System.Drawing.Point(10, 110);
+            this.statusTitle.Name = "statusTitle";
+            this.statusTitle.Text = "Status:";
+            // 
             // timeLabel
             // 
             this.timeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -593,7 +617,7 @@
             this.durationTitle.Name = "durationTitle";
             this.durationTitle.Size = new System.Drawing.Size(87, 26);
             this.durationTitle.TabIndex = 1;
-            this.durationTitle.Text = "Duration";
+            this.durationTitle.Text = "Duration:";
             //
             // endTimeTitle
             //
@@ -603,7 +627,7 @@
             this.endTimeTitile.Location = new System.Drawing.Point(342, 110);
             this.endTimeTitile.Name = "endTimeTitle";
             this.endTimeTitile.Size = new System.Drawing.Size();
-            this.endTimeTitile.Text = "Schedule End Time";
+            this.endTimeTitile.Text = "Schedule End Time:";
             // 
             // indicatorLed
             // 
@@ -627,7 +651,7 @@
             this.recordBtn.TabIndex = 0;
             this.recordBtn.Text = "Recording";
             this.recordBtn.UseVisualStyleBackColor = true;
-            this.recordBtn.Click += new System.EventHandler(this.StartButton_Click);
+            this.recordBtn.Click += new System.EventHandler(this.RecordButton_Click);
             // 
             // ecgPanel
             // 
@@ -652,24 +676,27 @@
             this.ecgGroup.TabStop = false;
             this.ecgGroup.Text = "ECG";
             // 
-            // statusFlag
-            // 
-            this.statusFlag.AutoSize = true;
-            this.statusFlag.Location = new System.Drawing.Point(17, 172);
-            this.statusFlag.Name = "statusFlag";
-            this.statusFlag.Size = new System.Drawing.Size(45, 19);
-            this.statusFlag.TabIndex = 8;
-            this.statusFlag.Text = "ready";
-            // 
             // waitTimeLabel
             // 
             this.waitTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.waitTimeLabel.AutoSize = true;
-            this.waitTimeLabel.Location = new System.Drawing.Point(17, 529);
+            this.waitTimeLabel.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))); 
+            this.waitTimeLabel.Location = new System.Drawing.Point(17, 305);
             this.waitTimeLabel.Name = "waitTimeLabel";
             this.waitTimeLabel.Size = new System.Drawing.Size(69, 19);
             this.waitTimeLabel.TabIndex = 7;
             this.waitTimeLabel.Text = "waitTime";
+            //
+            // waitTimeTitle
+            //
+            this.waitTimeTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.waitTimeTitle.AutoSize = true;
+            this.waitTimeTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))); 
+            this.waitTimeTitle.Location = new System.Drawing.Point(17, 280);
+            this.waitTimeTitle.Name = "waitTimeTitle";
+            this.waitTimeTitle.Size = new System.Drawing.Size(69, 19);
+            this.waitTimeTitle.TabIndex = 7;
+            this.waitTimeTitle.Text = "Time to wait:";
             // 
             // channel2
             // 
@@ -770,18 +797,23 @@
             // 
             // countTImer
             // 
-            this.countTImer.Interval = 1000;
-            this.countTImer.Tick += new System.EventHandler(this.CountTimer_Tick);
+            this.countTimer.Interval = 1000;
+            this.countTimer.Tick += new System.EventHandler(this.CountTimer_Tick);
             // 
             // nextCalltimer
             // 
             this.nextCalltimer.Interval = 1000;
-            this.nextCalltimer.Tick += new System.EventHandler(this.Timer1_Tick);
+            this.nextCalltimer.Tick += new System.EventHandler(this.NextCalltimer_Tick);
             // 
             // waitingTimer
             // 
             this.waitingTimer.Interval = 1000;
             this.waitingTimer.Tick += new System.EventHandler(this.WaitingTimer_Tick);
+            //
+            // loadingTimer
+            //
+            this.loadingTimer.Interval = 1000;
+            this.loadingTimer.Tick += new System.EventHandler(this.LoadingTimer_Tick);
             // 
             // ecgLayoutPanel
             // 
@@ -804,7 +836,7 @@
             // 
             this.ecgSidePanel.Controls.Add(this.ecgStartBtn);
             this.ecgSidePanel.Controls.Add(this.waitTimeLabel);
-            this.ecgSidePanel.Controls.Add(this.statusFlag);
+            this.ecgSidePanel.Controls.Add(this.waitTimeTitle);
             this.ecgSidePanel.Controls.Add(this.channel1Label);
             this.ecgSidePanel.Controls.Add(this.chanel2Label);
             this.ecgSidePanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -847,7 +879,7 @@
         private System.Windows.Forms.Label durationTitle;
         private System.Windows.Forms.Label durationLabel;
         private System.Windows.Forms.Timer nowTimer;
-        private System.Windows.Forms.Timer countTImer;
+        private System.Windows.Forms.Timer countTimer;
         private System.Windows.Forms.Label startTitle;
         private System.Windows.Forms.GroupBox remarkGroup;
         private System.Windows.Forms.RichTextBox remarkRichTextBox;
@@ -863,7 +895,9 @@
         private System.Windows.Forms.Button hookupBtn;
         private System.Windows.Forms.Button terminateBtn;
         private System.Windows.Forms.Timer waitingTimer;
+        private System.Windows.Forms.Timer loadingTimer;
         private System.Windows.Forms.Label waitTimeLabel;
+        private System.Windows.Forms.Label waitTimeTitle;
         private System.Windows.Forms.Label statusFlag;
         private System.ComponentModel.BackgroundWorker backWorker;
         private System.Windows.Forms.Panel detailPanel;
@@ -907,5 +941,6 @@
         private System.Windows.Forms.Panel ecgSidePanel;
         private System.Windows.Forms.Label endTimeTitile;
         private System.Windows.Forms.Label endTimeLabel;
+        private System.Windows.Forms.Label statusTitle;
     }
 }
