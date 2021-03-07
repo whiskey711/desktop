@@ -71,6 +71,18 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
                     devReturnTimePick.Enabled = devReturnTimePick.Value < DateTime.Now ? false : true;
+                    if (theAppoint.DeferReturnTime.HasValue)
+                    {
+                        deferLabel.Visible = true;
+                        deferTimePick.Visible = true;
+                        deferTimePick.Value = theAppoint.DeferReturnTime.Value;
+                        deferTimePick.Enabled = false;
+                        deferBtn.Enabled = false;
+                    }
+                    else if (DateTime.Compare(theAppoint.DeviceReturnDate.Value, DateTime.Now) <= 0)
+                    {
+                        deferBtn.Enabled = true;
+                    }
                     firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     // inprogress or finished
@@ -88,10 +100,6 @@ namespace Uvic_Ecg_ArbutusHolter
                         startBtn.Visible = false;
                         mailBtn.Enabled = false;
                         generateReportBtn.Enabled = true;
-                    }
-                    if (DateTime.Compare(theAppoint.DeviceReturnDate.Value, DateTime.Now) <= 0)
-                    {
-                        deferBtn.Enabled = true;
                     }
                 }
                 // appointment is creating
@@ -246,12 +254,12 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 else if (nextAppointTimePick.Visible == true)
                 {
-                    MessageBox.Show("too late");
+                    MessageBox.Show(ErrorInfo.Toolate.ErrorMessage);
                     return;
                 }
                 else
                 {
-                    MessageBox.Show("with in one week please");
+                    MessageBox.Show(ErrorInfo.WithinOneWeek.ErrorMessage);
                     return;
                 }
             }
@@ -427,7 +435,7 @@ namespace Uvic_Ecg_ArbutusHolter
             UseWaitCursor = true;
             try
             {
-                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.Device.DeviceId);
+                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint);
                 if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
                 {
                     MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
@@ -542,6 +550,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                                                      app.AppointmentRecordId != theAppoint.AppointmentRecordId &&
                                                                      app.AppointmentStartTime > DateTime.Now)
                                                        .FirstOrDefault();
+            // display time limit for defer return time
             if (nextEarliestAppoint != null)
             {
                 nextAppointTimePick.Visible = true;

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter.HttpRequests
 {
@@ -22,9 +25,16 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             return restModel;
         }
         
-        public async Task<RestModel<ResultJson>> ReturnPhoneAndDevice(Client client, int deviceId)
+        public async Task<RestModel<ResultJson>> ReturnPhoneAndDevice(Client client, Appointment theAppoint)
         {
-            jsonRestMod = await jsonRequest.Post("return-status/" + deviceId, null, client);
+            string json = JsonConvert.SerializeObject(theAppoint, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            jsonRestMod = await jsonRequest.Put("return-status/" + theAppoint.Device.DeviceId, content, client);
             return jsonRestMod;  
         }
         

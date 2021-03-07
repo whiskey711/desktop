@@ -52,6 +52,8 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo DownloadProblem = new ErrorInfo("Unable to download data now, try again later");
         public static readonly ErrorInfo GenerateProblem = new ErrorInfo("Unable to gernerate report for this appointment, please contact support");
         public static readonly ErrorInfo Downloading = new ErrorInfo("System is downloading data and generate report, please wait");
+        public static readonly ErrorInfo Toolate = new ErrorInfo("The defer return time has to be earlier than the next appointment start time");
+        public static readonly ErrorInfo WithinOneWeek = new ErrorInfo("The derfer return time has to be within a week");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }

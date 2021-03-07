@@ -14,7 +14,7 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private DateTime? reservationTime = null;
         [JsonProperty] private DateTime? pickupDate = null;
         [JsonProperty] private DateTime? deviceReturnDate = null;
-        [JsonProperty] private DateTime? DelayDeviceReturnTime = null;
+        [JsonProperty] private DateTime? delayDeviceReturnTime = null;
         [JsonProperty] private DateTime? deviceActualReturnTime = null;
         [JsonProperty] private string deviceLocation;
         [JsonProperty] private string instruction;
@@ -84,6 +84,6 @@ namespace Uvic_Ecg_Model
         public string Instruction { get => instruction; set => instruction = value; }
         public EcgTest EcgTest { get => ecgTest; set => ecgTest = value; }
         public DateTime? DeviceActualReturnTime { get => deviceActualReturnTime; set => deviceActualReturnTime = value; }
-        public DateTime? DeferReturnTime { get => DelayDeviceReturnTime; set => DelayDeviceReturnTime = value; }
+        public DateTime? DeferReturnTime { get => delayDeviceReturnTime; set => delayDeviceReturnTime = value; }
     }
 }
