@@ -27,7 +27,7 @@ namespace Uvic_Ecg_ArbutusHolter
         IEnumerable<Appointment> appointLs;
         string[] nameLs;
         string errorMsg;
-        int seven = 7;
+        int appointmentSrhPeriodDays = 7;
         string available = "Current device is avaliable with in a week";
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
@@ -530,7 +530,6 @@ namespace Uvic_Ecg_ArbutusHolter
                 Process proc = new Process();
                 proc.StartInfo.FileName = "CER-S.exe";
                 proc.StartInfo.Arguments = cmd;
-                //proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 proc.Start();
             }
             catch (Exception ex)
@@ -544,7 +543,7 @@ namespace Uvic_Ecg_ArbutusHolter
             deferLabel.Visible = true;
             nextAppointLabel.Visible = true;
             appointRestMod = await nResource.GetAppointments(inClient, theAppoint.AppointmentStartTime, 
-                                                                theAppoint.AppointmentStartTime.AddDays(seven), null);
+                                                                theAppoint.AppointmentStartTime.AddDays(appointmentSrhPeriodDays), null);
             if (appointRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
             {
                 appointLs = CreateAppointmentLs(appointRestMod.Feed.Entities);
@@ -563,7 +562,7 @@ namespace Uvic_Ecg_ArbutusHolter
             else
             {
                 nextAppointLabel.Text = available;
-                nextAppointTimePick.Value = theAppoint.AppointmentStartTime.AddDays(seven);
+                nextAppointTimePick.Value = theAppoint.AppointmentStartTime.AddDays(appointmentSrhPeriodDays);
             }
             if (nextAppointTimePick.Value < DateTime.Now)
             {
