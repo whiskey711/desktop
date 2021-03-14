@@ -88,6 +88,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 System.Diagnostics.Process.Start(FileName.Log.Name);
             }
             UseWaitCursor = false;
+            
         }
         private void Password_TextChanged(object sender, EventArgs e)
         {
