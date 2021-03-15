@@ -29,6 +29,7 @@ namespace Uvic_Ecg_ArbutusHolter
         string errorMsg;
         int appointmentSrhPeriodDays = 7;
         string available = "Current device is avaliable with in a week";
+        string hasStarted = "'s appointment has started at";
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
         public DateTime startTime { get; set; }
@@ -62,14 +63,14 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointStartTimePick.Enabled = appointStartTimePick.Value < DateTime.Now ? false : true;
                     appointEndTimePick.Value = theAppoint.AppointmentEndTime;
                     appointEndTimePick.Enabled = appointEndTimePick.Value < DateTime.Now ? false : true;
-                    devPickTimePick.Value = theAppoint.PickupDate.Value;
+                    devPickTimePick.Value = theAppoint.PickupDate;
                     if (devPickTimePick.Value < DateTime.Now)
                     {
                         devPickTimePick.Enabled = false;
                         deviceLocCB.Enabled = false;
                         deviceCombo.Enabled = false;
                     }
-                    devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
+                    devReturnTimePick.Value = theAppoint.DeviceReturnDate;
                     devReturnTimePick.Enabled = devReturnTimePick.Value < DateTime.Now ? false : true;
                     if (theAppoint.DeferReturnTime.HasValue)
                     {
@@ -79,7 +80,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         deferTimePick.Enabled = false;
                         deferBtn.Enabled = false;
                     }
-                    else if (DateTime.Compare(theAppoint.DeviceReturnDate.Value, DateTime.Now) <= 0)
+                    else if (DateTime.Compare(theAppoint.DeviceReturnDate, DateTime.Now) <= 0)
                     {
                         deferBtn.Enabled = true;
                     }
@@ -557,26 +558,30 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 appointLs = CreateAppointmentLs(appointRestMod.Feed.Entities);
             }
-            Appointment nextEarliestAppoint = appointLs.OrderBy(app => app.AppointmentStartTime)
+            Appointment nextEarliestAppoint = appointLs.OrderBy(app => app.PickupDate)
                                                        .Where(app => app.Device.DeviceId == theAppoint.Device.DeviceId &&
-                                                                     app.AppointmentRecordId != theAppoint.AppointmentRecordId &&
-                                                                     app.AppointmentStartTime > DateTime.Now)
+                                                                     app.AppointmentRecordId != theAppoint.AppointmentRecordId)
                                                        .FirstOrDefault();
             // display time limit for defer return time
             if (nextEarliestAppoint != null)
             {
                 nextAppointTimePick.Visible = true;
-                nextAppointTimePick.Value = nextEarliestAppoint.AppointmentStartTime;
+                nextAppointTimePick.Value = nextEarliestAppoint.PickupDate;
+                // next appointment has started
+                if (nextAppointTimePick.Value < DateTime.Now)
+                {
+                    deferTimePick.Enabled = false;
+                    nextAppointLabel.Text = nextEarliestAppoint.Patient.PatientFirstName +
+                                            " " + nextEarliestAppoint.Patient.PatientLastName +
+                                            hasStarted;
+                }
             }
             else
             {
                 nextAppointLabel.Text = available;
                 nextAppointTimePick.Value = theAppoint.AppointmentStartTime.AddDays(appointmentSrhPeriodDays);
             }
-            if (nextAppointTimePick.Value < DateTime.Now)
-            {
-                deferTimePick.Enabled = false;
-            }
+            
         }
     }
 }

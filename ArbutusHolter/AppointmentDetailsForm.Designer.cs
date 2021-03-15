@@ -116,7 +116,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.nextAppointLabel.AutoSize = true;
             this.nextAppointLabel.Location = new System.Drawing.Point(55, 360);
             this.nextAppointLabel.Name = "nextAppointLabel";
-            this.nextAppointLabel.Text = "The next appointment that current device assigned start at";
+            this.nextAppointLabel.Text = "The next appointment that current device is assigned to will start at";
             this.nextAppointLabel.Visible = false;
             //
             // nextAppointTimePick

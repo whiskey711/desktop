@@ -521,52 +521,64 @@ namespace Uvic_Ecg_ArbutusHolter
         private List<Uvic_Ecg_Model.Appointment> CreateAppointLs(List<Entity<Uvic_Ecg_Model.Appointment>> entls)
         {
             List<Uvic_Ecg_Model.Appointment> als = new List<Uvic_Ecg_Model.Appointment>();
-            if (string.IsNullOrWhiteSpace(devLoc) || devLoc.Equals(allLocation))
+            if (entls != null)
             {
-                foreach (var ent in entls)
+                if (string.IsNullOrWhiteSpace(devLoc) || devLoc.Equals(allLocation))
                 {
-                    als.Add(ent.Model);
-                }
-            }
-            else
-            {
-                foreach (var ent in entls)
-                {
-                    if (devLoc.Equals(ent.Model.DeviceLocation))
+                    foreach (var ent in entls)
                     {
                         als.Add(ent.Model);
                     }
-                    
                 }
+                else
+                {
+                    foreach (var ent in entls)
+                    {
+                        if (devLoc.Equals(ent.Model.DeviceLocation))
+                        {
+                            als.Add(ent.Model);
+                        }
+
+                    }
+                }
+                als.Sort((x, y) => x.AppointmentStartTime.CompareTo(y.AppointmentStartTime));
             }
-            als.Sort((x, y) => x.AppointmentStartTime.CompareTo(y.AppointmentStartTime));
             return als;
         }
         private List<PatientInfo> CreatePatientLs(List<Entity<PatientInfo>> entls)
         {
             List<PatientInfo> pls = new List<PatientInfo>();
-            foreach (var ent in entls)
+            if (entls != null)
             {
-                pls.Add(ent.Model);
+                foreach (var ent in entls)
+                {
+                    pls.Add(ent.Model);
+                }
             }
             return pls;
         }
-        private List<String> CreateDeviceLocLs(List<Entity<Device>> entls)
+        private List<string> CreateDeviceLocLs(List<Entity<Device>> entls)
         {
-            List<String> devLocLs = new List<String>();
-            foreach (var ent in entls)
+            List<string> devLocLs = new List<string>();
+            if (entls != null)
             {
-                devLocLs.Add(ent.Model.DeviceLocation);
+                foreach (var ent in entls)
+                {
+                    devLocLs.Add(ent.Model.DeviceLocation);
+                }
             }
-            List<String> devLocDistinctLs = devLocLs.Distinct().ToList();
+            List<string> devLocDistinctLs = devLocLs.Distinct().ToList();
             return devLocDistinctLs;
         }
         private List<EcgTest> CreateTestLs(List<Entity<EcgTest>> entls)
         {
             List<EcgTest> els = new List<EcgTest>();
-            foreach (var ent in entls)
+            if (entls != null)
             {
-                els.Add(ent.Model);
+                foreach (var ent in entls)
+                {
+                    els.Add(ent.Model);
+                }
             }
             return els;
         }

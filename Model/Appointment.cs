@@ -12,8 +12,8 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private DateTime appointmentStartTime;
         [JsonProperty] private DateTime appointmentEndTime;
         [JsonProperty] private DateTime? reservationTime = null;
-        [JsonProperty] private DateTime? pickupDate = null;
-        [JsonProperty] private DateTime? deviceReturnDate = null;
+        [JsonProperty] private DateTime pickupDate;
+        [JsonProperty] private DateTime deviceReturnDate;
         [JsonProperty] private DateTime? delayDeviceReturnTime = null;
         [JsonProperty] private DateTime? deviceActualReturnTime = null;
         [JsonProperty] private string deviceLocation;
@@ -78,8 +78,8 @@ namespace Uvic_Ecg_Model
         public DateTime AppointmentStartTime { get => appointmentStartTime; set => appointmentStartTime = value; }
         public DateTime AppointmentEndTime { get => appointmentEndTime; set => appointmentEndTime = value; }
         public DateTime? ReservationTime { get => reservationTime; set => reservationTime = value; }
-        public DateTime? PickupDate { get => pickupDate; set => pickupDate = value; }
-        public DateTime? DeviceReturnDate { get => deviceReturnDate; set => deviceReturnDate = value; }
+        public DateTime PickupDate { get => pickupDate; set => pickupDate = value; }
+        public DateTime DeviceReturnDate { get => deviceReturnDate; set => deviceReturnDate = value; }
         public string DeviceLocation { get => deviceLocation; set => deviceLocation = value; }
         public string Instruction { get => instruction; set => instruction = value; }
         public EcgTest EcgTest { get => ecgTest; set => ecgTest = value; }
