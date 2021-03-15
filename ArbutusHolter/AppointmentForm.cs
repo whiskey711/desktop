@@ -417,6 +417,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointLs.Clear();
                     foreach (var returnA in returnAls)
                     {
+                        if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
+                        {
+                            continue;
+                        }
                         appointStart = new Calendar.Appointment();
                         appointStart.StartDate = returnA.AppointmentStartTime;
                         appointStart.EndDate = appointStart.StartDate.AddMinutes(appointBlockMinLength); 
@@ -436,10 +440,6 @@ namespace Uvic_Ecg_ArbutusHolter
                         {
                             appointStart.Color = Color.DeepSkyBlue;
                             appointEnd.Color = Color.Black;
-                        }
-                        if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
-                        {
-                            continue;
                         }
                         appointLs.Add(appointStart);
                         appointLs.Add(appointEnd);
@@ -692,6 +692,10 @@ namespace Uvic_Ecg_ArbutusHolter
                 patientAppointLs.Items.Clear();
                 foreach (var returnA in returnAls)
                 {
+                    if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
+                    {
+                        continue;
+                    }
                     startAfterTo = DateTime.Compare(returnA.AppointmentStartTime.Date, endTimeFilt.Value.Date);
                     endBeforeFrom = DateTime.Compare(returnA.AppointmentEndTime.Date, startTimeFilt.Value.Date);
                     if (startAfterTo > 0 || endBeforeFrom < 0)
@@ -709,10 +713,6 @@ namespace Uvic_Ecg_ArbutusHolter
                     if (notReturnedAppointmentIdLs.Contains(returnA.AppointmentRecordId))
                     {
                         lsitem.ForeColor = Color.Red;
-                    }
-                    if (pNameCheckBox.Checked && returnA.Patient.PatientId != selectedP.PatientId)
-                    {
-                        continue;
                     }
                     patientAppointLs.Invoke(new MethodInvoker(delegate { patientAppointLs.Items.Add(lsitem); }));
                 }
@@ -1187,24 +1187,15 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private List<int> DeviceNotReturnedAppointments(IEnumerable<Uvic_Ecg_Model.Appointment> appointments)
         {
-            var nullActualReturnAppointLs = appointments.Where(appoint => appoint.DeviceActualReturnTime == null);
-            DateTime returnTime;
-            List<int> notReturnedAppointIdLs = new List<int>();
-            foreach(var nullActualReturnAppoint in nullActualReturnAppointLs)
-            {
-                if (nullActualReturnAppoint.DeferReturnTime != null)
-                {
-                    returnTime = nullActualReturnAppoint.DeferReturnTime.Value;
-                }
-                else
-                {
-                    returnTime = nullActualReturnAppoint.DeviceReturnDate.Value;
-                }
-                if (returnTime < DateTime.Now)
-                {
-                    notReturnedAppointIdLs.Add(nullActualReturnAppoint.AppointmentRecordId);
-                }
-            }
+            var notReturnedAppointIdLs = appointments.Where(appointment => appointment.DeviceActualReturnTime == null)
+                                       .Select(appointment => new
+                                       {
+                                           appointment.AppointmentRecordId,
+                                           time = appointment.DeferReturnTime.HasValue ? appointment.DeferReturnTime : appointment.DeviceReturnDate
+                                       })
+                                       .Where(tuple => tuple.time < DateTime.Now)
+                                       .Select(tuple => tuple.AppointmentRecordId)
+                                       .ToList();
             return notReturnedAppointIdLs;
         }
     }

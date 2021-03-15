@@ -13,7 +13,6 @@ namespace Uvic_Ecg_ArbutusHolter
         public LoginForm()
         {
             InitializeComponent();
-            Console.Read();
         }
         // after user clicked registerButton, they will be directed to registerForm
         private void RegisterButton_Click(object sender, EventArgs e)
