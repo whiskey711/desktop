@@ -111,8 +111,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -131,7 +130,11 @@ namespace Uvic_Ecg_ArbutusHolter
             try
             {
                 Email emailForm = new Email(inClient);
-                emailForm.Show();
+                emailForm.ShowDialog();
+            }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -223,8 +226,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -270,8 +272,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -303,35 +304,65 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, null))
+            try
             {
-                DialogResult res = mainForm.ShowDialog();
-                if (res == DialogResult.Yes)
+                using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, null))
                 {
-                    theTest = mainForm.theEcgTest;
-                    theAppoint = mainForm.theAppoint;
-                    // Yes means user clicked the start btn which gurantees ecgtest is created
-                    DialogResult = DialogResult.Yes;
-                }else if (res == DialogResult.Cancel)
+                    DialogResult res = mainForm.ShowDialog();
+                    if (res == DialogResult.Yes)
+                    {
+                        theTest = mainForm.theEcgTest;
+                        theAppoint = mainForm.theAppoint;
+                        // Yes means user clicked the start btn which gurantees ecgtest is created
+                        DialogResult = DialogResult.Yes;
+                    }
+                    else if (res == DialogResult.Cancel)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                    }
+                }
+            }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    DialogResult = DialogResult.Cancel;
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
         private void ContinueBtn_Click(object sender, EventArgs e)
         {
-            using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, theTest))
+            try
             {
-                DialogResult res = mainForm.ShowDialog();
-                if (res == DialogResult.Abort)
+                using (TestMonitorForm mainForm = new TestMonitorForm(inClient, theAppoint, theTest))
                 {
-                    theTest = mainForm.theEcgTest;
-                    theAppoint = mainForm.theAppoint;
-                    // Abort means user clicked the terminate btn
-                    DialogResult = DialogResult.Abort;
-                }else if (res == DialogResult.Cancel)
+                    DialogResult res = mainForm.ShowDialog();
+                    if (res == DialogResult.Abort)
+                    {
+                        theTest = mainForm.theEcgTest;
+                        theAppoint = mainForm.theAppoint;
+                        // Abort means user clicked the terminate btn
+                        DialogResult = DialogResult.Abort;
+                    }
+                    else if (res == DialogResult.Cancel)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                    }
+                }
+            }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    DialogResult = DialogResult.Cancel;
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
         }
@@ -364,8 +395,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -398,8 +428,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -454,6 +483,10 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(hrex.ToString(), hrex.StackTrace, w);
                 }
                 MessageBox.Show(ErrorInfo.ConnectionProblem.ErrorMessage);
+            }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
             }
             catch (Exception ex)
             {
