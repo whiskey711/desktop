@@ -642,8 +642,8 @@ namespace Uvic_Ecg_ArbutusHolter
             await LoadAllAppointments();
             await ClassifyDeviceLocation(appointFormClient);
             await RefreshRunningTest();
-            await download.MainProcess(appointFormClient);
             Application.UseWaitCursor = false;
+            await download.MainProcess(appointFormClient);
         }
         private void GoleftBtn_Click(object sender, EventArgs e)
         {
