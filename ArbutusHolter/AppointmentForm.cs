@@ -45,8 +45,8 @@ namespace Uvic_Ecg_ArbutusHolter
         DateTime thisYeaarEnd = DateTime.Today.AddDays(halfYear);
         int appointBlockMinLength = 15;
         int invalidPid = -1;
-        int oneMin = 60000;
-        int tenMin = 600000;
+        int appointmentAndRunningTestRefreshPeriod = 60000; //one minute
+        int rawDataRefreshPeriod = 3600000; //one hour
         string monthYear = "MMMM yyyy";
         string dateAndTime = "MM/dd/yyyy HH:mm";
         string allLocation = "All locations";
@@ -67,12 +67,15 @@ namespace Uvic_Ecg_ArbutusHolter
             appointFormClient = client;
             pNameCheckBox.Enabled = false;
             yearIndicateLab.Text = DateTime.Today.ToString(monthYear);
-            appointRefreshTimer.Interval = oneMin;
+            appointRefreshTimer.Interval = appointmentAndRunningTestRefreshPeriod;
             appointRefreshTimer.Start();
-            runningTestRefreshTimer.Interval = oneMin;
+            runningTestRefreshTimer.Interval = appointmentAndRunningTestRefreshPeriod;
             runningTestRefreshTimer.Start();
-            rawDataRefreshTimer.Interval = tenMin;
+            rawDataRefreshTimer.Interval = rawDataRefreshPeriod;
             rawDataRefreshTimer.Start();
+            RawDataRefreshTimer_Tick(null, null);
+            AppointRefreshTimer_Tick(null, null);
+            RunningTestRefreshTimer_Tick(null, null);
         }
         private async void SrhBtn_Click(object sender, EventArgs e)
         {
@@ -638,12 +641,7 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async void AppointmentF_Load(object sender, EventArgs e) 
         {
-            Application.UseWaitCursor = true;
-            await LoadAllAppointments();
             await ClassifyDeviceLocation(appointFormClient);
-            await RefreshRunningTest();
-            Application.UseWaitCursor = false;
-            await download.MainProcess(appointFormClient);
         }
         private void GoleftBtn_Click(object sender, EventArgs e)
         {
