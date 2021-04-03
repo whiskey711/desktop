@@ -77,8 +77,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 catch (TokenExpiredException teex)
                 {
-                    MessageBox.Show(teex.Message);
-                    Close();
+                    throw teex;
                 }
                 catch (Exception ex)
                 {
