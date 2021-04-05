@@ -178,8 +178,24 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private void CreateBtn_Click(object sender, EventArgs e)
         {
-            CreatePatientForm cpForm = new CreatePatientForm(appointFormClient);
-            cpForm.Show();
+            try
+            {
+                CreatePatientForm cpForm = new CreatePatientForm(appointFormClient);
+                cpForm.ShowDialog();
+            }
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
         }
         private async void PatientListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -744,35 +760,50 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async void WeeklyCal_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            try
             {
-                return;
-            }
-            if (weeklyCal.SelectedAppointment == null)
-            {
-                if (!pNameCheckBox.Checked)
+                if (e.Button == MouseButtons.Right)
                 {
-                    MessageBox.Show(ErrorInfo.SelectPatient.ErrorMessage);
                     return;
                 }
-                await AddNewAppoinment();
-            }
-            else
-            {
-                selectedA = weeklyCal.SelectedAppointment.Appoint;
-                weeklyCal.Enabled = false;
-                if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
+                if (weeklyCal.SelectedAppointment == null)
                 {
-                    await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
+                    if (!pNameCheckBox.Checked)
+                    {
+                        MessageBox.Show(ErrorInfo.SelectPatient.ErrorMessage);
+                        return;
+                    }
+                    await AddNewAppoinment();
                 }
                 else
                 {
-                    await ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                    selectedA = weeklyCal.SelectedAppointment.Appoint;
+                    weeklyCal.Enabled = false;
+                    if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
+                    {
+                        await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
+                    }
+                    else
+                    {
+                        await ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                    }
+                    weeklyCal.Enabled = true;
+                    weeklyCal.Invalidate();
                 }
-                weeklyCal.Enabled = true;
-                weeklyCal.Invalidate();
             }
-
+            catch (TokenExpiredException teex)
+            {
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
         }
         private async void PNameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -808,22 +839,38 @@ namespace Uvic_Ecg_ArbutusHolter
         }
         private async void PatientAppointLs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (patientAppointLs.SelectedItems.Count <= 0)
+            try
             {
-                return;
+                if (patientAppointLs.SelectedItems.Count <= 0)
+                {
+                    return;
+                }
+                selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
+                if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
+                {
+                    await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
+                }
+                else if (selectedA.EcgTest != null && !runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out test))
+                {
+                    await ShowAppointDetailFormForFinishedAppoint(selectedA);
+                }
+                else
+                {
+                    await ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                }
             }
-            selectedA = (Uvic_Ecg_Model.Appointment)patientAppointLs.SelectedItems[0].Tag;
-            if (selectedA.EcgTest != null && runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out EcgTest test))
+            catch (TokenExpiredException teex)
             {
-                await ShowAppointDetailFormForInProgressAppoint(selectedA, selectedA.EcgTest.EcgTestId);
+                MessageBox.Show(teex.Message);
+                programClosing = true;
+                Close();
             }
-            else if (selectedA.EcgTest != null && !runningTestDict.TryGetValue(selectedA.EcgTest.EcgTestId, out test))
+            catch (Exception ex)
             {
-                await ShowAppointDetailFormForFinishedAppoint(selectedA);
-            }
-            else
-            {
-                await ShowAppointDetailFormForUpcomingAppoint(selectedA);
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
 
         }

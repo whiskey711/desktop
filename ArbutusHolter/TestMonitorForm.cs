@@ -153,9 +153,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -325,9 +323,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -406,9 +402,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -424,44 +418,58 @@ namespace Uvic_Ecg_ArbutusHolter
         /// <returns></returns>
         private async Task StartDisplay()
         {
-            if (!displayBtnclicked)
+            try
             {
-                bool b = await TryToGetData();
-                loadingTimer.Stop();
-                if (!b)
+                if (!displayBtnclicked)
                 {
-                    MessageBox.Show(ErrorInfo.Transmitting.ErrorMessage);
-                    return;
+                    bool b = await TryToGetData();
+                    loadingTimer.Stop();
+                    if (!b)
+                    {
+                        MessageBox.Show(ErrorInfo.Transmitting.ErrorMessage);
+                        return;
+                    }
+                    UpdateData();
+                    if (status == record)
+                    {
+                        nextCalltimer.Interval = fiftySec;
+                    }
+                    else if (status == hookup)
+                    {
+                        nextCalltimer.Interval = fiveSec;
+                    }
+                    nextCalltimer.Start();
+                    channel1.StartTick();
+                    channel2.StartTick();
+                    displayBtnclicked = true;
+                    ecgStartBtn.Invoke(new MethodInvoker(delegate
+                    {
+                        ecgStartBtn.Text = pause;
+                    }));
                 }
-                UpdateData();
-                if (status == record)
+                else
                 {
-                    nextCalltimer.Interval = fiftySec;
+                    //stop and clean the data
+                    channel1.StopTick();
+                    channel2.StopTick();
+                    CleanChannel();
+                    displayBtnclicked = false;
+                    ecgStartBtn.Invoke(new MethodInvoker(delegate
+                    {
+                        ecgStartBtn.Text = display;
+                    }));
                 }
-                else if (status == hookup)
-                {
-                    nextCalltimer.Interval = fiveSec;
-                }
-                nextCalltimer.Start();
-                channel1.StartTick();
-                channel2.StartTick();
-                displayBtnclicked = true;
-                ecgStartBtn.Invoke(new MethodInvoker(delegate
-                {
-                    ecgStartBtn.Text = pause;
-                }));
             }
-            else
+            catch (TokenExpiredException teex)
             {
-                //stop and clean the data
-                channel1.StopTick();
-                channel2.StopTick();
-                CleanChannel();
-                displayBtnclicked = false;
-                ecgStartBtn.Invoke(new MethodInvoker(delegate
+                throw teex;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
                 {
-                    ecgStartBtn.Text = display;
-                }));
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
             }
         }
         private async Task<bool> TryToGetData()
@@ -577,9 +585,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -613,9 +619,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -670,9 +674,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -716,9 +718,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -799,9 +799,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -826,9 +824,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
@@ -858,9 +854,7 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             catch (TokenExpiredException teex)
             {
-                MessageBox.Show(teex.Message);
-                programClosing = true;
-                Close();
+                throw teex;
             }
             catch (Exception ex)
             {
