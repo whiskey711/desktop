@@ -13,7 +13,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private HttpResponseMessage result;
         private HttpContent content;
         private string url = "http://ecg.uvic.ca:8080/v1/test/";
-        private string publicUrl = "http://ecg.uvic.ca:8080/v1/";
+        private string publicUrl = "http://ecg.uvic.ca:8080/v1/public/";
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;

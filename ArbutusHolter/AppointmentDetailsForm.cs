@@ -57,14 +57,14 @@ namespace Uvic_Ecg_ArbutusHolter
                     appointStartTimePick.Enabled = appointStartTimePick.Value < DateTime.Now ? false : true;
                     appointEndTimePick.Value = theAppoint.AppointmentEndTime;
                     appointEndTimePick.Enabled = appointEndTimePick.Value < DateTime.Now ? false : true;
-                    devPickTimePick.Value = theAppoint.PickupDate.Value;
+                    devPickTimePick.Value = theAppoint.PickupDate;
                     if (devPickTimePick.Value < DateTime.Now)
                     {
                         devPickTimePick.Enabled = false;
                         deviceLocCB.Enabled = false;
                         deviceCombo.Enabled = false;
                     }
-                    devReturnTimePick.Value = theAppoint.DeviceReturnDate.Value;
+                    devReturnTimePick.Value = theAppoint.DeviceReturnDate;
                     devReturnTimePick.Enabled = devReturnTimePick.Value < DateTime.Now ? false : true;
                     firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
                     lastNameLabel.Text = theAppoint.Patient.PatientLastName;
@@ -206,11 +206,11 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     return;
                 }
-                Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId), 
-                                                        theAppoint.Patient, selectDev, 
+                Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId),
+                                                        theAppoint.Patient, selectDev,
                                                         startTime, endTime,
                                                         (DateTime)theAppoint.ReservationTime, pickTime,
-                                                        returnTime, theAppoint.DeviceActualReturnTime, deviceLoc, 
+                                                        returnTime, theAppoint.DeviceActualReturnTime, deviceLoc,
                                                         (string)theAppoint.Instruction, theAppoint.EcgTest);
                 errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
                 if (ErrorInfo.OK.ErrorMessage == errorMsg)
@@ -380,7 +380,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.Items.Add(returnDevLoc); }));
                     }
                     if (theAppoint != null)
-                    { 
+                    {
                         foreach (var returnDev in returnDevLs)
                         {
                             if (theAppoint.Device.DeviceId == returnDev.DeviceId)
@@ -389,7 +389,7 @@ namespace Uvic_Ecg_ArbutusHolter
                                 deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnDev.DeviceName; }));
                             }
                         }
-                        
+
                     }
                 }
             }
