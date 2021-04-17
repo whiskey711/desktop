@@ -51,7 +51,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
                 //else return cannot find token
                 return ErrorInfo.Failed;
-         
+
             }
             else
             {
@@ -71,7 +71,7 @@ namespace Uvic_Ecg_ArbutusHolter
             else
             {
                 return false;
-            }   
+            }
         }
     }
     public class User
