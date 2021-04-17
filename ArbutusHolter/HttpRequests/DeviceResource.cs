@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Text;
+using System.Net.Http;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Uvic_Ecg_Model;
 namespace Uvic_Ecg_ArbutusHolter.HttpRequests
@@ -9,6 +12,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         RestModel<ResultJson> jsonRestMod;
         private Requests<Device> requests = new Requests<Device>();
         private Requests<ResultJson> jsonRequest = new Requests<ResultJson>();
+        HttpContent content;
         public async Task<RestModel<Device>> GetAvailableDevices(Client client, DateTime pickup, DateTime returnT, string loc)
         {
             restModel = await requests.GetAll("devices?pickupDate=" + pickup.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")

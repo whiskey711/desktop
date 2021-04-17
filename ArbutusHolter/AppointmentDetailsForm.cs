@@ -415,7 +415,7 @@ namespace Uvic_Ecg_ArbutusHolter
             UseWaitCursor = true;
             try
             {
-                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.Device.DeviceId);
+                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint);
                 if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
                 {
                     MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
