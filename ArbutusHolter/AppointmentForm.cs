@@ -1204,8 +1204,28 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             try
             {
-                DialogResult res = MessageBox.Show(ErrorInfo.DeleteWarn.ErrorMessage, ErrorInfo.Caption.ErrorMessage, MessageBoxButtons.YesNo);
-                if (DialogResult.No == res)
+                do
+                {
+                    // now < pick up time
+                    if (DateTime.Compare(DateTime.Now, deleteAppointment.PickupDate.Value) < 0)
+                    {
+                        break;
+                    }
+                    // now > end && actual != null
+                    else if (DateTime.Compare(DateTime.Now, deleteAppointment.AppointmentEndTime) > 0 &&
+                             deleteAppointment.DeviceActualReturnTime.HasValue)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        MessageBox.Show(ErrorInfo.DeviceAvailability.ErrorMessage);   
+                        return;
+                    }
+                } while (false);
+                if (MessageBox.Show(ErrorInfo.DeleteWarn.ErrorMessage,
+                                    ErrorInfo.Caption.ErrorMessage,
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return;
                 }
