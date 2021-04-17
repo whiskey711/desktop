@@ -17,20 +17,28 @@ namespace Uvic_Ecg_ArbutusHolter
         RestModel<ResultJson> jsonRestMod;
         RestModel<EcgRawData> rawDataMod;
         RestModel<PatientInfo> pMod;
+        RestModel<Appointment> appointRestMod;
         private PatientResource pResource = new PatientResource();
         private EcgDataResources eResource = new EcgDataResources();
         private DeviceResource dResource = new DeviceResource();
         private NurseResource nResource = new NurseResource();
         private Client inClient;
         List<Device> returnDls;
+        IEnumerable<Appointment> appointLs;
         string[] nameLs;
         string errorMsg;
+        int appointmentSrhPeriodDays = 7;
+        string available = "Current device is available with in a week";
+        string hasStarted = "'s appointment has started at";
+        string datetimeFormat = "MM/dd/yyyy HH:mm";
+        DateTime nextAppointmentTime = DateTime.Now;
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
         public DateTime startTime { get; set; }
         public DateTime endTime { get; set; }
         public DateTime pickTime { get; set; }
         public DateTime returnTime { get; set; }
+        public DateTime? deferTime { get; set; }
         public EcgTest theTest { get; set; }
         public Appointment theAppoint { get; set; }
         private PatientInfo thePat;
@@ -42,8 +50,8 @@ namespace Uvic_Ecg_ArbutusHolter
             theTest = runningTest;
             thePat = patient;
             continueBtn.Visible = false;
-            PrepareForm();
-            Task.Run(async () => await ClassifyDeviceLocationAndName());
+            deferBtn.Enabled = false;
+            returnDevBtn.Enabled = false;
         }
         private void PrepareForm()
         {
@@ -66,27 +74,36 @@ namespace Uvic_Ecg_ArbutusHolter
                     }
                     devReturnTimePick.Value = theAppoint.DeviceReturnDate;
                     devReturnTimePick.Enabled = devReturnTimePick.Value < DateTime.Now ? false : true;
-                    firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
-                    lastNameLabel.Text = theAppoint.Patient.PatientLastName;
+                    if (theAppoint.DeferReturnTime.HasValue)
+                    {
+                        deferLabel.Visible = true;
+                        deferTimePick.Visible = true;
+                        deferTimePick.Value = theAppoint.DeferReturnTime.Value;
+                        deferTimePick.Enabled = false;
+                        deferBtn.Enabled = false;
+                    }
+                    else if (DateTime.Compare(theAppoint.DeviceReturnDate, DateTime.Now) <= 0)
+                    {
+                        deferBtn.Enabled = true;
+                    }
                     if (theAppoint.DeviceActualReturnTime.HasValue)
                     {
-                        returnDevBtn.Invoke(new MethodInvoker(delegate { returnDevBtn.Enabled = false; }));
+                        deferBtn.Enabled = false;
                     }
+                    firstNameLabel.Text = theAppoint.Patient.PatientFirstName;
+                    lastNameLabel.Text = theAppoint.Patient.PatientLastName;
                     // inprogress or finished
                     if (theTest != null)
                     {
-                        startBtn.Invoke(new MethodInvoker(delegate
+                        startBtn.Visible = false;
+                        continueBtn.Visible = true;
+                        if (!theAppoint.DeviceActualReturnTime.HasValue)
                         {
-                            startBtn.Visible = false;
-                        }));
-                        continueBtn.Invoke(new MethodInvoker(delegate
-                        {
-                            continueBtn.Visible = true;
-                        }));
+                            returnDevBtn.Enabled = true;
+                        }
                     }
                     if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theTest != null)
                     {
-                        appointGroup.Enabled = false;
                         startBtn.Visible = false;
                         mailBtn.Enabled = false;
                         generateReportBtn.Enabled = true;
@@ -125,6 +142,11 @@ namespace Uvic_Ecg_ArbutusHolter
                 UseWaitCursor = false;
             }
         }
+        private async void Form_Loaded(object sender, EventArgs e)
+        {
+            PrepareForm();
+            await ClassifyDeviceLocationAndName();
+        }
         private void EditMailBtn_Click(object sender, EventArgs e)
         {
             try
@@ -162,49 +184,36 @@ namespace Uvic_Ecg_ArbutusHolter
                 returnTime = devReturnTimePick.Value
                                 .AddSeconds(-devReturnTimePick.Value.Second)
                                 .AddMilliseconds(-devReturnTimePick.Value.Millisecond);
-                if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
+                deferTime = deferTimePick.Value
+                                .AddSeconds(-deferTimePick.Value.Second)
+                                .AddMilliseconds(-deferTimePick.Value.Millisecond);
+                if (deferTimePick.Visible != true)
                 {
-                    MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
-                    return;
-                }
-                if (DateTime.Compare(appointStartTimePick.Value, devPickTimePick.Value) < 0)
-                {
-                    MessageBox.Show(ErrorInfo.Before.ErrorMessage);
-                    return;
-                }
-                if (DateTime.Compare(appointEndTimePick.Value, devReturnTimePick.Value) > 0)
-                {
-                    MessageBox.Show(ErrorInfo.Later.ErrorMessage);
-                    return;
-                }
-                if (DateTime.Compare(devPickTimePick.Value, DateTime.Now) < 0)
-                {
-                    MessageBox.Show(ErrorInfo.EarlyThanNow.ErrorMessage);
-                    return;
-                }
-                if (selectDev == null)
-                {
-                    MessageBox.Show(ErrorInfo.SelectDeivce.ErrorMessage);
-                    return;
-                }
-                // Ok means user only click save btn which ecgtest is not created
-                if (theAppoint == null)
-                {
-                    Appointment newApp = new Appointment(new Nurse(inClient.NurseId), thePat, selectDev,
-                                                         startTime, endTime, DateTime.Now, pickTime,
-                                                         returnTime, deviceLoc, null, null);
-                    errorMsg = await nResource.CreateAppointment(newApp, inClient);
-                    if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                    if (string.IsNullOrWhiteSpace(deviceLocCB.Text))
                     {
-                        MessageBox.Show(ErrorInfo.Created.ErrorMessage);
-                        DialogResult = DialogResult.OK;
+                        MessageBox.Show(ErrorInfo.DeviceLoc.ErrorMessage);
+                        return;
                     }
-                    else
+                    if (DateTime.Compare(appointStartTimePick.Value, devPickTimePick.Value) < 0)
                     {
-                        MessageBox.Show(errorMsg);
-                        DialogResult = DialogResult.Cancel;
+                        MessageBox.Show(ErrorInfo.Before.ErrorMessage);
+                        return;
                     }
-                    return;
+                    if (DateTime.Compare(appointEndTimePick.Value, devReturnTimePick.Value) > 0)
+                    {
+                        MessageBox.Show(ErrorInfo.Later.ErrorMessage);
+                        return;
+                    }
+                    if (DateTime.Compare(devPickTimePick.Value, DateTime.Now) < 0)
+                    {
+                        MessageBox.Show(ErrorInfo.EarlyThanNow.ErrorMessage);
+                        return;
+                    }
+                    if (selectDev == null)
+                    {
+                        MessageBox.Show(ErrorInfo.SelectDeivce.ErrorMessage);
+                        return;
+                    }
                 }
                 Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId),
                                                         theAppoint.Patient, selectDev,
@@ -215,14 +224,13 @@ namespace Uvic_Ecg_ArbutusHolter
                 errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
                 if (ErrorInfo.OK.ErrorMessage == errorMsg)
                 {
-                    MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
-                    DialogResult = DialogResult.OK;
+                    await CreateAppointment();
                 }
                 else
                 {
-                    MessageBox.Show(errorMsg);
-                    DialogResult = DialogResult.Cancel;
+                    await UpdateAppointment();
                 }
+
             }
             catch (TokenExpiredException teex)
             {
@@ -236,6 +244,60 @@ namespace Uvic_Ecg_ArbutusHolter
                 }
             }
             appointGroup.UseWaitCursor = false;
+        }
+        private async Task CreateAppointment()
+        {
+            Appointment newApp = new Appointment(new Nurse(inClient.NurseId), thePat, selectDev,
+                                                         startTime, endTime, DateTime.Now, pickTime,
+                                                         returnTime, deviceLoc, null, null);
+            errorMsg = await nResource.CreateAppointment(newApp, inClient);
+            if (ErrorInfo.OK.ErrorMessage == errorMsg)
+            {
+                MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                MessageBox.Show(errorMsg);
+                DialogResult = DialogResult.Cancel;
+            }
+        }
+        private async Task UpdateAppointment()
+        {
+            Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId),
+                                                        theAppoint.Patient, selectDev,
+                                                        startTime, endTime,
+                                                        (DateTime)theAppoint.ReservationTime, pickTime,
+                                                        returnTime, theAppoint.DeviceActualReturnTime, deviceLoc,
+                                                        theAppoint.Instruction, theAppoint.EcgTest);
+            if (deferTimePick.Visible == true)
+            {
+                if (nextAppointmentTime > deferTime)
+                {
+                    updatedApp.DeferReturnTime = deferTime;
+                }
+                else if (nextAppointTimeLabel.Visible == true)
+                {
+                    MessageBox.Show(ErrorInfo.Toolate.ErrorMessage);
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show(ErrorInfo.WithinOneWeek.ErrorMessage);
+                    return;
+                }
+            }
+            errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
+            if (ErrorInfo.OK.ErrorMessage == errorMsg)
+            {
+                MessageBox.Show(ErrorInfo.Updated.ErrorMessage);
+                DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                MessageBox.Show(errorMsg);
+                DialogResult = DialogResult.Cancel;
+            }
         }
         private void DeviceCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -301,6 +363,15 @@ namespace Uvic_Ecg_ArbutusHolter
             }
             List<string> devLocDistinctLs = devLocLs.Distinct().ToList();
             return devLocDistinctLs;
+        }
+        private List<Appointment> CreateAppointmentLs(List<Entity<Appointment>> entls)
+        {
+            List<Appointment> aLs = new List<Appointment>();
+            foreach (var ent in entls)
+            {
+                aLs.Add(ent.Model);
+            }
+            return aLs;
         }
         private void StartBtn_Click(object sender, EventArgs e)
         {
@@ -387,6 +458,7 @@ namespace Uvic_Ecg_ArbutusHolter
                             {
                                 deviceLocCB.Invoke(new MethodInvoker(delegate { deviceLocCB.SelectedItem = returnDev.DeviceLocation; }));
                                 deviceCombo.Invoke(new MethodInvoker(delegate { deviceCombo.Text = returnDev.DeviceName; }));
+                                selectDev = returnDev;
                             }
                         }
 
@@ -415,7 +487,7 @@ namespace Uvic_Ecg_ArbutusHolter
             UseWaitCursor = true;
             try
             {
-                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint.Device.DeviceId);
+                jsonRestMod = await dResource.ReturnPhoneAndDevice(inClient, theAppoint);
                 if (ErrorInfo.OK.ErrorMessage == jsonRestMod.ErrorMessage)
                 {
                     MessageBox.Show(ErrorInfo.DeviceReturned.ErrorMessage);
@@ -509,13 +581,52 @@ namespace Uvic_Ecg_ArbutusHolter
                 Process proc = new Process();
                 proc.StartInfo.FileName = "CER-S.exe";
                 proc.StartInfo.Arguments = cmd;
-                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 proc.Start();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        private async void DeferBtn_Click(object sender, EventArgs e)
+        {
+            deferTimePick.Visible = true;
+            deferLabel.Visible = true;
+            appointmentLabel.Visible = true;
+            appointRestMod = await nResource.GetAppointments(inClient, theAppoint.AppointmentStartTime,
+                                                                theAppoint.AppointmentStartTime.AddDays(appointmentSrhPeriodDays), null);
+            if (appointRestMod.ErrorMessage == ErrorInfo.OK.ErrorMessage)
+            {
+                appointLs = CreateAppointmentLs(appointRestMod.Feed.Entities);
+            }
+            Appointment nextEarliestAppoint = appointLs.OrderBy(app => app.PickupDate)
+                                                       .Where(app => app.Device.DeviceId == theAppoint.Device.DeviceId &&
+                                                                     app.AppointmentRecordId != theAppoint.AppointmentRecordId)
+                                                       .FirstOrDefault();
+            // display time limit for defer return time
+            if (nextEarliestAppoint == null)
+            {
+                appointmentLabel.Text = available;
+                nextAppointmentTime = theAppoint.AppointmentStartTime.AddDays(appointmentSrhPeriodDays);
+            }
+            else
+            {
+                if (nextEarliestAppoint.PickupDate < DateTime.Now)
+                {
+                    deferTimePick.Enabled = false;
+                    appointmentLabel.Text = nextEarliestAppoint.Patient.PatientFirstName +
+                                            " " + nextEarliestAppoint.Patient.PatientLastName +
+                                            hasStarted;
+                    nextAppointmentTime = nextEarliestAppoint.AppointmentStartTime;
+                }
+                else
+                {
+                    nextAppointmentTime = nextEarliestAppoint.PickupDate;
+                }
+                nextAppointTimeLabel.Text = nextAppointmentTime.ToString(datetimeFormat);
+                nextAppointTimeLabel.Visible = true;
+            }
+            
         }
     }
 }

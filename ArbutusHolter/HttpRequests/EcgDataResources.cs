@@ -94,8 +94,8 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         }
         public async Task<RestModel<EcgTest>> GetFinishedTest(Client client, DateTime start, DateTime end)
         {
-            ecgTestRestMod = await ecgTestReq.GetAll("patient/ecg-test?period-start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
-                                               + "-0000&period-end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
+            ecgTestRestMod = await ecgTestReq.GetAll("patient/ecg-test?period-start-time=" + start.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                                               + "-0000&period-end-time=" + end.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
             return ecgTestRestMod;
         }
         public async Task<RestModel<EcgRawData>> GetRawDataLs(Client client, int testid)

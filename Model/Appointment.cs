@@ -18,7 +18,7 @@ namespace Uvic_Ecg_Model
         [JsonProperty] private DateTime? deviceActualReturnTime = null;
         [JsonProperty] private string deviceLocation;
         [JsonProperty] private string instruction;
-        [JsonProperty] private EcgTest ecgTest; 
+        [JsonProperty] private EcgTest ecgTest;
         public Appointment(Nurse n,
                            PatientInfo p,
                            Device d,
@@ -43,7 +43,8 @@ namespace Uvic_Ecg_Model
             Instruction = instruct;
             EcgTest = ecgTest;
         }
-        [JsonConstructor] public Appointment(int appRecId,
+        [JsonConstructor]
+        public Appointment(int appRecId,
                                              Nurse n,
                                              PatientInfo p,
                                              Device d,

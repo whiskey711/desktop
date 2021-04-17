@@ -22,13 +22,13 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         {
             if (string.IsNullOrEmpty(location))
             {
-                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
-                                                           + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
+                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                                                           + "-0000&end-time=" + end.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000", client);
             }
             else
             {
-                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
-                                                           + "-0000&end-time=" + end.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000" +
+                appointRestMod = await appointRequest.GetAll("appointment-records?start-time=" + start.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
+                                                           + "-0000&end-time=" + end.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss") + "-0000" +
                                                            "&location=" + location, client);
             }
             return appointRestMod;
