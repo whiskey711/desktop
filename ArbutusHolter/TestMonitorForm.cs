@@ -78,7 +78,8 @@ namespace Uvic_Ecg_ArbutusHolter
             if (theEcgTest != null)
             {
                 isFirstTime = false;
-                if (theEcgTest.HookupStatus)
+                //if (theEcgTest.HookupStatus)
+                if (theEcgTest.Status == StatusType.Status.HOOKUP)
                 {
                     date = date.AddYears(2);
                     ecgStartBtn.Enabled = true;
@@ -89,7 +90,8 @@ namespace Uvic_Ecg_ArbutusHolter
                     statusChanges = true;
                     statusFlag.Text = hookupStatus;
                 }
-                else if (theEcgTest.RecordingStatus)
+                //else if (theEcgTest.RecordingStatus)
+                else if (theEcgTest.Status == StatusType.Status.RECORDING)
                 {
                     indicatorLed.Blink(halfSec);
                     recordBtn.Enabled = false;
@@ -124,7 +126,7 @@ namespace Uvic_Ecg_ArbutusHolter
         {
             theEcgTest = new EcgTest(theAppoint.AppointmentStartTime, theAppoint.AppointmentEndTime, null, theAppoint.AppointmentRecordId,
                                      theAppoint.Patient.PatientId, theAppoint.Nurse.NurseId, theAppoint.Device.DeviceId,
-                                     null, Config.ClinicId);
+                                     null, Config.ClinicId, StatusType.Status.HOOKUP);
             try
             {
                 eRestMod = await ecgDataResources.CreateEcgtest(mainFormClient, theEcgTest);
@@ -763,6 +765,7 @@ namespace Uvic_Ecg_ArbutusHolter
             {
                 theEcgTest.StartTime = DateTime.Now;
                 theEcgTest.ScheduledEndTime = DateTime.Now.AddHours(aDay);
+                theEcgTest.Status = StatusType.Status.RECORDING;
                 eRestMod = await ecgDataResources.UpdateEcgTest(mainFormClient, theEcgTest);
                 if (!ErrorInfo.OK.ErrorMessage.Equals(eRestMod.ErrorMessage))
                 {
@@ -833,7 +836,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     LogHandle.Log(ex.ToString(), ex.StackTrace, w);
                 }
             }
-        }
+        } 
         private async void SaveRemarkBtn_Click(object sender, EventArgs e)
         {
             try
