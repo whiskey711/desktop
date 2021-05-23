@@ -102,6 +102,10 @@ namespace Uvic_Ecg_ArbutusHolter
                             returnDevBtn.Enabled = true;
                         }
                     }
+                    else
+                    {
+                        viewNoteBtn.Enabled = false;
+                    }
                     if (DateTime.Compare(theAppoint.AppointmentEndTime, DateTime.Now) <= 0 && theTest != null)
                     {
                         startBtn.Visible = false;
