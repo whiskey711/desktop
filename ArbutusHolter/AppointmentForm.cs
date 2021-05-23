@@ -1207,7 +1207,7 @@ namespace Uvic_Ecg_ArbutusHolter
                 do
                 {
                     // now < pick up time
-                    if (DateTime.Compare(DateTime.Now, deleteAppointment.PickupDate.Value) < 0)
+                    if (DateTime.Compare(DateTime.Now, deleteAppointment.PickupDate) < 0)
                     {
                         break;
                     }
