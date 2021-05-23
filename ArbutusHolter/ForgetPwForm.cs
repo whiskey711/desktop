@@ -23,7 +23,8 @@ namespace Uvic_Ecg_ArbutusHolter
             UseWaitCursor = true;
             try
             {
-                errorMsg = await publicResources.ForgetPassword(mailTextbox.Text, forgetPwFormClinet);
+                nurse = new Nurse(mailTextbox.Text);
+                errorMsg = await publicResources.ForgetPassword(nurse, forgetPwFormClinet);
                 if (!ErrorInfo.OK.ErrorMessage.Equals(errorMsg))
                 {
                     MessageBox.Show(errorMsg);

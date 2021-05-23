@@ -26,6 +26,21 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             }
             return restModel;
         }
+        public async Task<RestModel<T>> PublicPut(string url, HttpContent content, Client client)
+        {
+            client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
+            client.Result = await client.HttpClient.PutAsync(client.PublicUrl + url, content);
+            restModel = JsonConvert.DeserializeObject<RestModel<T>>(client.Result.Content.ReadAsStringAsync().Result);
+            if (client.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                restModel.ErrorMessage = ErrorInfo.OK.ErrorMessage;
+            }
+            else if (client.Result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new TokenExpiredException(ErrorInfo.TokenExpired.ErrorMessage);
+            }
+            return restModel;
+        }
         public async Task<RestModel<T>> Post(string url, HttpContent content, Client client)
         {
             bool httpFailure;
