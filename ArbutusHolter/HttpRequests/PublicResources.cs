@@ -12,10 +12,11 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         RestModel<Nurse> nurseModel;
         private Requests<ResultJson> requests = new Requests<ResultJson>();
         private Requests<Nurse> nurseRequests = new Requests<Nurse>();
-        public async Task<string> ForgetPassword(string email, Client client)
+        public async Task<string> ForgetPassword(Nurse nurse, Client client)
         {
-            StringContent emailContent = new StringContent(email);
-            restModel = await requests.PublicPost("forgetPassword", emailContent, client);
+            string json = JsonConvert.SerializeObject(nurse);
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            restModel = await requests.PublicPost("forgetPassword", content, client);
             return restModel.ErrorMessage;
         }
         public async Task<RestModel<Nurse>> VeriFycode(string code, Client client)
@@ -28,7 +29,7 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
         {
             string json = JsonConvert.SerializeObject(updatednurse);
             HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            restModel = await requests.PublicPost("password-management", content, client);
+            restModel = await requests.PublicPut("password-management", content, client);
             return restModel.ErrorMessage;
         }
         public async Task<string> Registration(Nurse nurse, Client client)
