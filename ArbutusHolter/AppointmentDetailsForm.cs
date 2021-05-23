@@ -219,14 +219,7 @@ namespace Uvic_Ecg_ArbutusHolter
                         return;
                     }
                 }
-                Appointment updatedApp = new Appointment(theAppoint.AppointmentRecordId, new Nurse(inClient.NurseId),
-                                                        theAppoint.Patient, selectDev,
-                                                        startTime, endTime,
-                                                        (DateTime)theAppoint.ReservationTime, pickTime,
-                                                        returnTime, theAppoint.DeviceActualReturnTime, deviceLoc,
-                                                        (string)theAppoint.Instruction, theAppoint.EcgTest);
-                errorMsg = await nResource.UpdateAppointment(updatedApp, inClient);
-                if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                if (theAppoint == null)
                 {
                     await CreateAppointment();
                 }
