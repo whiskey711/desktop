@@ -54,6 +54,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.returnDevBtn = new System.Windows.Forms.Button();
             this.mailBtn = new System.Windows.Forms.Button();
             this.deferBtn = new System.Windows.Forms.Button();
+            this.uploadReportBtn = new System.Windows.Forms.Button();
             this.backgroundPanel = new System.Windows.Forms.Panel();
             this.appointGroup.SuspendLayout();
             this.SuspendLayout();
@@ -314,6 +315,16 @@ namespace Uvic_Ecg_ArbutusHolter
             this.deferBtn.UseVisualStyleBackColor = true;
             this.deferBtn.Click += new System.EventHandler(this.DeferBtn_Click);
             //
+            // uploadReportBtn
+            //
+            this.uploadReportBtn.Location = new System.Drawing.Point(225, 490);
+            this.uploadReportBtn.Name = "uploadReportBtn";
+            this.uploadReportBtn.AutoSize = true;
+            this.uploadReportBtn.Text = "Upload Report";
+            this.uploadReportBtn.UseVisualStyleBackColor = true;
+            this.uploadReportBtn.Enabled = false;
+            this.uploadReportBtn.Click += new System.EventHandler(this.UploadReportBtn_Click);
+            //
             // mailBtn
             //
             this.mailBtn.AutoSize = true;
@@ -337,6 +348,7 @@ namespace Uvic_Ecg_ArbutusHolter
             this.backgroundPanel.Controls.Add(this.viewNoteBtn);
             this.backgroundPanel.Controls.Add(this.returnDevBtn);
             this.backgroundPanel.Controls.Add(this.deferBtn);
+            this.backgroundPanel.Controls.Add(this.uploadReportBtn);
             this.backgroundPanel.Location = new System.Drawing.Point(0, 0);
             this.backgroundPanel.Name = "backgroundPanel";
             this.backgroundPanel.Size = new System.Drawing.Size(436, 520);
@@ -389,6 +401,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private System.Windows.Forms.Button returnDevBtn;
         private System.Windows.Forms.Button mailBtn;
         private System.Windows.Forms.Button deferBtn;
+        private System.Windows.Forms.Button uploadReportBtn;
         private System.Windows.Forms.Panel backgroundPanel;
     }
 }

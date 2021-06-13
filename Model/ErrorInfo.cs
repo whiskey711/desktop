@@ -58,6 +58,7 @@ namespace Uvic_Ecg_Model
         public static readonly ErrorInfo DeviceAvailability = new ErrorInfo("The corresponding device has not returned yet, please return the device before deleting the appointment");
         public static readonly ErrorInfo Toolate = new ErrorInfo("The defer return time has to be earlier than the next appointment start time");
         public static readonly ErrorInfo WithinOneWeek = new ErrorInfo("The derfer return time has to be within a week");
+        public static readonly ErrorInfo Uploaded = new ErrorInfo("The report has been uploaded to the server");
         public string ErrorMessage { get => errorMessage; set => errorMessage = value; }
     }
 }
