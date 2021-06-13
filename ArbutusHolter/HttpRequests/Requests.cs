@@ -41,7 +41,16 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
             }
             return restModel;
         }
+        // Post() for httpcontent
         public async Task<RestModel<T>> Post(string url, HttpContent content, Client client)
+        {
+            return await Post(url, content, client, null);
+        }
+        // Post() for multipartformdatacontent
+        public async Task<RestModel<T>> Post(string url, 
+                                             HttpContent content, 
+                                             Client client, 
+                                             MultipartFormDataContent multipartFormDataContent)
         {
             bool httpFailure;
             int exCount = 0;
@@ -50,7 +59,14 @@ namespace Uvic_Ecg_ArbutusHolter.HttpRequests
                 try
                 {
                     client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", client.Token);
-                    client.Result = await client.HttpClient.PostAsync(client.Url + url, content);
+                    if (multipartFormDataContent == null)
+                    {
+                        client.Result = await client.HttpClient.PostAsync(client.Url + url, content);
+                    }
+                    else
+                    {
+                        client.Result = await client.HttpClient.PostAsync(client.Url + url, multipartFormDataContent);
+                    }
                     httpFailure = false;
                 }
                 catch (HttpRequestException hrex)

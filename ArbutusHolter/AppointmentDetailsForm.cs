@@ -22,6 +22,7 @@ namespace Uvic_Ecg_ArbutusHolter
         private EcgDataResources eResource = new EcgDataResources();
         private DeviceResource dResource = new DeviceResource();
         private NurseResource nResource = new NurseResource();
+        private ReportResource rResource = new ReportResource();
         private Client inClient;
         List<Device> returnDls;
         IEnumerable<Appointment> appointLs;
@@ -31,6 +32,8 @@ namespace Uvic_Ecg_ArbutusHolter
         string available = "Current device is available with in a week";
         string hasStarted = "'s appointment has started at";
         string datetimeFormat = "MM/dd/yyyy HH:mm";
+        string initDir = "C:\\";
+        string pdfFiles = "pdf files (*.pdf)|*.pdf";
         DateTime nextAppointmentTime = DateTime.Now;
         public Device selectDev { get; set; }
         public string deviceLoc { get; set; }
@@ -97,6 +100,7 @@ namespace Uvic_Ecg_ArbutusHolter
                     {
                         startBtn.Visible = false;
                         continueBtn.Visible = true;
+                        uploadReportBtn.Enabled = true;
                         if (!theAppoint.DeviceActualReturnTime.HasValue)
                         {
                             returnDevBtn.Enabled = true;
@@ -624,6 +628,50 @@ namespace Uvic_Ecg_ArbutusHolter
                 nextAppointTimeLabel.Visible = true;
             }
             
+        }
+        private async void UploadReportBtn_Click(object sender, EventArgs e)
+        {
+            Application.UseWaitCursor = true;
+            try
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.InitialDirectory = initDir;
+                    openFileDialog.Filter = pdfFiles;
+                    Stream fileStream;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        fileStream = openFileDialog.OpenFile();
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    Reports report = new Reports(thePat, theTest);
+                    jsonRestMod = await rResource.UploadReport(inClient, report, fileStream);
+                    errorMsg = jsonRestMod.ErrorMessage;
+                    if (ErrorInfo.OK.ErrorMessage == errorMsg)
+                    {
+                        MessageBox.Show(ErrorInfo.Uploaded.ErrorMessage);
+                    }
+                    else
+                    {
+                        MessageBox.Show(errorMsg);
+                    }
+                }
+            }
+            catch (TokenExpiredException teex)
+            {
+                throw teex;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText(FileName.Log.Name))
+                {
+                    LogHandle.Log(ex.ToString(), ex.StackTrace, w);
+                }
+            }
+            Application.UseWaitCursor = false;
         }
     }
 }

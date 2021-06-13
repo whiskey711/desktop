@@ -126,6 +126,7 @@
     <Compile Include="HttpRequests\NurseResource.cs" />
     <Compile Include="HttpRequests\PatientResource.cs" />
     <Compile Include="HttpRequests\PublicResources.cs" />
+    <Compile Include="HttpRequests\ReportResource.cs" />
     <Compile Include="HttpRequests\Requests.cs" />
     <Compile Include="LedBulb.cs">
       <SubType>Component</SubType>
