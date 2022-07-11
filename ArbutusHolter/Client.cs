@@ -12,8 +12,8 @@ namespace Uvic_Ecg_ArbutusHolter
         private HttpClient httpClient = new HttpClient();
         private HttpResponseMessage result;
         private HttpContent content;
-        private string url = "http://ecg.uvic.ca:8080/v1/test/";
-        private string publicUrl = "http://ecg.uvic.ca:8080/v1/public/";
+        private string url = "http://localhost:8080/v1/test/";
+        private string publicUrl = "http://localhost:8080/v1/public/";
         private IEnumerable<string> tokenObj;
         private string token;
         private string fullToken;
